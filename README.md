@@ -10,7 +10,7 @@ Nombre y Apellido | Usuario Github | Mail Jira
 - Marcos Strasorier, marcosstrasorier, marcos.strasorier@mi.unc.edu.ar
 - Ignacio Ramirez, irmrz, ignaciotramirez@mi.unc.edu.ar
 - Ignacio Cuevas, cuevasnacho, icuevas@mi.unc.edu.ar
-- Tomas Marmay, OAI17, tomas.marmay@mi.unc.edu.ar
+- Tomas Marmay, tmarmay, tomas.marmay@mi.unc.edu.ar
 - Tomas Hubmann, HubmannTomasAlejandro ,tomas.hubmann@mi.unc.edu.ar
 
-Docs: https://docs.google.com/document/d/1yaT5ehNTlyQsrAsdwD0wDjCCZYnnLdfWiQRghbaUVJ8/edit?usp=sharing
+Docs: [Descricion de tareas](https://docs.google.com/document/d/1yaT5ehNTlyQsrAsdwD0wDjCCZYnnLdfWiQRghbaUVJ8/edit?usp=sharing)
