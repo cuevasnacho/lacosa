@@ -1,6 +1,8 @@
-# lacosa-software-engineering
+# La Cosa
+### Ingenieria del Software I
 
 Integrantes
+
 Nombre y Apellido | Usuario Github | Mail Jira
 
 - Bruno Volpini, Volomeg23, bruno.volpini@mi.unc.edu.ar
@@ -9,4 +11,6 @@ Nombre y Apellido | Usuario Github | Mail Jira
 - Ignacio Ramirez, irmrz, ignaciotramirez@mi.unc.edu.ar
 - Ignacio Cuevas, cuevasnacho, icuevas@mi.unc.edu.ar
 - Tomas Marmay, OAI17, tomas.marmay@mi.unc.edu.ar
-- Tomas Hubmann, ,tomas.hubmann@mi.unc.edu.ar
+- Tomas Hubmann, HubmannTomasAlejandro ,tomas.hubmann@mi.unc.edu.ar
+
+Docs: https://docs.google.com/document/d/1yaT5ehNTlyQsrAsdwD0wDjCCZYnnLdfWiQRghbaUVJ8/edit?usp=sharing
