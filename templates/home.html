@@ -1,0 +1,33 @@
+<!-- templates/home.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bienvenido</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+        }
+        .container {
+            margin-top: 100px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Bienvenido <span id="welcome">Avenger</span></h1>
+    </div>
+
+    <!-- Agregar el archivo JavaScript desde la carpeta estática -->
+    <script src="{{ url_for('static', path='home.js') }}"></script>
+</body>
+</html>
