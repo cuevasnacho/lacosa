@@ -23,3 +23,5 @@ SCRUM Master: Ignacio Cuevas
 [Front-End](https://docs.google.com/document/d/1eWJquCqwPrM_vrPEykkix5NLm3n92V1xVEOsFFc3wcE/edit?usp=sharing)  
 [Preguntas Pertinentes](https://docs.google.com/document/d/1fX02lkKujGKvnqRw1EOlAYpgrj5wy6cFJQEnu2aq5cY/edit)
 [FastAPI](https://fastapi.tiangolo.com/tutorial/first-steps/).
+
+#### Formato branches: SCRUM-(numeroticket)_Titulo#Descripcion
