@@ -1,0 +1,14 @@
+.form Input {
+  border: none;
+  border-bottom: 1px solid gray;
+  background-color: transparent;
+  padding-bottom: 10px;
+}
+
+.form Input:focus {
+  outline: none;
+}
+
+.Buttons {
+  padding: 20px;
+}
