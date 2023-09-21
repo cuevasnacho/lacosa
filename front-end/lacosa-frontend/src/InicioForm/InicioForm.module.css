@@ -1,3 +1,9 @@
+.InicioForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .form Input {
   border: none;
   border-bottom: 1px solid gray;
@@ -11,4 +17,11 @@
 
 .Buttons {
   padding: 20px;
+}
+
+h3 {
+  font-size: 30px;
+  color: #cadf14;
+  width: 200px;
+  text-align: center;
 }

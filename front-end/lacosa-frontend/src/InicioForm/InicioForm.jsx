@@ -11,7 +11,7 @@ const InicioForm = ({
 
   return(
     <div className={styles.InicioForm}>
-      <h3>Ingrese su usuario</h3>
+      <h3>INGRESE EL NOMBRE DE SU USUARIO</h3>
       <form className={styles.form}>
         <input 
           type="text"
