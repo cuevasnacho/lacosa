@@ -16,17 +16,19 @@
     width: 80%;
 }
 
+.popupbody p {
+    width: 90%;
+    font-size: 0.9em;
+    overflow: scroll;
+}
+
 .closeRules {
     position: relative;
-    border-radius: 40px;
+    border-radius: 0px;
     width: 40px;
     height: 40px;
     font-weight: 700;
-    background-color: red;
-    left: 20px;
-    top: -20px;
-}
-
-h1 {
-    font-size: 30px;
+    background-color: transparent;
+    left: 40px;
+    top: 0;
 }
