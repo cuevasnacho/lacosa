@@ -11,6 +11,8 @@ from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
 
+
+
 lobby_player_assoc = Table(
     "Jugadores_en_lobby",
     Base.metadata,
@@ -53,11 +55,10 @@ class Player(Base):
 
 
     player_cards= relationship("Card", back_populates ="Player")
-
     player_lobby = relationship("Lobby", secondary=lobby_player_assoc ,back_populates="Player")
 
-    def __init__(self, id, name, ingame, position, exchangeR, exchangeI, role, dead):
-        self.player_id = id 
+    def __init__(self, name, ingame, position, exchangeR, exchangeI, role, dead):
+        self.player_id = id
         self.player_name = name
         self.player_ingame = ingame
         self.player_position = position
@@ -75,9 +76,16 @@ class Partida(Base):
     match_currentP = Column ("player_turn", Integer, nullable=True)
     match_cards = Column ("deck_count", SmallInteger, default=0)
 
-    match_lobby = relationship("Lobby", back_populates="Partida")
 
+    match_lobby = relationship("Lobby", back_populates="Partida")
     match_cards = relationship("Cards", back_populates="Partida", cascade="all, delete-orphan")
+
+    def __init__(self, status, direction, players, cards):
+        self.match_status= status
+        self.match_direction = direction
+        self.match_currentP = players
+        self.match_cards = cards
+
 
 class Lobby(Base):
     __tablename__= "Lobby"
@@ -88,8 +96,16 @@ class Lobby(Base):
     lobby_password = Column("password", String(length=12), nullable=True)
     lobby_pcount = Column("current_players", SmallInteger, default=1)
 
+
     lobby_match = relationship("Partida", uselist=False, back_populates="Lobby", cascade="all, delete-orphan")
     lobby_player = relationship("Lobby", secondary=lobby_player_assoc, back_populates="Player")
+
+    def __init__(self, name, max, min, password, players):
+        self.lobby_name = name
+        self.lobby_max = max
+        self.lobby_min = min
+        self.lobby_password = password
+        self.lobby_pcount= players
 
 class CardTemplate (Base):
     __tablename__="Template"
@@ -99,7 +115,15 @@ class CardTemplate (Base):
     cardT_effect = Column("Effect", Text, nullable=False)
     cardT_name = Column("Name", String, nullable=False)
 
+
     cardT_card = relationship("Cards", back_populates="Template")
+
+    def __init__(self, cardtype, subtype, effect, name):
+        self.cardT_type = cardtype
+        self.cardT_subtype= subtype
+        self.cardT_effect = effect
+        self.cardT_name = name
+
 
 
 class Card (Base):
@@ -108,14 +132,18 @@ class Card (Base):
     card_id = Column("id", Integer, primary_key=True, autoincrement=True)
     card_ubication = Column("ubication", Enum(Ubicaciones), nullable=True) #null para casos en que la carta no fue usada para la partida
     card_number = Column("Numero", SmallInteger)
-
     card_player = Column(Integer, ForeignKey("Player.player_id"), nullable=True)
 
+
     card_match = relationship("Partida", back_populates="Card")
-
     player = relationship("Player", back_populates="Card")
-
     card_template = relationship("CardTemplate", back_populates="Cards")
+
+    def __init__(self, ubicacion, numero, pertenece):
+        self.card_ubication= ubicacion
+        self.card_number = numero
+        self.card_player = pertenece
+        
 
 
 db = "sqlite:///clases.db"
