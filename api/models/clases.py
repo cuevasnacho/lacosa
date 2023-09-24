@@ -64,7 +64,10 @@ class Player(Base):
         self.player_position = position
         self.player_exchangeR = exchangeR
         self.player_exchangeI = exchangeI
-        self.player_role = role
+        if role in Roles:
+            self.player_role = role
+        else:
+            raise ValueError("Rol no Valido")
         self.player_dead = dead
 
 
@@ -81,6 +84,10 @@ class Partida(Base):
     match_cards = relationship("Cards", back_populates="Partida", cascade="all, delete-orphan")
 
     def __init__(self, status, direction, players, cards):
+        if status in Estados:
+            self.player_role = role
+        else:
+            raise ValueError("Estado no Valido")
         self.match_status= status
         self.match_direction = direction
         self.match_currentP = players
@@ -120,7 +127,10 @@ class CardTemplate (Base):
 
     def __init__(self, cardtype, subtype, effect, name):
         self.cardT_type = cardtype
-        self.cardT_subtype= subtype
+        if subtype in SubTypes:
+            self.cardT_subtype= subtype
+        else: 
+            raise ValueError("Subitpo no valido")
         self.cardT_effect = effect
         self.cardT_name = name
 
@@ -140,7 +150,10 @@ class Card (Base):
     card_template = relationship("CardTemplate", back_populates="Cards")
 
     def __init__(self, ubicacion, numero, pertenece):
-        self.card_ubication= ubicacion
+        if ubicacion in Ubicaciones:
+            self.card_ubication= ubicacion
+        else:
+            raise ValueError("Ubicacion no valida")
         self.card_number = numero
         self.card_player = pertenece
         
