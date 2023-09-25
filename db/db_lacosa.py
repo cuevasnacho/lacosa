@@ -52,6 +52,7 @@ class Player(Base):
     player_exchangeL = Column("exchangeL", Boolean, default=True )
     player_role = Column("role", Enum(Roles), nullable=True)
     player_dead = Column("isDead", Boolean, default=False)
+    player_isHost = Column ("isHost", Boolean, default=True) # ojo!! cambiar cuando ingresan players
 
 
     player_cards= relationship("Card", back_populates ="Player")
