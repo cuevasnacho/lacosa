@@ -1,0 +1,56 @@
+{
+  "Partidas": [
+    {
+      "id": 1,
+      "nombrePartida": "partidassssssssssssssssssssssssssssssssss1",
+      "host": "pepito1",
+      "cantjug": "4/8",
+      "privada": true
+    },
+    {
+      "id": 2,
+      "nombrePartida": "partidassssssssssssssssssssssssssssssssss1",
+      "host": "pepito1",
+      "cantjug": "4/8",
+      "privada": true
+    },
+    {
+      "id": 3,
+      "nombrePartida": "partidassssssssssssssssssssssssssssssssss1",
+      "host": "pepito1",
+      "cantjug": "4/8",
+      "privada": true
+    },
+    {
+      "id": 4,
+      "nombrePartida": "partidassssssssssssssssssssssssssssssssss1",
+      "host": "pepito1",
+      "cantjug": "4/8",
+      "privada": true
+    },
+    {
+      "id": 5,
+      "nombrePartida": "partidassssssssssssssssssssssssssssssssss1",
+      "host": "pepito1",
+      "cantjug": "4/8",
+      "privada": false
+    },
+    {
+      "id": 6,
+      "nombrePartida": "partidassssssssssssssssssssssssssssssssss1",
+      "host": "pepito1",
+      "cantjug": "4/8",
+      "privada": false
+    },
+    {
+      "idJugador": {},
+      "idPartida": 6,
+      "id": 7
+    },
+    {
+      "idJugador": {},
+      "idPartida": 3,
+      "id": 8
+    }
+  ]
+}
