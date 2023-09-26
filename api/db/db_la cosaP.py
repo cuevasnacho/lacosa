@@ -37,30 +37,30 @@ class Player(db.Entity):
     player_exchangeL= Optional(bool)
     player_role = Optional(int)
     player_dead= Optional(bool)
-    player_isHost = Optional(bool)
+    player_isHost = Required(bool)
 
-    player_cards = Set("Card")
+    player_cards = Set("Card", nullable =True)
     player_lobby = Optional("Lobby")
 
 class Lobby (db.Entity):
     lobby_id = PrimaryKey(int, auto=True)
     lobby_name = Required(str)
     lobby_max = Required(int)
-    lobby_mib = Required(int)
-    lobby_password = Optional(str)
+    lobby_min= Required(int)
+    lobby_password = Optional(str, nullable=True)
     lobby_pcount = Required(int)
 
-    lobby_match = Required("Match")
+    lobby_match = Optional("Match")
     lobby_player = Set("Player")
 
 class Match (db.Entity):
     match_id = PrimaryKey(int, auto=True)
     match_status = Required(int)
     match_direction = Required(bool)
-    match_currentP = Optional(int)
-    match_cardsCount= Optional(int)
+    match_currentP = Required(int)
+    match_cardsCount= Required(int)
 
-    match_lobby = Optional("Lobby")
+    match_lobby = Required("Lobby")
     match_cards = Set("Card")
 
 class CardTemplate (db.Entity):
