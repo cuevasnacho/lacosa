@@ -41,6 +41,7 @@ class Player(db.Entity):
 
     player_cards = Set("Card", nullable =True)
     player_lobby = Optional("Lobby")
+    player_current_match_id = Optional("Match")
 
 class Lobby (db.Entity):
     lobby_id = PrimaryKey(int, auto=True)
@@ -62,6 +63,7 @@ class Match (db.Entity):
 
     match_lobby = Required("Lobby")
     match_cards = Set("Card")
+    match_players = Set("Player")
 
 class CardTemplate (db.Entity):
     cardT_id = PrimaryKey(int, auto=True)
@@ -89,6 +91,6 @@ class Card (db.Entity):
 # Más info: https://docs.ponyorm.org/database.html
 
 # Conectamos el objeto `db` con la base de dato.
-db.bind('sqlite', 'example.sqlite', create_db=True)
+db.bind('sqlite', 'lacosa.sqlite', create_db=True)
 # Generamos las base de datos.
 db.generate_mapping(create_tables=True)
