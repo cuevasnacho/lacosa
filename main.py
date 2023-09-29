@@ -17,7 +17,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 #configuro directorio de paginas dinamicas
 templates = Jinja2Templates(directory="/templates")
 
-# Agregar el router de usuarios a la aplicación
+#agregar el router de usuarios a la aplicación
 app.include_router(home_router)
 app.include_router(discard_router)
 
