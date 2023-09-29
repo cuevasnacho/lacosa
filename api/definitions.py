@@ -20,3 +20,5 @@ class cards_subtypes(Enum):
     ACTION = 2
     DEFENSE = 3
     OBSTACLE = 4
+
+#ejemplo de como acceder al valor : card:position.DECK.value
