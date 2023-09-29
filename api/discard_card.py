@@ -4,6 +4,7 @@ from db.database import Player, Match, Card
 from pony.orm import db_session,commit
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
+from definitions import card_position
 
 router = APIRouter()
 
@@ -43,8 +44,8 @@ async def discard_card(player_id : int, id_card : int):
     if (is_player_turn(player_id) and card_belong_player(player_id, id_card)):
         #actualizo el estado de la carta 
         with db_session:
-            card_to_update = Card.get(card_id=id_card)
-            #agregar ubicacion -> en que mazo esta 
+            card_to_update = Card.get(card_id=id_card) 
+            card_to_update.card_location = card_position.DISCARD.value
             card_to_update.card_player = None 
             commit()
          
