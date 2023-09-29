@@ -1,6 +1,4 @@
 #probar endpoind : curl -X PUT http://localhost:8000/descartar_carta/99/77
-#es necesario asignar un jugador que este an la base de datos cuando el jugador descarta
-#la carta. por lo tanto hay que crear un jugador que no juege, solo que sea para manterne las cartas en desuso
 
 from db.database import Player, Match, Card
 from pony.orm import db_session,commit
@@ -8,8 +6,6 @@ from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 
 router = APIRouter()
-
-discard_player = 99 #discutir con grupo
 
 @db_session
 def is_player_turn(player_id):
@@ -42,12 +38,14 @@ async def discard_card(player_id : int, id_card : int):
         message = "El tipo de los datos ingresados son invalidos"
         status_code = 406 # no acceptable
         return JSONResponse(content=message, status_code=status_code)
-
+    
+    #falta tener en cuenta las cartas que no se pueden descartar
     if (is_player_turn(player_id) and card_belong_player(player_id, id_card)):
         #actualizo el estado de la carta 
         with db_session:
             card_to_update = Card.get(card_id=id_card)
-            card_to_update.card_player = discard_player # jugador de descarte
+            #agregar ubicacion -> en que mazo esta 
+            card_to_update.card_player = None 
             commit()
          
         message = "Carta descartada"
