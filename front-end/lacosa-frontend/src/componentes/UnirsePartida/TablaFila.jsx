@@ -3,12 +3,13 @@ import "./EstiloBoton.css"
 import lock from "../../assets/lock-icon.svg"
 import publica from "../../assets/public-icon.svg"
 
-export default function TablaFila(elem,idJugador) {
-  const {id,nombrePartida,host,cantjug,privada}=elem.elem
+export default function TablaFila(elem) {
+  const {idPartida,nombrePartida,host,cantjug,privada}=elem.elem
   let api = helpHttp(),
-  endpoit = "http://localhost:3000/Partidas"
+  endpoit = "http://localhost:3000/Partids",
+  idJugador=window.localStorage.getItem("idJugador")
 
-  const unirPartida = (idPartida) =>{
+  const unirPartida = () =>{
     const datosPartida = {
         idJugador,
         idPartida,
@@ -20,10 +21,10 @@ export default function TablaFila(elem,idJugador) {
     }
     api.post(endpoit,options).then((res)=>{
         if(!res.err){
-            console.log("dato ingresado con exito")
+          //window.location="ruta del lobby"   
+        }else{
+          console.alert(`No se pudo unirse a la partida ${res.err}`)
         }
-     //window.location="ruta del lobby"   
-        
     })
  }
   return (
@@ -32,7 +33,7 @@ export default function TablaFila(elem,idJugador) {
         <td>{nombrePartida}</td>
         <td>{host}</td>
         <td>{cantjug}</td>
-        <td><button className="boton-unirse"  onClick={()=>unirPartida(id)}>Unirse</button></td>
+        <td><button className="boton-unirse"  onClick={()=>unirPartida()}>Unirse</button></td>
     </tr>
   )
 }

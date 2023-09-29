@@ -1,7 +1,7 @@
 {
   "Partidas": [
     {
-      "id": 1,
+      "idPartida": 1,
       "nombrePartida": "partidassssssssssssssssssssssssssssssssss1",
       "host": "pepito1",
       "cantjug": "4/8",
