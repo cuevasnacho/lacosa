@@ -2,30 +2,7 @@ from datetime import datetime
 from pony.orm import Database, PrimaryKey, Required, Set, Optional
 from pony import *
 
-# class Roles(int, Enum):
-#     THE_THING = 1
-#     HUMAN = 2
-#     INFECTED = 3
-
-# class Status (int, Enum):
-#     NOT_INITIALIZED = 1
-#     INITIALIZED= 2
-#     FINISHED = 3
-
-# class SubTypes(int, Enum):
-#     INFECTION = 1
-#     ACTION = 2
-#     DEFENSE = 3
-#     OBSTACLE = 4
-
-# class Locations (int, Enum):
-#     IN_DECK = 1
-#     IN_DISCARD = 2
-#     IN_PLAYER = 3
-
-
 db = Database()
-
 
 class Player(db.Entity):
     player_id = PrimaryKey(int, auto=True)
