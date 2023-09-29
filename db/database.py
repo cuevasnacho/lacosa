@@ -1,7 +1,6 @@
 from datetime import datetime
 from pony.orm import Database, PrimaryKey, Required, Set, Optional
 from pony import *
-db= Database()
 
 # class Roles(int, Enum):
 #     THE_THING = 1
@@ -84,13 +83,7 @@ class Card (db.Entity):
     card_match = Required("Match")
 
 
-
-
-# db.generate_mapping()
-# Configuramos la base de datos.
-# Más info: https://docs.ponyorm.org/database.html
-
-# Conectamos el objeto `db` con la base de dato.
+#conectamos el objeto `db` con la base de dato.
 db.bind('sqlite', 'lacosa.sqlite', create_db=True)
-# Generamos las base de datos.
+#generamos las base de datos.
 db.generate_mapping(create_tables=True)
