@@ -1,12 +1,7 @@
 from datetime import datetime
 from pony.orm import Database, PrimaryKey, Required, Set, Optional
 from pony import *
-db= Database()
 
-# class Roles(int, Enum):
-#     THE_THING = 1
-#     HUMAN = 2
-#     INFECTED = 3
 
 # class Status (int, Enum):
 #     NOT_INITIALIZED = 1
@@ -34,7 +29,7 @@ class Player(db.Entity):
     player_ingame = Required(bool)
     player_position = Optional(int)
     player_exchangeR = Optional(bool)
-     player_exchangeL= Optional(bool)
+    player_exchangeL= Optional(bool)
     player_role = Optional(int)
     player_dead= Optional(bool)
     player_isHost = Required(bool)
@@ -92,3 +87,4 @@ class Card (db.Entity):
 db.bind('sqlite', 'example.sqlite', create_db=True)
 # Generamos las base de datos.
 db.generate_mapping(create_tables=True)
+
