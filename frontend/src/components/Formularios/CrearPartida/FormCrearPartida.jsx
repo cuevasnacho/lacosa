@@ -10,8 +10,6 @@ function FormCrearPartida()
         register,
         handleSubmit,
         formState: { errors },
-        watch,
-        setValue,
         reset,
       } = useForm({
         defaultValues: {
@@ -21,9 +19,10 @@ function FormCrearPartida()
           contraseña: ""
         },
       });
-
+      // Consultar si usar valores por default o tener que rellenar  si o si
+    
     const FORM_SUBMIT = handleSubmit((data) => {
-        console.log(data);
+        alert("Partida Creada" + JSON.stringify(data));
         reset();
     });
 
@@ -50,7 +49,8 @@ function FormCrearPartida()
                                 value: 4,
                                 message: "Nombre de la partida demasiado corto"
                             }
-                        })} />
+                        })}
+                        placeholder="Partida de Juancito" />
                     {errors.nombrePartida && <p>{errors.nombrePartida.message}</p>}
                 </div>
 
@@ -72,7 +72,8 @@ function FormCrearPartida()
                                 value: 4,
                                 message: "Mínimo de jugadores demasiado bajo"
                             }
-                        })} />
+                        })}
+                        placeholder = '4' />
                 </div>
 
                 <div>
@@ -93,7 +94,8 @@ function FormCrearPartida()
                                 value: 4,
                                 message: "Máximo de jugadores demasiado bajo"
                             }
-                        })} />
+                        })}
+                        placeholder="4" />
                 </div>
 
                 <div>
