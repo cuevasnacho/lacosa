@@ -25,5 +25,4 @@ templates = Jinja2Templates(directory="/templates")
 app.include_router(home_router)
 app.include_router(discard_router)
 app.include_router(user_router)
-app.include_router(lobby_router)
 
