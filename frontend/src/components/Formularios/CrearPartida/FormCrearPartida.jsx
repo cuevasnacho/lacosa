@@ -3,9 +3,11 @@ import {useForm} from 'react-hook-form';
 import CustomButton from '../../Boton/CustomButton';
 import './FormCrearPartida.css';
 import {httpRequest} from '../../../services/HttpService';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 
 function FormCrearPartida() {
+
+  const USERNAME = window.localStorage.getItem('username');
 
   const {
     register,
@@ -33,18 +35,17 @@ function FormCrearPartida() {
 
       window.localStorage.setItem('CrearPartida', JSON.stringify(response));
       
-      Navigate('/lobby');
     } 
     catch (error) 
     {
       console.log(error);
     }
+    Navigate('/lobby');
   });
 
   return (
     <>
       <h2>Formulario de Creación</h2>
-      <body>
         <form onSubmit={FORM_SUBMIT}>
           <div>
             <label>Nombre de la Partida</label>
@@ -136,7 +137,6 @@ function FormCrearPartida() {
 
           <CustomButton label="Crear Partida" onClick={FORM_SUBMIT} />
         </form>
-      </body>
     </>
   );
 }
