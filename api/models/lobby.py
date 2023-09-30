@@ -23,14 +23,6 @@ class Lobby(BaseModel):
     lobby_min : int
     lobby_password : Optional[str] = None
 
-    @validator("lobby_name")
-    def check_name(cls, name):
-        if len(name)>20:
-            message = "Nombe demasiado largo"
-            status_code = 406 # no acceptable
-            return JSONResponse(content=message, status_code=status_code)
-        else:
-            return name
 
 class CreateLobby(BaseModel):
     lobby_id : int
