@@ -8,6 +8,7 @@ from fastapi.responses import HTMLResponse
 
 from api.home import router as home_router 
 from api.discard_card import router as discard_router
+from api.show_matches import router as show_matches_router
 
 app = FastAPI()
 
@@ -20,4 +21,4 @@ templates = Jinja2Templates(directory="/templates")
 #agregar el router de usuarios a la aplicación
 app.include_router(home_router)
 app.include_router(discard_router)
-
+app.include_router(show_matches_router)
