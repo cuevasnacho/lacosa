@@ -2,10 +2,10 @@ import styles from './InicioForm.module.css';
 import { httpRequest } from '../../services/HttpService.js';
 
 import { useForm } from 'react-hook-form';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const InicioForm = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   
   const {
     register,
@@ -26,7 +26,7 @@ const InicioForm = () => {
         ingame: response.ingame,
       }));
 
-      history.push('/main');
+      navigate('/main');
     } catch (error) {
       console.log(error);
     }
@@ -37,6 +37,7 @@ const InicioForm = () => {
       <h3>INGRESE EL NOMBRE DE SU USUARIO</h3>
       <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
         <input 
+          className={styles.userinput}
           {...register('username', {
             required: { value: true, message: 'Debes ingresar un nombre!' },
             validate: {
@@ -48,12 +49,12 @@ const InicioForm = () => {
                 return false;
               },
             },
-            maxLength: { value: 20, message: '20 caracteres máximo' },
+            maxLength: { value: 19, message: '19 caracteres máximo' },
           })
           }
         />
         <div>
-          {errors.username && <p className="text-danger">{errors.username.message}</p>}
+          {errors.username && <p className={styles.textdanger}>{errors.username.message}</p>}
         </div>
         <input type="submit" value="Ingresar" className={styles.Buttons}/>
       </form>
