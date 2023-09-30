@@ -1,32 +1,7 @@
-from datetime import datetime
 from pony.orm import Database, PrimaryKey, Required, Set, Optional
 from pony import *
-db= Database()
-
-# class Roles(int, Enum):
-#     THE_THING = 1
-#     HUMAN = 2
-#     INFECTED = 3
-
-# class Status (int, Enum):
-#     NOT_INITIALIZED = 1
-#     INITIALIZED= 2
-#     FINISHED = 3
-
-# class SubTypes(int, Enum):
-#     INFECTION = 1
-#     ACTION = 2
-#     DEFENSE = 3
-#     OBSTACLE = 4
-
-# class Locations (int, Enum):
-#     IN_DECK = 1
-#     IN_DISCARD = 2
-#     IN_PLAYER = 3
-
 
 db = Database()
-
 
 class Player(db.Entity):
     player_id = PrimaryKey(int, auto=True)
@@ -41,6 +16,7 @@ class Player(db.Entity):
 
     player_cards = Set("Card", nullable =True)
     player_lobby = Optional("Lobby")
+    player_current_match_id = Optional("Match")
 
 class Lobby (db.Entity):
     lobby_id = PrimaryKey(int, auto=True)
@@ -62,6 +38,7 @@ class Match (db.Entity):
 
     match_lobby = Required("Lobby")
     match_cards = Set("Card")
+    match_players = Set("Player")
 
 class CardTemplate (db.Entity):
     cardT_id = PrimaryKey(int, auto=True)
@@ -82,13 +59,7 @@ class Card (db.Entity):
     card_match = Required("Match")
 
 
-
-
-# db.generate_mapping()
-# Configuramos la base de datos.
-# Más info: https://docs.ponyorm.org/database.html
-
-# Conectamos el objeto `db` con la base de dato.
-db.bind('sqlite', 'example.sqlite', create_db=True)
-# Generamos las base de datos.
+#conectamos el objeto `db` con la base de dato.
+db.bind('sqlite', 'lacosa.sqlite', create_db=True)
+#generamos las base de datos.
 db.generate_mapping(create_tables=True)
