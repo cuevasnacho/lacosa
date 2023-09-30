@@ -1,7 +1,7 @@
 from pydantic import *
 from enum import Enum
 from typing import Optional, List, Any
-from api.models.user import Player
+from api.models.user import Player, get_jugador
 from fastapi import FastAPI, HTTPException, APIRouter, Query
 from fastapi.responses import JSONResponse
 from pony.orm import db_session, commit , ObjectNotFound
@@ -66,6 +66,7 @@ password : Optional[str] = None ):
         host = get_jugador(player_id)
         new_lobby = db_lobby(lobby_name = lobby_name, lobby_max = lobby_max,lobby_min = lobby_min,
         lobby_password= password, lobby_pcount = 1)
+        new_lobby.lobby_player.add(host)
     return new_lobby
 
 @router.post("/lobby/{lobby_id}")

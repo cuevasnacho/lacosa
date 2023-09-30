@@ -15,13 +15,6 @@ router = APIRouter()
 class Player(BaseModel):
 
     player_name: str
-    player_ingame: bool
-    player_role: player_roles
-    player_exchangeL: bool
-    player_exchangeR: bool
-    player_position: int
-    player_dead: bool
-    player_isHost: bool 
 
 class PlayerOut(BaseModel):
     player_id : int
