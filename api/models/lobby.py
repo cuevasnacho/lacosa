@@ -1,11 +1,11 @@
 from pydantic import *
 from enum import Enum
 from typing import Optional, List, Any
-from api.models.user import Player, get_jugador
-from fastapi import FastAPI, HTTPException, APIRouter, Query
+from api.models.user import PlayerIn , get_jugador
+from fastapi import FastAPI, HTTPException, APIRouter, Query, status
 from fastapi.responses import JSONResponse
 from pony.orm import db_session, commit , ObjectNotFound
-from pony.orm import Set
+from pony.orm import Set, select
 from definitions import match_status
 
 from db.database import Lobby as db_lobby
@@ -25,8 +25,14 @@ class Lobby(BaseModel):
 
 
 class CreateLobby(BaseModel):
-    lobby_id : int
+    player_id : int
+    lobby_name : str
+    lobby_max : int
+    lobby_min : int
+    lobby_password : Optional[str] = None
 
+class CreateLobbyOut(BaseModel):
+    lobby_id : int
 
 
 @db_session()
@@ -42,9 +48,8 @@ def get_lobby(lobby_id):
 
 
 
-@router.post("/lobby", response_model=CreateLobby)
-async def Crear_Lobby(player_id: int, new_lobby: Lobby, lobby_name : str, lobby_max : int, lobby_min : int,
-password : Optional[str] = None ):
+@router.post("/lobbys/", status_code=status.HTTP_201_CREATED)
+async def Crear_Lobby(new_lobby: CreateLobby) -> CreateLobbyOut:
     if len(lobby_name)>20:
         message = "Nombe demasiado largo"
         status_code = 406 # no acceptable
@@ -67,7 +72,8 @@ password : Optional[str] = None ):
         new_lobby = db_lobby(lobby_name = lobby_name, lobby_max = lobby_max,lobby_min = lobby_min,
         lobby_password= password, lobby_pcount = 1)
         new_lobby.lobby_player.add(host)
-    return new_lobby
+    return CreateLobbyOut(lobby_id=new_lobby.lobby_id)
+
 
 @router.post("/lobby/{lobby_id}")
 async def Buscar_Lobby(lobby_id : int):
@@ -79,4 +85,5 @@ async def Buscar_Lobby(lobby_id : int):
   "lobby_min": lobby.lobby_min,
   "lobby_password": lobby.lobby_password
 }
+
     

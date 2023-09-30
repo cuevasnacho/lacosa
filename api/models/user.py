@@ -1,7 +1,7 @@
 from pydantic import *
 from enum import Enum
 from typing import Optional, List, Any
-from fastapi import FastAPI, HTTPException, APIRouter, Query
+from fastapi import FastAPI, HTTPException, APIRouter, Query, status
 from fastapi.responses import JSONResponse
 from pony.orm import db_session, commit 
 from definitions import player_roles
@@ -33,16 +33,14 @@ def get_jugador(player_id):
 @router.post("/players/", status_code=status.HTTP_201_CREATED)
 async def Crear_Jugador(new_player: PlayerIn) -> PlayerOut:
     if len(player_name) > 20: 
-            message = "Nombe demasiado largo"
-            status_code = 406 # no acceptable
-            return JSONResponse(content=message, status_code=status_code)
+        message = "Nombe demasiado largo"
+        status_code = 406 # no acceptable
+        return JSONResponse(content=message, status_code=status_code)
     with db_session:
         new_player = db_player(player_name= player_name, player_ingame = False, player_isHost=True, player_role = None,
         player_position=None, player_exchangeL=True, player_exchangeR=True, player_dead = False)
         commit() #OJO QUE PLAYER POR DEFECTO ES HOST
- return PlayerOut(player_id=new_player.player_id,player_name=new_player.player_name)
-
-
+        return PlayerOut(player_id=new_player.player_id, player_name=new_player.player_name)
 
 
 @router.get("/players/{player_id}")
