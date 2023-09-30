@@ -2,16 +2,15 @@ import React from 'react';
 import {useForm} from 'react-hook-form';
 import CustomButton from '../../Boton/CustomButton';
 import './FormCrearPartida.css';
+import {httpRequest} from '../../../services/HttpService';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 function FormCrearPartida() {
-  const USERNAME = 'Juæn';
-  const HOST_ID = '1234';
 
   const {
     register,
     handleSubmit,
     formState: {errors},
-    reset,
   } = useForm({
     defaultValues: {
       nombrePartida: 'Partida de ' + USERNAME,
@@ -20,12 +19,26 @@ function FormCrearPartida() {
       contraseña: '',
     },
   });
-  // Consultar si usar valores por default o tener que rellenar  si o si
+
+  const HOST_ID = window.localStorage.getItem('id');
 
   const FORM_SUBMIT = handleSubmit((data) => {
-    data.id_host = HOST_ID;
-    alert(data.HOST_ID + JSON.stringify(data));
-    reset();
+    try 
+    {
+      const response = httpRequest({
+        method: 'POST',
+        service: 'CrearPartida',
+        body: JSON.stringify(HOST_ID + data)
+      });
+
+      window.localStorage.setItem('CrearPartida', JSON.stringify(response));
+      
+      Navigate('/lobby');
+    } 
+    catch (error) 
+    {
+      console.log(error);
+    }
   });
 
   return (
