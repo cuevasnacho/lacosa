@@ -2,11 +2,9 @@ import styles from './InicioForm.module.css';
 import { httpRequest } from '../../services/HttpService.js';
 
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 
 const InicioForm = () => {
-  const navigate = useNavigate();
-  
   const {
     register,
     handleSubmit,
@@ -23,10 +21,8 @@ const InicioForm = () => {
       window.sessionStorage.setItem('logged', JSON.stringify({
         user_id: response.id,
         username: response.name,
-        ingame: response.ingame,
       }));
-
-      navigate('/main');
+    Navigate('/main');
     } catch (error) {
       console.log(error);
     }
