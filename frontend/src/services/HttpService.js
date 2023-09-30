@@ -1,4 +1,4 @@
-const SERVER_URI = 'http://localhost:5173/';
+const SERVER_URI = 'http://localhost:8000/';
 
 const parseJSONResponse = (response) => {
   return new Promise((resolve) => response.json()
