@@ -27,12 +27,3 @@ app.include_router(discard_router)
 app.include_router(user_router)
 app.include_router(lobby_router)
 
-
-@app.get("/players/{player_id}")
-async def buscar_jugador(player_id : int):
-    with db_session:
-        player = db_player[player_id]
-    return {
-        "player_id" : player.player_id,
-        "player_name" : player.player_name
-    }
