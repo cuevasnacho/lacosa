@@ -19,3 +19,9 @@ router = APIRouter()
 class Card(BaseModel):
     id: int
 
+
+class Match(BaseModel):
+    match_status : match_status
+    match_direction : Optional[bool] = True  #Vamos a a sumir que True=IZQUIERDA, False=DERECHA
+    match_currentP : Optional[int]
+    match_cardsCount : Optional[int]
