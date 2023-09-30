@@ -1,11 +1,10 @@
 import React from "react";
-
 /*
 
 carta = {
     id: 1,
-    template: "string"
-    tipo: 0,
+    template: "string",
+    tipo: True, -> Panico = True - Alejate = False
     imagen: "ruta/a/imagen.jpg"
 }
 
