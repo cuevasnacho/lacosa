@@ -12,8 +12,7 @@ router = APIRouter()
 
 
 
-class Player(BaseModel):
-
+class PlayerIn(BaseModel):
     player_name: str
 
 class PlayerOut(BaseModel):
@@ -31,9 +30,9 @@ def get_jugador(player_id):
         status_code = 404 # not found
         return JSONResponse(content=message, status_code=status_code)
 
-@router.post("/players/", response_model=PlayerOut)
-async def Crear_Jugador(new_player: Player, player_name : str):
-    if len(player_name) > 20: #FALTAN VALIDAR LOS CAMPOS DE PLAYER
+@router.post("/players/", status_code=status.HTTP_201_CREATED)
+async def Crear_Jugador(new_player: PlayerIn) -> PlayerOut:
+    if len(player_name) > 20: 
             message = "Nombe demasiado largo"
             status_code = 406 # no acceptable
             return JSONResponse(content=message, status_code=status_code)
@@ -41,7 +40,9 @@ async def Crear_Jugador(new_player: Player, player_name : str):
         new_player = db_player(player_name= player_name, player_ingame = False, player_isHost=True, player_role = None,
         player_position=None, player_exchangeL=True, player_exchangeR=True, player_dead = False)
         commit() #OJO QUE PLAYER POR DEFECTO ES HOST
-    return new_player
+ return PlayerOut(player_id=new_player.player_id,player_name=new_player.player_name)
+
+
 
 
 @router.get("/players/{player_id}")
