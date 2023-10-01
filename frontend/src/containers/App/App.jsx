@@ -1,21 +1,31 @@
 import { useState } from 'react'
 import Carta from '../../components/Carta/Carta.jsx'
-import '../../components/Carta/Diccionario.jsx'
 import './App.css'
+import lacosa from '/home/ignacio/lacosa/frontend/src/media/designs/cartas/alejate/lacosa.png'
+import cuerdas_podridas from '/home/ignacio/lacosa/frontend/src/media/designs/cartas/panico/cuerdas_podridas.png'
+
 
 function App() {
-  const [count, setCount] = useState(0);
 
-  const ejemplo = {
+  const carta_lacosa = {
     id: 1,
     template: "string",
     tipo: 0,
-    imagen: analisis,
-    tamaño: 250
+    imagen: lacosa,
+    ubicacion: "mano"
   };
+
+  const carta_cuerdas_podridas = {
+    id: 2,
+    template: "string",
+    tipo: 1,
+    imagen: cuerdas_podridas,
+    ubicacion: "mano"
+  };
+
   return (
     <>
-      <Carta carta={ejemplo} />
+      <Carta carta={carta_cuerdas_podridas} />
     </>
   )
 }
