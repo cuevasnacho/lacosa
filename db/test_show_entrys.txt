@@ -1,0 +1,52 @@
+insert into Card (card_id, card_location, card_number, card_cardT, card_player, card_match)
+VALUES (0,0,0,0,2,7);
+
+insert into Card (card_id, card_location, card_number, card_cardT, card_player, card_match)
+VALUES (1,0,0,0,2,7);
+
+insert into Card (card_id, card_location, card_number, card_cardT, card_player, card_match)
+VALUES (2,0,0,0,1,7);
+
+insert into Player (player_id, player_name, player_ingame, player_position, player_exchangeR, player_exchangeL, player_role, player_dead, player_isHost, player_lobby, player_current_match_id)
+VALUES (2,"tomas",0,0,0,0,0,0,True,0,7);
+
+insert into Player (player_id, player_name, player_ingame, player_position, player_exchangeR, player_exchangeL, player_role, player_dead, player_isHost, player_lobby, player_current_match_id)
+VALUES (1,"nacho",0,0,0,0,0,0,True,0,1);
+
+insert into Player (player_id, player_name, player_ingame, player_position, player_exchangeR, player_exchangeL, player_role, player_dead, player_isHost, player_lobby, player_current_match_id)
+VALUES (99,"descarte",0,0,0,0,0,0,True,0,2);
+
+
+insert into Match (match_id, match_status, match_direction, match_currentP, match_cardsCount)
+VALUES (7,1,0,2,0);
+
+insert into Match (match_id, match_status, match_direction, match_currentP, match_cardsCount)
+VALUES (4,1,0,2,0);
+
+insert into Match (match_id, match_status, match_direction, match_currentP, match_cardsCount)
+VALUES (1,1,0,2,0);
+
+insert into Match (match_id, match_status, match_direction, match_currentP, match_cardsCount)
+VALUES (2,1,0,2,0);
+
+insert into Match (match_id, match_status, match_direction, match_currentP, match_cardsCount)
+VALUES (3,1,0,2,0);
+
+
+insert into Lobby (lobby_id,lobby_name,lobby_max,lobby_min,lobby_password,lobby_pcount,lobby_match)
+VALUES (1,"l1",6,5,"ok",1,1);
+
+insert into Lobby (lobby_id,lobby_name,lobby_max,lobby_min,lobby_password,lobby_pcount,lobby_match)
+VALUES (2,"l1",6,5,"ok",1,2);
+
+
+insert into Lobby (lobby_id,lobby_name,lobby_max,lobby_min,lobby_password,lobby_pcount,lobby_match)
+VALUES (3,"l1",6,5,"ok",1,3);
+
+insert into Lobby (lobby_id,lobby_name,lobby_max,lobby_min,lobby_password,lobby_pcount,lobby_match)
+VALUES (4,"l1",6,5,"ok",1,4);
+
+insert into Lobby (lobby_id,lobby_name,lobby_max,lobby_min,lobby_password,lobby_pcount,lobby_match)
+VALUES (5,"l1",6,5,"ok",1,7);
+
+
