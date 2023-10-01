@@ -13,16 +13,19 @@ const InicioForm = () => {
 
   const onSubmit = async (data) => {
     try {
+      // Log the data before sending the POST request
+      console.log('Data to be sent:', data);
+
       const response = await httpRequest({
         method: 'POST',
-        service: 'player',
+        service: 'players',
         body: JSON.stringify(data)
       });
       window.sessionStorage.setItem('logged', JSON.stringify({
         user_id: response.id,
         username: response.name,
       }));
-    Navigate('/main');
+      Navigate('/main');
     } catch (error) {
       console.log(error);
     }
@@ -34,7 +37,7 @@ const InicioForm = () => {
       <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
         <input 
           className={styles.userinput}
-          {...register('username', {
+          {...register('player_name', {
             required: { value: true, message: 'Debes ingresar un nombre!' },
             validate: {
               value: (value) => {
@@ -45,12 +48,12 @@ const InicioForm = () => {
                 return false;
               },
             },
-            maxLength: { value: 19, message: '19 caracteres máximo' },
-          })
-          }
+            maxLength: { value: 20, message: '20 caracteres máximo' },
+          })}
+          id="player_name"
         />
         <div>
-          {errors.username && <p className={styles.textdanger}>{errors.username.message}</p>}
+          {errors.player_name && <p className={styles.textdanger}>{errors.player_name.message}</p>}
         </div>
         <input type="submit" value="Ingresar" className={styles.Buttons}/>
       </form>
