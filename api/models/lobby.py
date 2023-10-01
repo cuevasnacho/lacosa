@@ -53,7 +53,7 @@ def get_lobby(lobby_id):
 
 
 
-@router.post("/lobby", status_code=status.HTTP_201_CREATED)
+@router.post("/lobbys/", status_code=status.HTTP_201_CREATED)
 async def Crear_Lobby(new_lobby: CreateLobby) -> CreateLobbyOut:
     if len(new_lobby.lobby_name)>20:
         message = "Nombe demasiado largo"
@@ -97,7 +97,7 @@ def database_to_list_lobby(lobby: db_lobby) -> ListedLobbys:
     lobby_pcount=db_lobby.lobby_pcount,
 )  # por si sirve
 
-# @router.get("/lobby/list")
+# @router.get("/lobbys/list")
 # async def lista_lobbys() -> List[ListedLobbys]:
 #     listed_lobby = []
 #     with db_session:
