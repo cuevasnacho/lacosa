@@ -26,7 +26,7 @@ class Lobby (db.Entity):
     lobby_password = Optional(str, nullable=True)
     lobby_pcount = Required(int)
 
-    lobby_match = Required("Match")
+    lobby_match = Optional("Match")
     lobby_player = Set("Player")
 
 class Match (db.Entity):
