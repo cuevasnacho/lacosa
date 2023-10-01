@@ -3,7 +3,7 @@ from enum import Enum
 from typing import Optional, List, Any
 from fastapi import FastAPI, HTTPException, APIRouter, Query, status
 from fastapi.responses import JSONResponse
-from pony.orm import db_session, commit 
+from pony.orm import db_session, commit ,select, ObjectNotFound
 from definitions import player_roles
 
 from db.database import Player as db_player
@@ -58,4 +58,28 @@ async def Buscar_Jugador(player_id : int):
     }
 
 
+@router.delete("/players/{player_id}")
+async def delete_player(player_id: int) :
+    with db_session:
+        try:
+            fetch_player = get_jugador(player_id)
+            db_player[player_id].delete()
+        except ObjectNotFound:
+            message = "El jugador no existe"
+            status_code = 404 # not found
+            return JSONResponse(content=message, status_code=status_code)
+    message = "Jugador borrado!"
+    status_code = 200 # no acceptable
+    return JSONResponse(content=message, status_code=status_code)
 
+
+
+# @router.get("/lobbys/list")
+# async def lista_lobbys() -> List[ListedLobbys]:
+#     listed_lobby = []
+#     with db_session:
+#         lobbys = list(db_lobby.select(lambda p: p.lobby_id > 0))
+#         for c in lobbys:
+#             lobby_info = Buscar_Lobby(c.lobby_id)
+#             listed_lobby.append(lobby_info)
+#         return listed_lobby

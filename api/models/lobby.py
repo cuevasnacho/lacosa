@@ -80,6 +80,22 @@ async def Crear_Lobby(new_lobby: CreateLobby) -> CreateLobbyOut:
     return CreateLobbyOut(lobby_id=new_lobby.lobby_id)
 
 
+@router.delete("/lobbys/{lobby_id}")
+async def delete_lobby(lobby_id: int) :
+    with db_session:
+        try:
+            fetch_lobby = get_lobby(lobby_id)
+            db_lobby[lobby_id].delete()
+        except ObjectNotFound:
+            message = "El lobby no existe"
+            status_code = 404 # not found
+            return JSONResponse(content=message, status_code=status_code)
+    message = "lobby borrado!"
+    status_code = 200 # no acceptable
+    return JSONResponse(content=message, status_code=status_code)
+
+
+
 def Buscar_Lobby(lobby_id : int):
     lobby = get_lobby(lobby_id)
     return {
