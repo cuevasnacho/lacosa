@@ -10,7 +10,7 @@ function UnirsePartida() {
     const [partidas, setPartidas] = useState([])
     const [mostrarTabla,setMostrar]=useState(false)   
 
-    let {username} =JSON.parse(window.sessionStorage.getItem("logged"))
+    //let {username} =JSON.parse(window.sessionStorage.getItem("logged"))
      useEffect(() => {
         const fetchpPartidas = async () => {
             try {
@@ -32,7 +32,6 @@ function UnirsePartida() {
         <video className='videobg' src={videobg} autoPlay loop muted />
         {(mostrarTabla) &&
         <div className='contenedor-tabla'>
-            <h4> {username}</h4>
             <h3 className='titulo-tabla'>Lista de Partidas</h3>
                 <div className='tabla-unirsePartida'>
                     <table>
