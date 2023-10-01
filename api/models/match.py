@@ -1,7 +1,7 @@
 from pydantic import *
 from enum import Enum
 from typing import Optional, List, Any
-from api.models.user import Player
+from api.models.user import *
 from fastapi import FastAPI, HTTPException, APIRouter, Query
 from fastapi.responses import JSONResponse
 from pony.orm import db_session, commit 
