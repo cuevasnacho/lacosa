@@ -34,13 +34,13 @@ function FormCrearPartida() {
       });
 
       window.localStorage.setItem('CrearPartida', JSON.stringify(response));
+      Navigate('/lobby');
       
     } 
     catch (error) 
     {
       console.log(error);
     }
-    Navigate('/lobby');
   });
 
   return (
