@@ -36,19 +36,7 @@ h1 {
   line-height: 1.1;
 }
 
-button {
-  color: #1a1a1a;
-  border-radius: 8px;
-  border: 1px solid transparent;
-  width: 120px;
-  height: 35px;
-  font-size: 0.8em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #cadf14;
-  cursor: pointer;
-  transition: border-color 0.25s, background-color 0.25s;
-}
+
 button:hover {
   border-color: #ffffff;
   background-color: #f9f9f9;

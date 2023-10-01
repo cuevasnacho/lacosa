@@ -29,8 +29,8 @@
     border: 1px solid transparent;
     margin: 1.5rem;
     padding: 1rem;
-    font-size: 1em;
-    font-weight: 500;
+    font-size: 1rem;
+    font-weight: 400;
     font-family: inherit;
     cursor: pointer;
     transition: border-color 0.25s, background-color 0.25s, color 0.25s;
