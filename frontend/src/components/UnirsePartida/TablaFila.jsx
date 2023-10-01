@@ -10,19 +10,19 @@ export default function TablaFila(elem) {
   const [partidas,setPartidas]=useState([])
     
     const unirPartida = async () => {
-         let idJugador=window.localStorage.getItem("idJug")
+        let {user_id} =JSON.parse(window.sessionStorage.getItem("logged"))
         const datosPartida = {
-            idJugador,
+            user_id,
             idPartida,
         }
         try {
           const data = await httpRequest({
             method: 'POST',
-            service: 'contacts',
+            service: 'unirse',
             payload: datosPartida
           });
           setPartidas([...partidas, data]);
-          //window.location=`/lobby/${idPartida}/${idJugador}`
+          //window.location=`/lobby`
         } catch (error) {
           console.log(error);
         }

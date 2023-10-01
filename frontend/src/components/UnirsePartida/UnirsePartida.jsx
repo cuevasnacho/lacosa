@@ -1,18 +1,16 @@
 import {v4 as uuid} from 'uuid';
 import TablaFila from './TablaFila';
 import { useState,useEffect } from 'react'
-import {useParams} from "react-router"
 import { httpRequest } from '../../services/HttpService.js'
 import videobg from "../../media/background-video.mp4"
 import "./UnirsePartida.css"
 import "./EstiloBoton.css"
 
-
 function UnirsePartida() {
-    const {idJugador,nombreJug} = useParams()
     const [partidas, setPartidas] = useState([])
     const [mostrarTabla,setMostrar]=useState(false)   
 
+    let {username} =JSON.parse(window.sessionStorage.getItem("logged"))
      useEffect(() => {
         const fetchpPartidas = async () => {
             try {
@@ -22,8 +20,6 @@ function UnirsePartida() {
               console.log(error);
             }
           }
-            window.localStorage.setItem("idJug",idJugador)
-            window.localStorage.setItem("nomJug",nombreJug)
             fetchpPartidas()
      }, [])
 
@@ -36,7 +32,7 @@ function UnirsePartida() {
         <video className='videobg' src={videobg} autoPlay loop muted />
         {(mostrarTabla) &&
         <div className='contenedor-tabla'>
-            <h4> {nombreJug}</h4>
+            <h4> {username}</h4>
             <h3 className='titulo-tabla'>Lista de Partidas</h3>
                 <div className='tabla-unirsePartida'>
                     <table>
