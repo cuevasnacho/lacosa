@@ -1,20 +1,15 @@
 import React from "react";
+import styles from "./Carta.module.css";
+
 /*
-
-carta = {
-    id: 1,
-    template: "string",
-    tipo: True, -> Panico = True - Alejate = False
-    imagen: "ruta/a/imagen.jpg"
-}
-
+    El tamaño por defecto de las cartas en el mazo es 125 de ancho.
+    Cuando se roba una carta el tamaño es de 250.
 */
+
 function Carta({carta}) {
     return (
-        <div className="carta">
-            <div>
-                <img src={carta.imagen} />
-            </div>
+        <div className={styles.carta}>
+            <img src={carta.imagen} width={carta.tamaño}  />
         </div>
     );
 }

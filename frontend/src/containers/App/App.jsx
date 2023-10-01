@@ -1,7 +1,6 @@
 import { useState } from 'react'
-import Carta from '../../components/Carta/Carta'
-import lacosa from '/home/ignacio/lacosa/frontend/src/media/designs/cartas/alejate/lacosa.png'
-
+import Carta from '../../components/Carta/Carta.jsx'
+import '../../components/Carta/Diccionario.jsx'
 import './App.css'
 
 function App() {
@@ -11,7 +10,8 @@ function App() {
     id: 1,
     template: "string",
     tipo: 0,
-    imagen: lacosa
+    imagen: analisis,
+    tamaño: 250
   };
   return (
     <>
