@@ -26,7 +26,7 @@ class Lobby (db.Entity):
     lobby_password = Optional(str, nullable=True)
     lobby_pcount = Required(int)
 
-    lobby_match = Required("Match")
+    lobby_match = Optional("Match")
     lobby_player = Set("Player")
 
 class Match (db.Entity):
@@ -39,11 +39,11 @@ class Match (db.Entity):
     match_lobby = Optional("Lobby")
     match_cards = Set("Card")
     match_players = Set("Player")
-
+    
 class CardTemplate (db.Entity):
     cardT_id = PrimaryKey(int, auto=True)
-    cardT_type = Required(bool)
     cardT_subtype = Required(int)
+    cardT_type = Required(bool)
     cardT_effect= Required(str)
     cardT_name = Required(str)
 
