@@ -97,7 +97,7 @@ def database_to_list_lobby(lobby: db_lobby) -> ListedLobbys:
     lobby_pcount=db_lobby.lobby_pcount,
 )  # por si sirve
 
-# @router.get("/lobby/list")
+# @router.get("/lobbys/list")
 # async def lista_lobbys() -> List[ListedLobbys]:
 #     listed_lobby = []
 #     with db_session:
