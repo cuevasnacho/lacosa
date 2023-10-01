@@ -19,8 +19,9 @@ const InicioForm = () => {
       const response = await httpRequest({
         method: 'POST',
         service: 'players',
-        body: JSON.stringify(data)
+        payload: data
       });
+      
       window.sessionStorage.setItem('logged', JSON.stringify({
         user_id: response.id,
         username: response.name,
