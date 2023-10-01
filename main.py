@@ -14,8 +14,18 @@ from api.show_matches import router as show_matches_router
 from api.models.user import router as user_router
 from api.models.lobby import router as lobby_router
 
-
+from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
+
+origins = ["*"]
+ 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 #configuro directorio de archivos estaticos 
 app.mount("/static", StaticFiles(directory="static"), name="static")
