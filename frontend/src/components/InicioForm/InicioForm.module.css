@@ -1,0 +1,46 @@
+.InicioForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.userinput {
+  border: none;
+  border-bottom: 1px solid gray;
+  background-color: transparent;
+  padding-bottom: 10px;
+}
+
+.userinput:focus {
+  outline: none;
+}
+
+.Buttons {
+  color: #1a1a1a;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  margin-top: 15px;
+  width: 120px;
+  height: 35px;
+  font-size: 0.8em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #cadf14;
+  cursor: pointer;
+  transition: border-color 0.25s, background-color 0.25s;
+}
+.Buttons:hover {
+  border-color: #ffffff;
+  background-color: #f9f9f9;
+}
+
+h3 {
+  font-size: 30px;
+  color: #cadf14;
+  width: 200px;
+  text-align: center;
+}
+
+.textdanger {
+  font-size: 0.8em;
+}
