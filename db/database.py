@@ -36,7 +36,7 @@ class Match (db.Entity):
     match_currentP = Required(int)
     match_cardsCount= Required(int)
 
-    match_lobby = Required("Lobby")
+    match_lobby = Optional("Lobby")
     match_cards = Set("Card")
     match_players = Set("Player")
 
