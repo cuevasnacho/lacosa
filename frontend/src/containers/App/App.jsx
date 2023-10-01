@@ -7,25 +7,9 @@ import cuerdas_podridas from '/home/ignacio/lacosa/frontend/src/media/designs/ca
 
 function App() {
 
-  const carta_lacosa = {
-    id: 1,
-    template: "string",
-    tipo: 0,
-    imagen: lacosa,
-    ubicacion: "mano"
-  };
-
-  const carta_cuerdas_podridas = {
-    id: 2,
-    template: "string",
-    tipo: 1,
-    imagen: cuerdas_podridas,
-    ubicacion: "mano"
-  };
-
   return (
     <>
-      <Carta carta={carta_cuerdas_podridas} />
+      <Carta carta={cuerdas_podridas} />
     </>
   )
 }
