@@ -53,7 +53,7 @@ def get_lobby(lobby_id):
 
 
 
-@router.post("/lobby", status_code=status.HTTP_201_CREATED)
+@router.post("/lobbys/", status_code=status.HTTP_201_CREATED)
 async def Crear_Lobby(new_lobby: CreateLobby) -> CreateLobbyOut:
     if len(new_lobby.lobby_name)>20:
         message = "Nombe demasiado largo"

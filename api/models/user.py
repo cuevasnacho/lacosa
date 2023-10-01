@@ -30,7 +30,7 @@ def get_jugador(player_id):
         status_code = 404 # not found
         return JSONResponse(content=message, status_code=status_code)
 
-@router.post("/players", status_code=status.HTTP_201_CREATED)
+@router.post("/players/", status_code=status.HTTP_201_CREATED)
 async def Crear_Jugador(new_player: PlayerIn) -> PlayerOut:
     if len(new_player.player_name) > 20: 
         message = "Nombe demasiado largo"
@@ -59,5 +59,3 @@ async def Buscar_Jugador(player_id : int):
 
 
 
-
-        
