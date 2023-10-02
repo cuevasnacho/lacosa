@@ -6,7 +6,7 @@ from fastapi.responses import JSONResponse
 from definitions import match_status
 from pony import orm 
 from . import Create_Desk
-
+from . import deal_cards
 router = APIRouter()
 
 @db_session
@@ -58,6 +58,9 @@ async def start_match(lobby_id : int):
         number_players = get_player_number(lobby_id)
         match_id = get_match_id(lobby_id)
         Create_Desk.create_desk(number_players, match_id)
+
+        #repartir cartas
+        deal_cards.deal_cards(match_id)
 
         content = f"Partida {lobby_id} iniciada"
         return JSONResponse(content = content, status_code = 200)

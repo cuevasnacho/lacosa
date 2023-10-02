@@ -7,6 +7,20 @@ VALUES (1,"nacho",0,0,0,0,0,0,True,0,1);
 insert into Player (player_id, player_name, player_ingame, player_position, player_exchangeR, player_exchangeL, player_role, player_dead, player_isHost, player_lobby, player_current_match_id)
 VALUES (99,"descarte",0,0,0,0,0,0,True,0,2);
 
+insert into Player (player_id, player_name, player_ingame, player_position, player_exchangeR, player_exchangeL, player_role, player_dead, player_isHost, player_lobby, player_current_match_id)
+VALUES (3,"Nico",0,0,0,0,0,0,True,0,2);
+
+insert into Player (player_id, player_name, player_ingame, player_position, player_exchangeR, player_exchangeL, player_role, player_dead, player_isHost, player_lobby, player_current_match_id)
+VALUES (4,"Juan",0,0,0,0,0,0,True,0,2);
+
+insert into Player (player_id, player_name, player_ingame, player_position, player_exchangeR, player_exchangeL, player_role, player_dead, player_isHost, player_lobby, player_current_match_id)
+VALUES (5,"Matias",0,0,0,0,0,0,True,0,2);
+
+insert into Player (player_id, player_name, player_ingame, player_position, player_exchangeR, player_exchangeL, player_role, player_dead, player_isHost, player_lobby, player_current_match_id)
+VALUES (6,"Marcos",0,0,0,0,0,0,True,0,2);
+
+insert into Player (player_id, player_name, player_ingame, player_position, player_exchangeR, player_exchangeL, player_role, player_dead, player_isHost, player_lobby, player_current_match_id)
+VALUES (7,"Igna",0,0,0,0,0,0,True,0,2);
 
 insert into Match (match_id, match_status, match_direction, match_currentP, match_cardsCount)
 VALUES (7,1,0,2,0);
