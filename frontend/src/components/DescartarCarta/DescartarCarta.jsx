@@ -1,7 +1,7 @@
 import ManoJugador from '../ManoJugador/ManoJugador'
 
-function DescartarCarta({ComponenteMano, nombreCarta}){
-    const manoActual = ComponenteMano.props.cartas;
+function DescartarCarta({cartas, nombreCarta}){
+    const manoActual = cartas;
 
     const nuevaMano = manoActual.filter(carta => carta !== nombreCarta);
 

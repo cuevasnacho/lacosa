@@ -1,18 +1,14 @@
 
 import { useState } from 'react'
-import Carta from '../../components/Carta/Carta.jsx'
 import './App.css'
-import lacosa from '/home/ignacio/lacosa/frontend/src/media/designs/cartas/alejate/lacosa.png'
-import cuerdas_podridas from '/home/ignacio/lacosa/frontend/src/media/designs/cartas/panico/cuerdas_podridas.png'
-
+import ManoJugador from '../../components/ManoJugador/ManoJugador'
+import Diccionario from '../../components/Carta/Diccionario'
 
 function App() {
-
+  const [cartas, setCartas] = useState([Diccionario['lacosa'], Diccionario['cuerdas_podridas'], Diccionario['lacosa'], Diccionario['cuerdas_podridas']])
   return (
-
     <>
-
-      <Carta carta={cuerdas_podridas} />
+      <ManoJugador cartas={cartas} />
     </>
   )
 }
