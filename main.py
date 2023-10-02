@@ -17,7 +17,7 @@ from api.models.lobby import router as lobby_router
 from api.start_match import router as start_match_router
 from fastapi.middleware.cors import CORSMiddleware
 from api.load_templates import load_templates
-
+from api.play_card import router as play_card_router
 app = FastAPI()
 
 origins = ["*"]
@@ -47,3 +47,4 @@ app.include_router(user_router)
 app.include_router(start_match_router)
 app.include_router(lobby_router)
 app.include_router(start_match_router)
+app.include_router(play_card_router)
