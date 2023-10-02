@@ -9,17 +9,21 @@ import { Link } from 'react-router-dom'
 
 function UnirsePartida() {
     const [partidas, setPartidas] = useState([])  
-    let {username} =JSON.parse(window.sessionStorage.getItem("logged"))
+    
+    let {username} =JSON.parse(window.localStorage.getItem("logged"))
+
      useEffect(() => {
         const fetchpPartidas = async () => {
             let headers = {
                 Accept: '*/*', 
             }
-            try {
+            try 
+            {
               const data = await httpRequest({ method: 'GET',headers:headers, service: 'partidas/listar' });
               console.log(data)
               setPartidas(data);
-            } catch (error) {
+            } 
+            catch (error) {
               console.log(error);
             }
           }
