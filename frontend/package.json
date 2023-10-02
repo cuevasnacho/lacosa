@@ -8,13 +8,7 @@
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "test": "jest --watch",
-    "jest": {
-      "preset": "react-native"
-    },
-    "moduleNameMapper": {
-      "\\.(css|less|scss|sass)$": "identity-obj-proxy"
-    },
+    "test": "react-scripts test --watchAll --coverage",
     "cypress:open": "cypress open"
   },
   "dependencies": {
