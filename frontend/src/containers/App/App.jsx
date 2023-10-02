@@ -7,7 +7,7 @@ function App() {
     <Router>
       <Routes>
         <Route path='/'>
-          <Route index element={<Inicio />}/>
+          <Route index element={<Partida />}/>
           <Route path='home' element={<Inicio />}/>
           <Route path='crear' element={<Inicio />}/>
           <Route path='lobby/:idLobby' element={<Inicio />}/>

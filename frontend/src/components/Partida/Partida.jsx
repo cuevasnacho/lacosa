@@ -2,7 +2,6 @@ import Mesa from '../Mesa/Mesa.jsx';
 import ManoJugador from '../ManoJugador/ManoJugador.jsx';
 import Diccionario from '../Carta/Diccionario.jsx';
 import styles from './Partida.module.css';
-import mazo from '../../media/designs/cartas/misteriosa.png';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { httpRequest } from '../../services/HttpService.js';
@@ -67,14 +66,16 @@ const Partida = function () {
     }
   };
 
+  const cartas = ["analisis", "lacosa", "lanzallamas", "misteriosa"];
+
   return (
     <div className={styles.container}>
       <div className={styles.manojugador}>
-        <ManoJugador cartas={cartas} jugarCarta/>
+        <ManoJugador cartas={cartas} />
       </div>
       <div className={styles.mazos}>
         <button type='button' onClick={levantarCarta}/>
-        <img src={mazo} width={130}/>
+        <Carta carta="analisis" />
       </div>
       <div className={styles.jugadores}>
 
