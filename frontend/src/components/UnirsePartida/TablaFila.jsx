@@ -12,16 +12,14 @@ export default function TablaFila(elem) {
   let cantjug=" "+ number_of_players + "/" + max_players ;
 
   const unirPartida = async () => {
-    //let {user_id} =JSON.parse(window.sessionStorage.getItem("logged"))
+    let {user_id} =JSON.parse(window.sessionStorage.getItem("logged"))
       try {
         const data = await httpRequest({
           method: 'PUT',
-          service: `lobbys/${lobby_id}`,
-          //service: `lobbys/${lobby_id}/${user_id}`
+          service: `lobbys/${lobby_id}/${user_id}`
       });
         setPartidas([...partidas, data]);
-        console.log(data)
-        //window.location=`/lobby/${lobby_id}`
+        window.location=`/lobby/${lobby_id}`
       } catch (error) {
         console.log(error);
         }

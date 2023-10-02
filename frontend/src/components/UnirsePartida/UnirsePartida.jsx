@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom'
 
 function UnirsePartida() {
     const [partidas, setPartidas] = useState([])  
-    //let {username} =JSON.parse(window.sessionStorage.getItem("logged"))
+    let {username} =JSON.parse(window.sessionStorage.getItem("logged"))
      useEffect(() => {
         const fetchpPartidas = async () => {
             let headers = {
@@ -30,6 +30,7 @@ function UnirsePartida() {
     <div>
         <video className='videobg' src={videobg} autoPlay loop muted />
         <div className='contenedor-tabla'>
+            <h4>{username}</h4>
             <h3 className='titulo-tabla'>Lista de Partidas</h3>
                 <div className='tabla-unirsePartida'>
                     <table>
