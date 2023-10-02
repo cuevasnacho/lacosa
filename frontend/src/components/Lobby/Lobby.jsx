@@ -26,10 +26,11 @@ function Lobby() {
 
             try 
             {
-                const iniciar = httpRequest({
+                const response = httpRequest({
                     method: 'PUT',
                     service: 'partida/iniciar/' + idLobby,
                 });
+                const idPartida = JSON.stringify(response.match_id);
                 
                 navigate('/partida/' + idLobby);
             } 
@@ -37,7 +38,6 @@ function Lobby() {
             {
                 console.log(error);                
             }
-
         }  
         else 
         {
@@ -54,7 +54,6 @@ function Lobby() {
         window.localStorage.setItem('jugadores', JSON.stringify(refresco.players));
         window.localStorage.setItem('cantidadJugadores', JSON.stringify(refresco.lobby_pcount));
     }
-        
     
     return(
         <>
