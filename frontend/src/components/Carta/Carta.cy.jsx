@@ -1,11 +1,12 @@
 import React from 'react'
 import Carta from './Carta'
-import analisis from '/home/ignacio/lacosa/frontend/src/media/designs/cartas/alejate/analisis.png'
+import Diccionario from './Diccionario'
 
 describe('<Carta />', () => {
+  const carta = Diccionario['lacosa'];
 
   it('renders', () => {
     // see: https://on.cypress.io/mounting-react
-    cy.mount(<Carta carta={analisis}/>)
+    cy.mount(<Carta carta={carta}/>)
   })
 })

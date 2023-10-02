@@ -7,9 +7,10 @@ import cuerdas_podridas from '/home/ignacio/lacosa/frontend/src/media/designs/ca
 
 describe('<DescartarCarta />', () => {
   const mano = <ManoJugador cartas={[lacosa, cuerdas_podridas]} />
-
+  let descarte = cuerdas_podridas;
+  
   it('renders', () => {
     // see: https://on.cypress.io/mounting-react
-    cy.mount(<DescartarCarta ComponenteMano={mano} nombreCarta={cuerdas_podridas}/>)
+    cy.mount(<DescartarCarta ComponenteMano={mano} nombreCarta={descarte}/>)
   })
 })
