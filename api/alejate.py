@@ -25,6 +25,7 @@ class lanzallamas_T(card_template):
     def __init__(self):
         super().__init__(False, cards_subtypes.ACTION.value,lanz_Effect,"Lanzallamas")
 
+    @db_session
     def aplicar_efecto(self,objective_id):
         objective_player = Player.get(player_id = objective_id)
         objective_player.player_dead = True
@@ -39,6 +40,7 @@ class laCosa_T(card_template):
     def __init__(self):
         super().__init__(False, cards_subtypes.INFECTION.value,cosa_Effect,"La_Cosa")
 
+    @db_session
     def aplicar_efecto(self,objective_id):
         message = "Accion invalida"
         return JSONResponse(content = message, status_code=406)
