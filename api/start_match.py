@@ -27,7 +27,7 @@ def check_pre_conditions(lobby_id):
         return True if (get_lobby and is_match_not_initialized) else False
     except:
         return False
-#OJO CON MATCH_ID VER Y VER LAS LLAMDAS
+
 @db_session
 def get_match_id(lobby_id):
     match_id = orm.select( (match.match_id) 
@@ -59,7 +59,7 @@ async def start_match(lobby_id : int):
         match_id = get_match_id(lobby_id)
         Create_Desk.create_desk(number_players, match_id)
 
-        content = "Partida iniciada"
+        content = f"Partida {lobby_id} iniciada"
         return JSONResponse(content = content, status_code = 200)
     else:
         content = f"Lobby {lobby_id} no cumple las pre-condiciones"
