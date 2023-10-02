@@ -1,11 +1,13 @@
+import styles from "./Jugador.module.css";
 
-function Jugador(props) {
-    const username = props.username;
-    const esHost = props.esHost;
+function Jugador({ username, esTurno }) {
+    const jugadorClase = esTurno ? `${styles.jugador} ${styles.turno}` : styles.jugador;
 
     return (
-        <div className="jugador">
-            
+        <div className={jugadorClase}>
+            <h3>{username}</h3>  
         </div>
     );
 }
+
+export default Jugador;

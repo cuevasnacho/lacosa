@@ -5,7 +5,7 @@ function Carta({carta}) {
     
     return (
         <div className={styles.carta}>
-            <img src={carta} width={180}/>
+            <img src={carta} width={130}/>
         </div>
     );
 }
