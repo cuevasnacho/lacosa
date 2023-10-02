@@ -36,6 +36,7 @@ def deal_cards(id_match):
                 card.card_player = player.player_id
                 card.card_location = card_position.PLAYER.value
 
+        match.match_cardsCount -= players_amount * 4 
         commit()
         return results.SUCSSESFUL.value #resultado exitoso
 
