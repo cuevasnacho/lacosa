@@ -74,7 +74,7 @@ async def Crear_Lobby(new_lobby: CreateLobby) -> CreateLobbyOut:
         message = "Maximo de players no permitido"
         status_code = 406 # no acceptable
         return JSONResponse(content=message, status_code=status_code)
-    if new_lobby.lobby_min<5: #DECISION DE DISEÑO
+    if new_lobby.lobby_min<4: 
         message = "Minimo de players no permitido"
         status_code = 406 # no acceptable
         return JSONResponse(content=message, status_code=status_code)
