@@ -1,3 +1,7 @@
+body {
+    background-color: #121212;
+}
+
 .page {
     height: 100%;
     width: 100%;
@@ -5,4 +9,8 @@
 
 .Mesa {
     background-color: black;
+}
+
+.h1 {
+    color: #1a1a1a;
 }
