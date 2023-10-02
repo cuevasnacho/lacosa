@@ -8,25 +8,24 @@ import { useState } from 'react'
 export default function TablaFila(elem) {
   const {lobby_id,lobby_name,host_name,is_private,number_of_players,max_players}=elem.elem
   const [partidas,setPartidas]=useState([])
+  
   let cantjug=" "+ number_of_players + "/" + max_players ;
-    const unirPartida = async () => {
-        let {user_id} =JSON.parse(window.sessionStorage.getItem("logged"))
-        const datosPartida = {
-            user_id,
-            lobby_id,
+
+  const unirPartida = async () => {
+    //let {user_id} =JSON.parse(window.sessionStorage.getItem("logged"))
+      try {
+        const data = await httpRequest({
+          method: 'PUT',
+          service: `lobbys/${lobby_id}`,
+          //service: `lobbys/${lobby_id}/${user_id}`
+      });
+        setPartidas([...partidas, data]);
+        console.log(data)
+        //window.location=`/lobby/${lobby_id}`
+      } catch (error) {
+        console.log(error);
         }
-        try {
-          const data = await httpRequest({
-            method: 'POST',
-            service: 'unirse',
-            payload: datosPartida
-          });
-          setPartidas([...partidas, data]);
-          window.location=`/lobby/${lobby_id}`
-        } catch (error) {
-          console.log(error);
-        }
-      };     
+    };     
   return (
     <tr>
         {(is_private)?<><td><img src={publica}></img></td></>:<><td><img src={lock}></img></td></>}
