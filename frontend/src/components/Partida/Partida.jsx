@@ -8,7 +8,8 @@ import { useState } from 'react';
 import { httpRequest } from '../../services/HttpService.js';
 
 const Partida = function () {
-  const usuario = JSON.parse(sessionStorage.getItem('logged'));
+  const USERNAME = JSON.parse(localStorage.getItem('username'));
+  const USERID = JSON.parse(localStorage.getItem('user_id'));
 
   const navigate = useNavigate();
 
@@ -21,12 +22,12 @@ const Partida = function () {
       const response = await httpRequest({
         method: 'POST',
         service: 'levantar',
-        payload: usuario.user_id
+        payload: USERID
       });
       
-      mycards = JSON.parse(sessionStorage.getItem('cards'));
+      mycards = JSON.parse(localStorage.getItem('cards'));
       mycards.push(response.id_carta);
-      window.sessionStorage.setItem('cards', JSON.stringify(mycards));
+      window.localStorage.setItem('cards', JSON.stringify(mycards));
 
       window.location.reload();
     } catch (error) {
@@ -34,7 +35,21 @@ const Partida = function () {
     }
   };
 
-  const [cartas, setCartas] = useState([Diccionario['lacosa'], Diccionario['lanzallamas']]);
+  const descartar = async () => {
+    try {
+      const response = await httpRequest({
+        method: 'POST',
+        service: 'carta/descartar/' + USERID, // CARDID
+      });
+      
+      mycards = JSON.parse(response.cards);
+      window.localStorage.setItem('cards', JSON.stringify(mycards));
+
+      window.location.reload();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className={styles.container}>
