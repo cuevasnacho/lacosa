@@ -1,5 +1,4 @@
-#es importante tener actalizado el lobby_pcount
-from db.database import Lobby, Match
+from db.database import Lobby, Match, Player
 from pony.orm import db_session, commit
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
@@ -7,6 +6,8 @@ from definitions import match_status
 from pony import orm 
 from . import Create_Desk
 from . import deal_cards
+import json 
+
 router = APIRouter()
 
 @db_session
@@ -48,6 +49,17 @@ def change_match_status(lobby_id):
     get_match.match_status = match_status.INITIALIZED.value                
     commit()
 
+@db_session
+def sort_players(lobby_id):
+    #dar un orden a los jugadores y cambiar estado a en juego
+    players = Player.select(lambda player : player.player_lobby.lobby_id == lobby_id)
+    position = 0
+    for player in players:
+        player.player_ingame = True
+        player.player_position = position
+        position += 1
+    commit()
+
 @router.put("/partida/iniciar/{lobby_id}")
 async def start_match(lobby_id : int):
     if (check_pre_conditions(lobby_id)):
@@ -62,8 +74,15 @@ async def start_match(lobby_id : int):
         #repartir cartas
         deal_cards.deal_cards(match_id)
 
-        content = f"Partida {lobby_id} iniciada"
-        return JSONResponse(content = content, status_code = 200)
+        #asignar orden a los jugadores
+        sort_players(lobby_id)
+
+        content = {
+            "message" : f"Partida {lobby_id} iniciada",
+            "match_id" : get_match_id(lobby_id)    
+        }
+
+        return JSONResponse(content = json.loads(json.dumps(content)), status_code = 200)
     else:
         content = f"Lobby {lobby_id} no cumple las pre-condiciones"
         return JSONResponse(content = content, status_code = 405)
