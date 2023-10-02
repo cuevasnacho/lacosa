@@ -9,10 +9,10 @@ function App() {
     <Router>
       <Routes>
           <Route index element={<Inicio />}/>
-          <Route path='/home' element={<Inicio />}/>
+          <Route path='/home' element={<UnrsePartida />}/>
           <Route path='/crear' element={<FormCrearPartida />}/>
           <Route path='/lobby/:idLobby' element={<Lobby />}/>
-          <Route path='/partida/:idPartida' element={<Inicio />}/>
+          <Route path='/partida/:idPartida' element={<Partida />}/>
           <Route path='*' element={<h1>Error 404 - Not Found</h1>}/>
       </Routes>
     </Router>

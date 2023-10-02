@@ -30,13 +30,14 @@ function Lobby() {
                     method: 'PUT',
                     service: 'partida/iniciar/' + idLobby,
                 });
+                
+                navigate('/partida/' + idLobby);
             } 
             catch (error) 
             {
                 console.log(error);                
             }
 
-            navigate('/partida/' + idLobby);
         }  
         else 
         {
