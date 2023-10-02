@@ -1,0 +1,10 @@
+.botones{
+    display: flex;
+    width: 300px;
+    justify-content: space-around ;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+}

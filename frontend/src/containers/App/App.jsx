@@ -1,37 +1,22 @@
-
-import { useState } from 'react'
-import './App.css'
-import ManoJugador from '../../components/ManoJugador/ManoJugador'
-import Diccionario from '../../components/Carta/Diccionario'
-import Jugadores from '../../components/Jugador/Jugadores'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Inicio from '../../components/Inicio/Inicio.jsx';
+import './App.css';
+import Lobby from '../../components/Lobby/Lobby.jsx';
+import FormCrearPartida from '../../components/Formularios/CrearPartida/FormCrearPartida.jsx';
 
 function App() {
-  const [cartas, setCartas] = useState([Diccionario['lacosa'], Diccionario['cuerdas_podridas'], Diccionario['lacosa'], Diccionario['cuerdas_podridas']]);
-  
-  const test = [
-    {
-      username: 'Jugador 1',
-      esTurno: false
-    },
-    {
-      username: 'Jugador 2',
-      esTurno: false
-    },
-    {
-      username: 'Jugador 3',
-      esTurno: true
-    },
-    {
-      username: 'Jugador 4',
-      esTurno: false
-    }
-  ];
-
   return (
-    <>
-      <Jugadores jugadores={test} />
-    </>
+    <Router>
+      <Routes>
+          <Route index element={<Inicio />}/>
+          <Route path='/home' element={<UnrsePartida />}/>
+          <Route path='/crear' element={<FormCrearPartida />}/>
+          <Route path='/lobby/:idLobby' element={<Lobby />}/>
+          <Route path='/partida/:idPartida' element={<Partida />}/>
+          <Route path='*' element={<h1>Error 404 - Not Found</h1>}/>
+      </Routes>
+    </Router>
   )
 }
 
-export default App
+export default App;

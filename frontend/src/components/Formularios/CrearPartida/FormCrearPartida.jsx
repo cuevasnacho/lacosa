@@ -3,7 +3,7 @@ import {useForm} from 'react-hook-form';
 import CustomButton from '../../Boton/CustomButton';
 import './FormCrearPartida.css';
 import {httpRequest} from '../../../services/HttpService';
-import { Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 function FormCrearPartida() {
 
@@ -22,19 +22,25 @@ function FormCrearPartida() {
     },
   });
 
-  const HOST_ID = window.localStorage.getItem('id');
+  const navigate = useNavigate();
 
+  const HOST_ID = window.localStorage.getItem('user_id');
+  
   const FORM_SUBMIT = handleSubmit((data) => {
     try 
     {
+      data.put('hostId', HOST_ID);
       const response = httpRequest({
         method: 'POST',
         service: 'CrearPartida',
-        body: JSON.stringify(HOST_ID + data)
+        body: data
       });
 
+      window.localStorage.setItem('Partida', data);
+      window.localStorage.setItem('cantidadJugadores', 1);
+      window.localStorage.setItem('Host', true);
       window.localStorage.setItem('CrearPartida', JSON.stringify(response));
-      Navigate('/lobby');
+      navigate('/lobby/' + response.idPartida);
       
     } 
     catch (error) 
