@@ -8,7 +8,7 @@
       "host_name": "juan",
       "max_players":8,
       "min_players":2,
-      "privada":true
+      "is_private":true
     },
     {
       "lobby_id": 2,
@@ -18,7 +18,7 @@
       "host_name": "juan2",
       "max_players":6,
       "min_players":2,
-      "privada":true
+      "is_private":true
     },
     {
       "lobby_id": 3,
@@ -28,7 +28,7 @@
       "host_name": "juan3",
       "max_players":7,
       "min_players":2,
-      "privada":false
+      "is_private":false
     }
   ]
 }

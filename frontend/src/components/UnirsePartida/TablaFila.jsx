@@ -6,10 +6,9 @@ import { useState } from 'react'
 
 
 export default function TablaFila(elem) {
-  const {lobby_id,lobby_name,host_name,privada,number_of_players,max_players}=elem.elem
+  const {lobby_id,lobby_name,host_name,is_private,number_of_players,max_players}=elem.elem
   const [partidas,setPartidas]=useState([])
   let cantjug=" "+ number_of_players + "/" + max_players ;
-  console.log(cantjug)
     const unirPartida = async () => {
         let {user_id} =JSON.parse(window.sessionStorage.getItem("logged"))
         const datosPartida = {
@@ -23,14 +22,14 @@ export default function TablaFila(elem) {
             payload: datosPartida
           });
           setPartidas([...partidas, data]);
-          //window.location=`/lobby`
+          window.location=`/lobby/${lobby_id}`
         } catch (error) {
           console.log(error);
         }
       };     
   return (
     <tr>
-        {(privada)?<><td><img src={publica}></img></td></>:<><td><img src={lock}></img></td></>}
+        {(is_private)?<><td><img src={publica}></img></td></>:<><td><img src={lock}></img></td></>}
         <td>{lobby_name}</td>
         <td>{host_name}</td>
         <td>{cantjug}</td>

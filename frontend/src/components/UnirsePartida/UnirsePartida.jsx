@@ -5,11 +5,10 @@ import { httpRequest } from '../../services/HttpService.js'
 import videobg from "../../media/background-video.mp4"
 import "./UnirsePartida.css"
 import "./EstiloBoton.css"
+import { Link } from 'react-router-dom'
 
 function UnirsePartida() {
-    const [partidas, setPartidas] = useState([])
-    const [mostrarTabla,setMostrar]=useState(false)   
-
+    const [partidas, setPartidas] = useState([])  
     //let {username} =JSON.parse(window.sessionStorage.getItem("logged"))
      useEffect(() => {
         const fetchpPartidas = async () => {
@@ -18,7 +17,6 @@ function UnirsePartida() {
             }
             try {
               const data = await httpRequest({ method: 'GET',headers:headers, service: 'partidas/listar' });
-              console.log(data)
               setPartidas(data);
             } catch (error) {
               console.log(error);
@@ -26,15 +24,10 @@ function UnirsePartida() {
           }
             fetchpPartidas()
      }, [])
-
-     setInterval(() => {
-        setMostrar(true)
-     }, 1100);
   return (
  
     <div>
         <video className='videobg' src={videobg} autoPlay loop muted />
-        {(mostrarTabla) &&
         <div className='contenedor-tabla'>
             <h3 className='titulo-tabla'>Lista de Partidas</h3>
                 <div className='tabla-unirsePartida'>
@@ -48,8 +41,7 @@ function UnirsePartida() {
                                 <th></th>
                             </tr>
                         </thead>
-                        <tbody>
-                            
+                        <tbody> 
                             {(partidas.length > 0)?(partidas.map((elem,index=uuid())=>
                                 <TablaFila 
                                     key={index} elem={elem}
@@ -59,10 +51,10 @@ function UnirsePartida() {
                         </tbody>
                     </table> 
                 </div>
-            <button className='boton-crear'>Crear Partida</button>
+            <Link to={"/crear"} className='boton-crear'>Crear Partida</Link>
         </div>             
-        }
     </div>
   )
 }
 export default UnirsePartida
+
