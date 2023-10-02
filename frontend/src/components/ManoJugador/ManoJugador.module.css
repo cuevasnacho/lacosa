@@ -1,0 +1,10 @@
+.ManoJugador {
+    display: flex;
+    justify-content: center; /* Center the cards horizontally */
+    align-items: flex-end; /* Align the cards to the bottom of the container */
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 10px; /* Add padding if needed */
+}

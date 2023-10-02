@@ -1,5 +1,5 @@
-import { useState } from 'react'
 
+import { useState } from 'react'
 import Carta from '../../components/Carta/Carta.jsx'
 import './App.css'
 import lacosa from '/home/ignacio/lacosa/frontend/src/media/designs/cartas/alejate/lacosa.png'
@@ -9,6 +9,7 @@ import cuerdas_podridas from '/home/ignacio/lacosa/frontend/src/media/designs/ca
 function App() {
 
   return (
+
     <>
 
       <Carta carta={cuerdas_podridas} />
