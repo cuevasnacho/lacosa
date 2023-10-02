@@ -12,7 +12,6 @@ from api.home import router as home_router
 from api.discard_card import router as discard_router
 from api.show_matches import router as show_matches_router
 from api.models.user import router as user_router
-from api.start_match import router as start_match_router
 from api.models.lobby import router as lobby_router
 
 from fastapi.middleware.cors import CORSMiddleware
@@ -39,6 +38,5 @@ app.include_router(home_router)
 app.include_router(discard_router)
 app.include_router(show_matches_router)
 app.include_router(user_router)
-app.include_router(start_match_router)
 app.include_router(lobby_router)
 
