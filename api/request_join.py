@@ -41,7 +41,7 @@ async def unirse_lobby(lobby_id : int, player_id : int):
         status_code = 404 # not found
         return JSONResponse(content = message, status_code = status_code)
 
-    if lobby.lobby_pcount + 1 == lobby.lobby_max:
+    if lobby.lobby_pcount + 1 > lobby.lobby_max:
         message = "El lobby esta lleno"
         status_code = 406
         return JSONResponse(content=message, status_code=status_code)
