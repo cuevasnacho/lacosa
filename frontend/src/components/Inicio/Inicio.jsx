@@ -10,7 +10,6 @@ const Inicio = () => {
   return (
     <>
       <div className={styles.page}>
-        <video className='videobg' src={videobg} autoPlay loop muted />
         <div className={styles.sqcenter}>
           <button onClick={() => setOpen(true)}>Reglas</button>
           {open ? <Popup title="Reglas" text="Just the rules" closePopup={() => setOpen(false)}/> : null}
