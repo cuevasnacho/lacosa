@@ -51,6 +51,22 @@ const Partida = function () {
     }
   };
 
+  const jugarCarta = async () => {
+    try {
+      const response = await httpRequest({
+        method: 'POST',
+        service: 'carta/descartar/' + USERID, // CARDID
+      });
+      
+      mycards = JSON.parse(response.cards);
+      window.localStorage.setItem('cards', JSON.stringify(mycards));
+
+      window.location.reload();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.manojugador}>
