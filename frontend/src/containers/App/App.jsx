@@ -1,13 +1,17 @@
 import { useState } from 'react'
+
+import Carta from '../../components/Carta/Carta.jsx'
 import './App.css'
-import FormCrearPartida from '../../components/Formularios/CrearPartida/FormCrearPartida.jsx'
+import lacosa from '/home/ignacio/lacosa/frontend/src/media/designs/cartas/alejate/lacosa.png'
+import cuerdas_podridas from '/home/ignacio/lacosa/frontend/src/media/designs/cartas/panico/cuerdas_podridas.png'
+
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <>
-      <FormCrearPartida />
+
+      <Carta carta={cuerdas_podridas} />
     </>
   )
 }
