@@ -1,0 +1,20 @@
+/* Jugador.module.css */
+.jugador {
+    background: lightblue;
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.jugador h3 {
+    margin: 0;
+    color:black;
+}
+
+.turno {
+    background: red; /* Cambia el color de fondo a rojo si es el turno */
+}
