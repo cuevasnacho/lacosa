@@ -92,6 +92,28 @@ async def Crear_Lobby(new_lobby: CreateLobby) -> CreateLobbyOut:
         db_player[host.player_id].player_current_match_id = new_match
     return CreateLobbyOut(lobby_id=new_lobby.lobby_id)
 
+class lobby_player_names(BaseModel):
+    lobby_pcount : int
+    lobby_names : List[str]
+
+
+@router.get("/lobbys/{lobby_id}/refrescar")
+async def players_in_lobby(lobby_id :int) ->lobby_player_names:
+    player_names = []
+    with db_session:
+        try:
+            lobby_Pcount = db_lobby[lobby_id].lobby_pcount
+        except ObjectNotFound:
+            message = "El lobby no existe"
+            status_code = 404 # not found
+            return JSONResponse(content=message, status_code=status_code)
+        fetch_lobby = get_lobby(lobby_id)
+        lobby_names = list(db_player.select(lambda p: p.player_lobby == fetch_lobby))
+        for data in lobby_names:
+            fetch_name = get_jugador(data.player_id)
+            player_names.append(fetch_name.player_name)
+        return lobby_player_names(lobby_pcount = lobby_Pcount, lobby_names = player_names)
+
 
 
 @router.delete("/lobbys/{lobby_id}")
