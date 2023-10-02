@@ -9,8 +9,9 @@ from pony.orm import Set, select
 from definitions import match_status
 
 from db.database import Lobby as db_lobby
-from db.database import Match as db_Match
+from db.database import Match as db_match
 from db.database import Player as db_player
+from definitions import match_status as match_stat
 
 router = APIRouter()
 
@@ -51,6 +52,16 @@ def get_lobby(lobby_id):
         return JSONResponse(content=message, status_code=status_code)
 
 
+@db_session()
+def get_match(match_id):
+    try:
+        match= db_match[match_id]
+        return match
+    except ObjectNotFound:
+        message = "La partida no existe"
+        status_code = 404 # not found
+        return JSONResponse(content=message, status_code=status_code)
+
 
 
 @router.post("/lobbys/", status_code=status.HTTP_201_CREATED)
@@ -77,7 +88,10 @@ async def Crear_Lobby(new_lobby: CreateLobby) -> CreateLobbyOut:
         new_lobby = db_lobby(lobby_name = new_lobby.lobby_name, lobby_max = new_lobby.lobby_max,lobby_min = new_lobby.lobby_min,
         lobby_password= new_lobby.lobby_password, lobby_pcount = 1)
         new_lobby.lobby_player.add(host)
+        new_match = db_match(match_status = 1 ,match_direction=True, match_currentP=1, match_cardsCount=0, match_lobby=new_lobby)
+        db_player[host.player_id].player_current_match_id = new_match
     return CreateLobbyOut(lobby_id=new_lobby.lobby_id)
+
 
 
 @router.delete("/lobbys/{lobby_id}")
