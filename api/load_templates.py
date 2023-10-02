@@ -5,12 +5,6 @@ from pony.orm import db_session, commit , ObjectNotFound
 from pony.orm import Set, exists
 from db.database import CardTemplate as db_cardT
 
-from enum import Enum
-
-class desck_creation(Enum):
-    SUCSSESFUL = 1
-    ERROR = 0
-
 
 lanzallamas = lanzallamas_T()
 la_cosa = laCosa_T()

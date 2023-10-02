@@ -22,7 +22,7 @@ const InicioForm = () => {
         payload: data
       });
       
-      window.sessionStorage.setItem('logged', JSON.stringify({
+      window.localStorage.setItem('logged', JSON.stringify({
         user_id: response.id,
         username: response.name,
       }));
