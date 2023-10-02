@@ -6,14 +6,15 @@ import { useState } from 'react'
 
 
 export default function TablaFila(elem) {
-  const {idPartida,nombrePartida,host,cantjug,privada}=elem.elem
+  const {lobby_id,lobby_name,host_name,privada,number_of_players,max_players}=elem.elem
   const [partidas,setPartidas]=useState([])
-    
+  let cantjug=" "+ number_of_players + "/" + max_players ;
+  console.log(cantjug)
     const unirPartida = async () => {
         let {user_id} =JSON.parse(window.sessionStorage.getItem("logged"))
         const datosPartida = {
             user_id,
-            idPartida,
+            lobby_id,
         }
         try {
           const data = await httpRequest({
@@ -26,15 +27,12 @@ export default function TablaFila(elem) {
         } catch (error) {
           console.log(error);
         }
-      };
-    
-    
-        
+      };     
   return (
     <tr>
         {(privada)?<><td><img src={publica}></img></td></>:<><td><img src={lock}></img></td></>}
-        <td>{nombrePartida}</td>
-        <td>{host}</td>
+        <td>{lobby_name}</td>
+        <td>{host_name}</td>
         <td>{cantjug}</td>
         <td><button className="boton-unirse" onClick={()=>unirPartida()}>Unirse</button></td>
     </tr>

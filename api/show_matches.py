@@ -40,7 +40,7 @@ def get_not_initialized_matches():
                                     host_name = host_name.player_name, max_players = data[4], min_players = data[5]))        
     
     #convertir y devolver la lista de objetos data_item en formato json
-    return json.loads(json.dumps([obj.model_dump() for obj in response]))
+    return json.loads(json.dumps([obj.dict() for obj in response]))
 
 @router.get("/partidas/listar")
 async def show_matches():

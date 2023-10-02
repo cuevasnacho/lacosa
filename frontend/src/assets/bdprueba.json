@@ -1,56 +1,34 @@
 {
   "Partidas": [
     {
-      "idPartida": 1,
-      "nombrePartida": "partidassssssssssssssssssssssssssssssssss1",
-      "host": "pepito1",
-      "cantjug": "4/8",
-      "privada": true
+      "lobby_id": 1,
+      "match_id":1,
+      "lobby_name": "messi",
+      "number_of_players": 6,
+      "host_name": "juan",
+      "max_players":8,
+      "min_players":2,
+      "privada":true
     },
     {
-      "id": 2,
-      "nombrePartida": "partidassssssssssssssssssssssssssssssssss1",
-      "host": "pepito1",
-      "cantjug": "4/8",
-      "privada": true
+      "lobby_id": 2,
+      "match_id":1,
+      "lobby_name": "messi2",
+      "number_of_players": 4,
+      "host_name": "juan2",
+      "max_players":6,
+      "min_players":2,
+      "privada":true
     },
     {
-      "id": 3,
-      "nombrePartida": "partidassssssssssssssssssssssssssssssssss1",
-      "host": "pepito1",
-      "cantjug": "4/8",
-      "privada": true
-    },
-    {
-      "id": 4,
-      "nombrePartida": "partidassssssssssssssssssssssssssssssssss1",
-      "host": "pepito1",
-      "cantjug": "4/8",
-      "privada": true
-    },
-    {
-      "id": 5,
-      "nombrePartida": "partidassssssssssssssssssssssssssssssssss1",
-      "host": "pepito1",
-      "cantjug": "4/8",
-      "privada": false
-    },
-    {
-      "id": 6,
-      "nombrePartida": "partidassssssssssssssssssssssssssssssssss1",
-      "host": "pepito1",
-      "cantjug": "4/8",
-      "privada": false
-    },
-    {
-      "idJugador": {},
-      "idPartida": 6,
-      "id": 7
-    },
-    {
-      "idJugador": {},
-      "idPartida": 3,
-      "id": 8
+      "lobby_id": 3,
+      "match_id":1,
+      "lobby_name": "messi3",
+      "number_of_players": 5,
+      "host_name": "juan3",
+      "max_players":7,
+      "min_players":2,
+      "privada":false
     }
   ]
 }
