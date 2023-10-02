@@ -1,0 +1,15 @@
+.container {
+    height: 100%;
+    width: 100%;
+}
+
+button {
+    height: 180px;
+    width: 130px;
+}
+
+.mazos {
+    display: flex;
+    width: 300px;
+    justify-content: space-around;
+}
