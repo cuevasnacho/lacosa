@@ -5,9 +5,10 @@ import { httpRequest } from '../../services/HttpService.js';
 
 function Lobby() {
     const navigate = useNavigate();
-    const {idLobby} = useParams();
-    //const esHost = window.localStorage.getItem('Host');
-    const esHost = true;
+    const {idLobby} = useParams(); /* idLobby === idPartida */ 
+
+    const esHost = window.localStorage.getItem('Host');
+    //const esHost = true;
 
     function Menu() {
         /* No hay un endpoint del back para volver al home*/

@@ -8,7 +8,7 @@ function App() {
   return (
     <Router>
       <Routes>
-          <Route index element={<Lobby />}/>
+          <Route index element={<Inicio />}/>
           <Route path='/home' element={<Inicio />}/>
           <Route path='/crear' element={<FormCrearPartida />}/>
           <Route path='/lobby/:idLobby' element={<Lobby />}/>
