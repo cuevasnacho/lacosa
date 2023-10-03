@@ -10,7 +10,8 @@ import { Link } from 'react-router-dom'
 function UnirsePartida() {
     const [partidas, setPartidas] = useState([])  
     
-    let {username} =JSON.parse(window.localStorage.getItem("logged"))
+    /* No usar JSON.parse */
+    let {username} = window.localStorage.getItem('username');
 
      useEffect(() => {
         const fetchpPartidas = async () => {
