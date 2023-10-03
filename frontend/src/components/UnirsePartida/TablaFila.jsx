@@ -7,13 +7,13 @@ import { useState } from 'react'
 
 export default function TablaFila(elem) {
   const {lobby_id,lobby_name,host_name,is_private,number_of_players,max_players}=elem.elem
-  const [partidas,setPartidas]=useState([])
+  const [partidas,setPartidas] = useState([])
   
   let cantjug=" "+ number_of_players + "/" + max_players ;
 
   const unirPartida = async () => {
-    let {user_id} =JSON.parse(window.localStorage.getItem("logged"))
-      try {
+    let {user_id} = parseInt(window.localStorage.getItem("user_id"));
+    try {
         const data = await httpRequest({
           method: 'PUT',
           service: `lobbys/${lobby_id}/${user_id}`
