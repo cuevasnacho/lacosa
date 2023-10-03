@@ -24,7 +24,7 @@ function Lobby() {
           
           window.localStorage.setItem('cantidadJugadores', response.lobby_pcount);
 
-          window.localStorage.setItem(JSON.stringify('jugadores', response.lobby_names));
+          window.localStorage.setItem('jugadores', JSON.stringify(response.lobby_names));
           
           window.location.reload();
     

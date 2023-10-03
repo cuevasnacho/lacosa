@@ -4,6 +4,9 @@ import Inicio from '../../components/Inicio/Inicio.jsx';
 import Lobby from '../../components/Lobby/Lobby.jsx';
 import FormCrearPartida from '../../components/Formularios/CrearPartida/FormCrearPartida.jsx';
 import UnirsePartida from '../../components/UnirsePartida/UnirsePartida'
+import JugadoresLobby from '../../components/Lobby/JugadoresLobby.jsx';
+
+const jugadores = ["nacho","tute","cabeza"];
 
 function App() {
   return (
