@@ -44,10 +44,18 @@ async def Crear_Lobby(new_lobby: CreateLobby):
                                 match_currentP = 0, match_cardsCount = 0)
             password = new_lobby.lobby_password if new_lobby.lobby_password else None 
             commit()
-            new_lobby = db_lobby(lobby_name = new_lobby.lobby_name, lobby_max = new_lobby.lobby_max, lobby_min = new_lobby.lobby_min,
+            lobby_new = db_lobby(lobby_name = new_lobby.lobby_name, lobby_max = new_lobby.lobby_max, lobby_min = new_lobby.lobby_min,
                                 lobby_password = password, lobby_pcount = 1, lobby_match = new_match.match_id)
             commit()
-        content = {"lobby_id" : new_lobby.lobby_id}
+            player = db_player.get(lambda player : player.player_id == new_lobby.player_id)
+            player.player_ingame = True
+            player.player_dead = False
+            player.player_isHost = True
+            player.player_lobby = lobby_new
+            player.player_current_match_id = new_match
+            commit()
+
+        content = {"lobby_id" : lobby_new.lobby_id}
         return JSONResponse(content= json.loads(json.dumps(content)), status_code=200)
 
     except:

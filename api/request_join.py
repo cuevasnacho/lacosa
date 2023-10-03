@@ -3,22 +3,7 @@ from api.models.user import get_jugador
 from fastapi import  APIRouter
 from fastapi.responses import JSONResponse
 from pony.orm import db_session, ObjectNotFound, commit
-from db.database import Lobby as db_lobby
-from db.database import Player as db_player
-
-# debo hacer un endpoint para ingresar a una partida
-#verificar que la partida no este llena
-#verificar que el estado del usuario permita unirse a la partida
-#verificar que el usuario no este ya en la partida
-#si todo esta ok, se agrega el usuario a la partida
-#deberia usar 2 db session, una para player y una para lobby
-#hacer un lobby_pcount + 1
-#hacer un player_ingame = True
-#obtener el id del match al que se unio
-#hacer un match_currentP + 1
-#primero debo verificar si la partida existe
-#PONER QUE EL JUGADOR NO SEA HOST, PONER IS_HOST DE TRUE A FALSE
-#para modificar una instancia de player
+from db.database import Lobby, Player, Match
 
 router = APIRouter()
 
@@ -30,7 +15,29 @@ def player_in_lobby(player_id : int):
 
 @db_session()
 def get_lobby(lobby_id):
-    return db_lobby[lobby_id]
+    return Lobby[lobby_id]
+
+@db_session
+def player_update(player_id,lobby_id,match_id):
+    player_get = Player[player_id]
+    player_get.player_ingame = True
+    player_get.player_isHost = False
+    player_get.player_lobby = lobby_id
+    player_get.player_current_match_id = match_id
+    commit()
+
+@db_session
+def lobby_upadte(lobby_id,match_id):
+    lobby_get = Lobby[lobby_id]
+    lobby_get.lobby_pcount = lobby_get.lobby_pcount + 1
+    lobby_get.lobby_match = match_id
+    commit()
+
+@db_session
+def get_match_id(lobby_id):
+    lobby = get_lobby(lobby_id)
+    match = Match.select(lambda match: match.match_id == lobby.lobby_match.match_id).first()
+    return match
 
 @router.put("/lobbys/{lobby_id}/{player_id}")
 async def unirse_lobby(lobby_id : int, player_id : int):
@@ -46,14 +53,12 @@ async def unirse_lobby(lobby_id : int, player_id : int):
         status_code = 406
         return JSONResponse(content=message, status_code=status_code)
 
-    with db_session:
-        player_get = db_player[player_id]
-        lobby_get = db_lobby[lobby_id]
+    #cambiar esto del jugador
+    match_id = get_match_id(lobby_id)
+    player_update(player_id,lobby_id,match_id)
 
-        player_get.player_ingame = True
-        player_get.player_isHost = False
-        lobby_get.lobby_pcount = lobby_get.lobby_pcount + 1
-        player_get.player_lobby = lobby_id
-        commit()
+    #cambiar estado lobby
+    lobby_upadte(lobby_id, match_id)
+
     return JSONResponse(content=f"jugador {player_id} estas en la partida {lobby_id}", status_code=200)
 #en db_session, vez de hacer un db_player, tomo el id del jugador y modifico los campos que quiero
