@@ -1,10 +1,17 @@
 .botones{
     display: flex;
-    width: 300px;
-    justify-content: space-around ;
+    width: 400px;
+    justify-content: space-around;
 }
 
 .container {
     display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.jugadores {
+    display: flex;
+    justify-content: center;
     flex-direction: column;
 }

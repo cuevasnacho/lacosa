@@ -8,18 +8,23 @@ import "./EstiloBoton.css"
 import { Link } from 'react-router-dom'
 
 function UnirsePartida() {
-    const [partidas, setPartidas] = useState([])  
-    let {username} =JSON.parse(window.sessionStorage.getItem("logged"))
+    const [partidas, setPartidas] = useState([])
+    
+    /* No usar JSON.parse */
+    let {username} = window.localStorage.getItem('username');
+
      useEffect(() => {
         const fetchpPartidas = async () => {
             let headers = {
                 Accept: '*/*', 
             }
-            try {
+            try 
+            {
               const data = await httpRequest({ method: 'GET',headers:headers, service: 'partidas/listar' });
               console.log(data)
               setPartidas(data);
-            } catch (error) {
+            } 
+            catch (error) {
               console.log(error);
             }
           }
@@ -31,7 +36,6 @@ function UnirsePartida() {
     <div>
         <video className='videobg' src={videobg} autoPlay loop muted />
         <div className='contenedor-tabla'>
-            <h4>{username}</h4>
             <h3 className='titulo-tabla'>Lista de Partidas</h3>
                 <div className='tabla-unirsePartida'>
                     <table>

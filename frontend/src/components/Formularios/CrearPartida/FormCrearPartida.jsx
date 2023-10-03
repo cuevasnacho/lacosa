@@ -1,64 +1,65 @@
 import React from 'react';
 import {useForm} from 'react-hook-form';
 import CustomButton from '../../Boton/CustomButton';
-import './FormCrearPartida.css';
+import styles from './FormCrearPartida.css';
 import {httpRequest} from '../../../services/HttpService';
-import { useNavigate } from 'react-router-dom';
 
 function FormCrearPartida() {
 
   const USERNAME = window.localStorage.getItem('username');
+  const HOST_ID = parseInt(window.localStorage.getItem('user_id'));
 
   const {
     register,
     handleSubmit,
     formState: {errors},
-  } = useForm({
-    defaultValues: {
-      nombrePartida: 'Partida de ' + USERNAME,
-      minPlayers: 4,
-      maxPlayers: 12,
-      contraseña: '',
-    },
-  });
-
-  const navigate = useNavigate();
-
-  const HOST_ID = window.localStorage.getItem('user_id');
+  } = useForm();
   
-  const FORM_SUBMIT = handleSubmit((data) => {
+  const onSubmit = async (data) => {
+    let algonuevo = {
+      lobby_name: data.lobby_name,
+      lobby_min: parseInt(data.lobby_min),
+      lobby_max: parseInt(data.lobby_max),
+      player_id: HOST_ID
+    }
+
+    console.log(algonuevo);
+
     try 
-    {
-      data.put('hostId', HOST_ID);
-      const response = httpRequest({
+    {      
+      const response = await httpRequest({
         method: 'POST',
-        service: 'CrearPartida',
-        body: data
+        service: 'lobbys/',
+        payload: algonuevo
       });
 
-      window.localStorage.setItem('Partida', data);
+      window.localStorage.setItem('Partida', JSON.stringify(data));
       window.localStorage.setItem('cantidadJugadores', 1);
       window.localStorage.setItem('Host', true);
-      window.localStorage.setItem('CrearPartida', JSON.stringify(response));
-      navigate('/lobby/' + response.idPartida);
+      window.localStorage.setItem('lobby_id', response.lobby_id);
+      window.localStorage.setItem('jugadores', JSON.stringify([USERNAME]));
+      
+      window.location = `/lobby/${response.lobby_id}`;
       
     } 
     catch (error) 
     {
       console.log(error);
     }
-  });
+    
+  };
 
   return (
     <>
+      <div className={styles.container}>
       <h2>Formulario de Creación</h2>
-        <form onSubmit={FORM_SUBMIT}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div>
             <label>Nombre de la Partida</label>
             <input
               type="text"
-              name="nombrePartida"
-              {...register('nombrePartida', {
+              id = "lobby_name"
+              {...register('lobby_name', {
                 required: {
                   value: true,
                   message: 'Nombre de la partida requerido',
@@ -74,15 +75,15 @@ function FormCrearPartida() {
               })}
               placeholder="Partida de Juancito"
             />
-            {errors.nombrePartida && <p>{errors.nombrePartida.message}</p>}
+            {errors.lobby_name && <p>{errors.lobby_name.message}</p>}
           </div>
 
           <div>
             <label>Mínimo de Jugadores</label>
             <input
               type="number"
-              name="minPlayers"
-              {...register('minPlayers', {
+              id = "lobby_min"
+              {...register('lobby_min', {
                 required: {
                   value: '',
                   message: 'Mínimo de jugadores requerido',
@@ -104,10 +105,10 @@ function FormCrearPartida() {
             <label>Máximo de Jugadores</label>
             <input
               type="number"
-              name="maxPlayers"
-              {...register('maxPlayers', {
+              id = "lobby_max"
+              {...register('lobby_max', {
                 required: {
-                  value: '',
+                  value: null,
                   message: 'Máximo de jugadores requerido',
                 },
                 max: {
@@ -127,8 +128,8 @@ function FormCrearPartida() {
             <label>Contraseña</label>
             <input
               type="password"
-              name="contraseña"
-              {...register('contraseña', {
+              id = "lobby_password"
+              {...register('lobby_password', {
                 maxLength: {
                   value: 20,
                   message: 'Contraseña demasiado larga',
@@ -141,8 +142,9 @@ function FormCrearPartida() {
             />
           </div>
 
-          <CustomButton label="Crear Partida" onClick={FORM_SUBMIT} />
+          <input type="submit" value="Ingresar" />
         </form>
+      </div>
     </>
   );
 }

@@ -1,11 +1,11 @@
 import CustomButton from '../Boton/CustomButton.jsx'
-import { useParams, useNavigate} from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import styles from './Lobby.module.css';
 import { httpRequest } from '../../services/HttpService.js';
+import JugadoresLobby from '../Lobby/JugadoresLobby.jsx';
 
 function Lobby() {
-    const navigate = useNavigate();
-    const {idLobby} = useParams(); /* idLobby === idPartida */ 
+    const {idLobby} = useParams();
 
     const esHost = window.localStorage.getItem('Host');
     //const esHost = true;
@@ -13,8 +13,25 @@ function Lobby() {
     function Menu() {
         /* No hay un endpoint del back para volver al home*/
         alert("Volver al menu principal");
-        navigate('/home');
     }
+
+    const refrescar = async () => {
+        try {
+          const response = await httpRequest({
+            method: 'GET',
+            service: `lobbys/${lobby_id}/refrescar`,
+          });
+          
+          window.localStorage.setItem('cantidadJugadores', response.lobby_pcount);
+
+          window.localStorage.setItem('jugadores', JSON.stringify(response.lobby_names));
+          
+          window.location.reload();
+    
+        } catch (error) {
+          console.log(error);
+        }
+    };
 
     function IniciarPartida(idLobby) {
         const cantidadJugadores = parseInt(window.localStorage.getItem('cantidadJugadores'));  
@@ -32,7 +49,7 @@ function Lobby() {
                 });
                 const idPartida = JSON.stringify(response.match_id);
                 
-                navigate('/partida/' + idLobby);
+                window.location = '/partida/' + idPartida;
             } 
             catch (error) 
             {
@@ -45,30 +62,20 @@ function Lobby() {
         }
     }
 
-    async function refrescar() {
-        const refresco = await httpRequest({
-            method: 'POST',
-            service: 'lobby/' + idLobby + '/refrescar',
-            body: idLobby
-        });
-        window.localStorage.setItem('jugadores', JSON.stringify(refresco.players));
-        window.localStorage.setItem('cantidadJugadores', JSON.stringify(refresco.lobby_pcount));
-    }
-    
     return(
         <>
             <div className={styles.container}>
                 <div className={styles.jugadores}>
                     <h1>Jugadores</h1>   
                     <h3> {window.localStorage.getItem('cantidadJugadores')} </h3> 
+                    <JugadoresLobby jugadores={JSON.parse(window.localStorage.getItem('jugadores'))}/>
                 </div>
                 
                 <div className={styles.botones}>
                     <CustomButton label="Volver al menu principal" onClick={Menu} />
                     {esHost && <CustomButton label="Iniciar Partida" onClick={() => IniciarPartida(idLobby)} />}
-                    <CustomButton label="Refrescar" onClick={refrescar} />
+                    <CustomButton label="Refrescar" onClick={() => refrescar()} />
                 </div>
-
             </div>
         </>
     );
