@@ -14,8 +14,6 @@ import json
 
 router = APIRouter()
 
-
-
 class Lobby(BaseModel):
     lobby_id : int
     lobby_name: str
@@ -79,23 +77,21 @@ async def Crear_Lobby(new_lobby: CreateLobby):
         message = "Minimo y maximo de players no permitido"
         status_code = 406 # no acceptable
         return JSONResponse(content=message, status_code=status_code)
-#    try:
-    with db_session:
-        new_match = db_match(match_status = match_status.NOT_INITIALIZED.value, match_direction = True,
-                            match_currentP = 0, match_cardsCount = 0)
-        password = new_lobby.lobby_password if new_lobby.lobby_password else None 
-        #db_session.add(new_match)
-        commit()
-        new_lobby = db_lobby(lobby_name = new_lobby.lobby_name, lobby_max = new_lobby.lobby_max, lobby_min = new_lobby.lobby_min,
-                            lobby_password = password, lobby_pcount = 1, lobby_match = new_match.match_id)
-        #db_session.add(new_lobby)
-        commit()
-    content = {"lobby_id" : new_lobby.lobby_id}
-    return JSONResponse(content= json.loads(json.dumps(content)), status_code=200)
+    try:
+        with db_session:
+            new_match = db_match(match_status = match_status.NOT_INITIALIZED.value, match_direction = True,
+                                match_currentP = 0, match_cardsCount = 0)
+            password = new_lobby.lobby_password if new_lobby.lobby_password else None 
+            commit()
+            new_lobby = db_lobby(lobby_name = new_lobby.lobby_name, lobby_max = new_lobby.lobby_max, lobby_min = new_lobby.lobby_min,
+                                lobby_password = password, lobby_pcount = 1, lobby_match = new_match.match_id)
+            commit()
+        content = {"lobby_id" : new_lobby.lobby_id}
+        return JSONResponse(content= json.loads(json.dumps(content)), status_code=200)
 
-#    except:
-    content = "Error creacion del lobby"
-    return JSONResponse(content= content, status_code=404)
+    except:
+        content = "Error creacion del lobby"
+        return JSONResponse(content= content, status_code=404)
 
 
 class lobby_player_names(BaseModel):
