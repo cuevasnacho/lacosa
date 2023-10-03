@@ -1,17 +1,16 @@
 from pydantic import *
-from enum import Enum
 from typing import Optional, List, Any
-from api.models.user import PlayerIn , get_jugador
-from fastapi import FastAPI, HTTPException, APIRouter, Query, status
+from api.models.user import get_jugador
+from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 from pony.orm import db_session, commit , ObjectNotFound
-from pony.orm import Set, select
 from definitions import match_status
 
 from db.database import Lobby as db_lobby
 from db.database import Match as db_match
 from db.database import Player as db_player
-from definitions import match_status as match_stat
+from definitions import match_status
+import json 
 
 router = APIRouter()
 
@@ -20,14 +19,6 @@ router = APIRouter()
 class Lobby(BaseModel):
     lobby_id : int
     lobby_name: str
-    lobby_max : int
-    lobby_min : int
-    lobby_password : Optional[str] = None
-
-
-class CreateLobby(BaseModel):
-    player_id : int
-    lobby_name : str
     lobby_max : int
     lobby_min : int
     lobby_password : Optional[str] = None
@@ -63,9 +54,15 @@ def get_match(match_id):
         return JSONResponse(content=message, status_code=status_code)
 
 
+class CreateLobby(BaseModel):
+    player_id : int
+    lobby_name : str
+    lobby_max : int
+    lobby_min : int
+    lobby_password : Optional[str] = None
 
-@router.post("/lobbys/", status_code=status.HTTP_201_CREATED)
-async def Crear_Lobby(new_lobby: CreateLobby) -> CreateLobbyOut:
+@router.post("/lobbys/")
+async def Crear_Lobby(new_lobby: CreateLobby):
     if len(new_lobby.lobby_name)>20:
         message = "Nombe demasiado largo"
         status_code = 406 # no acceptable
@@ -74,7 +71,7 @@ async def Crear_Lobby(new_lobby: CreateLobby) -> CreateLobbyOut:
         message = "Maximo de players no permitido"
         status_code = 406 # no acceptable
         return JSONResponse(content=message, status_code=status_code)
-    if new_lobby.lobby_min<4: 
+    if new_lobby.lobby_min<4: #DECISION DE DISEÑO
         message = "Minimo de players no permitido"
         status_code = 406 # no acceptable
         return JSONResponse(content=message, status_code=status_code)
@@ -82,15 +79,24 @@ async def Crear_Lobby(new_lobby: CreateLobby) -> CreateLobbyOut:
         message = "Minimo y maximo de players no permitido"
         status_code = 406 # no acceptable
         return JSONResponse(content=message, status_code=status_code)
-
+#    try:
     with db_session:
-        host = get_jugador(new_lobby.player_id)
-        new_lobby = db_lobby(lobby_name = new_lobby.lobby_name, lobby_max = new_lobby.lobby_max,lobby_min = new_lobby.lobby_min,
-        lobby_password= new_lobby.lobby_password, lobby_pcount = 1)
-        new_lobby.lobby_player.add(host)
-        new_match = db_match(match_status = 1 ,match_direction=True, match_currentP=1, match_cardsCount=0, match_lobby=new_lobby)
-        db_player[host.player_id].player_current_match_id = new_match
-    return CreateLobbyOut(lobby_id=new_lobby.lobby_id)
+        new_match = db_match(match_status = match_status.NOT_INITIALIZED.value, match_direction = True,
+                            match_currentP = 0, match_cardsCount = 0)
+        password = new_lobby.lobby_password if new_lobby.lobby_password else None 
+        #db_session.add(new_match)
+        commit()
+        new_lobby = db_lobby(lobby_name = new_lobby.lobby_name, lobby_max = new_lobby.lobby_max, lobby_min = new_lobby.lobby_min,
+                            lobby_password = password, lobby_pcount = 1, lobby_match = new_match.match_id)
+        #db_session.add(new_lobby)
+        commit()
+    content = {"lobby_id" : new_lobby.lobby_id}
+    return JSONResponse(content= json.loads(json.dumps(content)), status_code=200)
+
+#    except:
+    content = "Error creacion del lobby"
+    return JSONResponse(content= content, status_code=404)
+
 
 class lobby_player_names(BaseModel):
     lobby_pcount : int
