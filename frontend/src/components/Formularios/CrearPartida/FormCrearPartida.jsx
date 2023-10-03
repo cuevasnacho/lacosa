@@ -33,11 +33,11 @@ function FormCrearPartida() {
         payload: algonuevo
       });
 
-
       window.localStorage.setItem('Partida', JSON.stringify(data));
       window.localStorage.setItem('cantidadJugadores', 1);
       window.localStorage.setItem('Host', true);
       window.localStorage.setItem('lobby_id', response.lobby_id);
+      window.localStorage.setItem('jugadores', JSON.stringify([USERNAME]));
       
       window.location = `/lobby/${response.lobby_id}`;
       
