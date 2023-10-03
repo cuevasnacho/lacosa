@@ -11,10 +11,10 @@ Nombre y Apellido | Usuario Github | Mail Jira | Rol
 - Ignacio Ramirez, irmrz, ignaciotramirez@mi.unc.edu.ar
 - Ignacio Cuevas, cuevasnacho, icuevas@mi.unc.edu.ar
 - Tomas Marmay, tmarmay, tomas.marmay@mi.unc.edu.ar
-- Tomas Hubmann, HubmannTomasAlejandro ,tomas.hubmann@mi.unc.edu.ar
+- Tomas Hubmann, HubmannTomasAlejandro, tomas.hubmann@mi.unc.edu.ar
 
 #### Primer Sprint
-Product Owner: Marcos Strasorier  
+Product Owner: Tomas Marmay  
 SCRUM Master: Ignacio Cuevas
 #### Levantar servidor 
 `uvicorn main:app --reload`
