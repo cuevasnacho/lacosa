@@ -18,7 +18,8 @@ Product Owner: Tomas Marmay
 SCRUM Master: Ignacio Cuevas
 #### Levantar servidor 
 `uvicorn main:app --reload`
-#### Documentacion 
+#### Documentacion
+[Endpoints](https://docs.google.com/spreadsheets/d/1iZtmSpPk-RzkIFN44DFs4zCZbBf5Tnz-C51Uslvtea4/edit#gid=0)
 [Descricion de tareas](https://docs.google.com/document/d/1yaT5ehNTlyQsrAsdwD0wDjCCZYnnLdfWiQRghbaUVJ8/edit?usp=sharing)  
 [Front-End](https://docs.google.com/document/d/1eWJquCqwPrM_vrPEykkix5NLm3n92V1xVEOsFFc3wcE/edit?usp=sharing)  
 [Preguntas Pertinentes](https://docs.google.com/document/d/1fX02lkKujGKvnqRw1EOlAYpgrj5wy6cFJQEnu2aq5cY/edit)
