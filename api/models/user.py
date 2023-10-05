@@ -3,7 +3,7 @@ from enum import Enum
 from typing import Optional, List, Any
 from fastapi import FastAPI, HTTPException, APIRouter, Query, status
 from fastapi.responses import JSONResponse
-from pony.orm import db_session, commit 
+from pony.orm import db_session, commit ,select, ObjectNotFound
 from definitions import player_roles
 
 from db.database import Player as db_player
@@ -30,16 +30,17 @@ def get_jugador(player_id):
         status_code = 404 # not found
         return JSONResponse(content=message, status_code=status_code)
 
-@router.post("/players/", status_code=status.HTTP_201_CREATED)
+@router.post("/players")
 async def Crear_Jugador(new_player: PlayerIn) -> PlayerOut:
     if len(new_player.player_name) > 20: 
         message = "Nombe demasiado largo"
         status_code = 406 # no acceptable
         return JSONResponse(content=message, status_code=status_code)
     with db_session:
-        player = db_player(player_name=new_player.player_name, player_ingame = False, player_isHost=True, player_role = None,
-        player_position=None, player_exchangeL=True, player_exchangeR=True, player_dead = False)
-        commit() #OJO QUE PLAYER POR DEFECTO ES HOST
+        player = db_player(player_name= new_player.player_name, player_ingame = False, player_isHost=False, 
+                           player_dead = False, player_position = 0, player_exchangeR = 0, player_exchangeL = 0,
+                            player_role = 0, player_lobby = None, player_current_match_id = None )
+        commit()
         return PlayerOut(player_id=player.player_id, player_name=player.player_name)
 
 
@@ -58,6 +59,28 @@ async def Buscar_Jugador(player_id : int):
     }
 
 
+@router.delete("/players/{player_id}")
+async def delete_player(player_id: int) :
+    with db_session:
+        try:
+            fetch_player = get_jugador(player_id)
+            db_player[player_id].delete()
+        except ObjectNotFound:
+            message = "El jugador no existe"
+            status_code = 404 # not found
+            return JSONResponse(content=message, status_code=status_code)
+    message = "Jugador borrado!"
+    status_code = 200 # no acceptable
+    return JSONResponse(content=message, status_code=status_code)
 
 
-        
+
+# @router.get("/lobbys/list")
+# async def lista_lobbys() -> List[ListedLobbys]:
+#     listed_lobby = []
+#     with db_session:
+#         lobbys = list(db_lobby.select(lambda p: p.lobby_id > 0))
+#         for c in lobbys:
+#             lobby_info = Buscar_Lobby(c.lobby_id)
+#             listed_lobby.append(lobby_info)
+#         return listed_lobby
