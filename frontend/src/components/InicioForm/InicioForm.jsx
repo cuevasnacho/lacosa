@@ -52,7 +52,7 @@ const InicioForm = () => {
             },
             maxLength: { value: 20, message: '20 caracteres máximo' },
           })}
-          id="player_name"
+          data-testid="player_name"
         />
         <div>
           {errors.player_name && <p className={styles.textdanger}>{errors.player_name.message}</p>}
