@@ -1,7 +1,6 @@
 import Partida from './Partida.jsx';
 
-const Home = function () {
-  const user_id = JSON.parse(localStorage.getItem('user_id'));
+const InfoPartida = function () {
   const ws = new WebSocket(`ws://localhost:8000/ws/${user_id}`);
 
   return (
@@ -9,4 +8,4 @@ const Home = function () {
   );
 };
 
-export default Home;
+export default InfoPartida;

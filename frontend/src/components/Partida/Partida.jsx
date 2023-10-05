@@ -1,6 +1,5 @@
 import { useState } from 'react';
 
-import Mesa from '../Mesa/Mesa.jsx';
 import ManoJugador from '../ManoJugador/ManoJugador.jsx';
 
 const Partida = function (socket) {
@@ -8,13 +7,13 @@ const Partida = function (socket) {
   const user_id = JSON.parse(localStorage.getItem('user_id'));
   const username = JSON.parse(localStorage.getItem('username'));
 
-  const [match_state, set_match_state] = useState([]);
+  const [matchState, setMatchState] = useState([]);
 
   ws.onmessage = function (event) {
     const info = JSON.parse(event.data);
     switch (info.action) {
       case 'estado_jugadores':
-        setEstado(info.data);
+        setMatchState(info.data);
         return;
 
       default:
