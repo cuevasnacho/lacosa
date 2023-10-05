@@ -1,7 +1,6 @@
 
-from pony.orm import db_session, commit , ObjectNotFound
-from pony.orm import Set
-from db.database import Player, Card
+from pony.orm import db_session, commit
+from db.database import Player
 from definitions import cards_subtypes
 from fastapi.responses import JSONResponse
 

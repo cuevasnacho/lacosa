@@ -1,17 +1,10 @@
 from pydantic import *
-from api.models.user import get_jugador
 from fastapi import  APIRouter
 from fastapi.responses import JSONResponse
 from pony.orm import db_session, ObjectNotFound, commit
 from db.database import Lobby, Player, Match
 
 router = APIRouter()
-
-def player_in_lobby(player_id : int):
-    player_info = db_player[player_id]
-    return {"player_name": player_info.player_name, "player_isHost": player_info.player_isHost}
-
-#verifico si la partida existe:
 
 @db_session()
 def get_lobby(lobby_id):

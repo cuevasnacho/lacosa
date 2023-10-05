@@ -1,6 +1,6 @@
 from pydantic import *
 from typing import Optional
-from api.models.user import get_jugador
+from api.player.player import get_jugador
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 from pony.orm import db_session, commit ,ObjectNotFound

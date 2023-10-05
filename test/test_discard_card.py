@@ -1,4 +1,4 @@
-from api.discard_card import discard_card  # Replace with the actual function to be tested
+from api.player.discard_card import discard_card  # Replace with the actual function to be tested
 from fastapi.testclient import TestClient
 from unittest.mock import MagicMock, patch
 from main import app 
