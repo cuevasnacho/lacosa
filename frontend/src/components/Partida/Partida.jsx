@@ -9,8 +9,8 @@ function Partida () {
   // const username = JSON.parse(localStorage.getItem('username'));
 
   const [matchState, setMatchState] = useState([]);
-  const [mazoDescarteState, setMazoDescarteState] = useState(1);
-  const [turno, setTurno] = useState(0);
+  const [mazoDescarteState, setMazoDescarteState] = useState(1);  // Dice que carta se va a mostrar en el mazo de descarte
+  const [turno, setTurno] = useState(true);   // Indica si es mi turno o no
 
   const toggleState = () => {
     setMazoDescarteState((prevState) => (prevState === 3 ? 1 : prevState + 1));
@@ -34,7 +34,7 @@ function Partida () {
   }
 */
   const cartas = ['analisis', 'lacosa', 'aterrador', 'cuerdas_podridas'];
-  const jugadores = [ {username: 'juan', esTurno: false, position: 0},
+  const jugadores = [ {username: 'juan', esTurno: false, position: 7},
                       {username: 'pedro', esTurno: false, position: 1},
                       {username: 'tute', esTurno: true, position: 2},
                       {username: 'nacho', esTurno: false, position: 3},
@@ -46,6 +46,7 @@ function Partida () {
 
   return (
     <div className={styles.container}>
+      {turno && (<div className={styles.tuTurno}/>)}
       <button 
         className={styles.mazo} 
         type='button' 
@@ -54,7 +55,7 @@ function Partida () {
         className={`${styles.mazoDescarte} ${styles[`mazoDescarteState${mazoDescarteState}`]}`}
         type='button' 
         onClick={toggleState} />
-      <ManoJugador cartas={cartas} />
+      <ManoJugador cartas={cartas} esTurno={turno} />
       <Jugadores jugadores={sortedJugadores}/>
     </div>
   );
