@@ -2,8 +2,8 @@ from db.database import Card, CardTemplate, Player, Match
 from pony.orm import db_session
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
-from api.load_templates import Template_Diccionary
-from api.alejate import *
+from api.card.load_templates import Template_Diccionary
+from api.card.alejate import *
 
 router = APIRouter()
 
