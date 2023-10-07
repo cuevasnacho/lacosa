@@ -15,17 +15,15 @@ function Lobby() {
         alert("Volver al menu principal");
     }
 
-    const refrescar = async () => {
+    async function refrescar () {
         try {
           const response = await httpRequest({
             method: 'GET',
-            service: `lobbys/${lobby_id}/refrescar`,
+            service: `lobbys/${idLobby}/refrescar`,
           });
           
-          window.sessionStorage.setItem('cantidadJugadores', response.lobby_pcount);
-
-          window.sessionStorage.setItem('jugadores', JSON.stringify(response.lobby_names));
-          
+          window.sessionStorage.setItem('cantidadJugadores', response.players.length);
+          window.sessionStorage.setItem('jugadores', JSON.stringify(response.players));
           window.location.reload();
     
         } catch (error) {
@@ -74,7 +72,7 @@ function Lobby() {
                 <div className={styles.botones}>
                     <CustomButton label="Volver al menu principal" onClick={Menu} />
                     {esHost && <CustomButton label="Iniciar Partida" onClick={() => IniciarPartida(idLobby)} />}
-                    <CustomButton label="Refrescar" onClick={() => refrescar()} />
+                    <CustomButton label="Refrescar" onClick={refrescar} />
                 </div>
             </div>
         </>
