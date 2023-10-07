@@ -7,11 +7,17 @@ function Carta({ carta, esTurno }) {
     const [isHover, setIsHover] = useState(false);
 
     function jugarCarta() {
-        alert('Jugue la carta');
+        if(carta.cartaNombre === 'lacosa')
+            alert(`No puedes jugar la carta ${carta.cartaNombre}`);
+        else
+            alert(`Jugue la carta ${carta.id} ${carta.cartaNombre}`);
     }
 
     function descartarCarta() {
-        alert('Descarte la carta');
+        if(carta.cartaNombre === 'lacosa')
+            alert(`No puedes jugar la carta ${carta.cartaNombre}`);
+        else
+            alert(`Descarte la carta ${carta.id} ${carta.cartaNombre}`);
     }
 
     const cartaState = esTurno ? `${styles.carta} ${styles.cartaTurno}` : styles.carta;

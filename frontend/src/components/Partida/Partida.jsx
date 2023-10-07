@@ -11,7 +11,7 @@ function Partida () {
   // const username = JSON.parse(localStorage.getItem('username'));
 
   const [matchState, setMatchState] = useState([]);
-  const [mazoDescarteState, setMazoDescarteState] = useState(1);  // Dice que carta se va a mostrar en el mazo de descarte
+  const [mazoDescarteState, setMazoDescarteState] = useState(2);  // Dice que carta se va a mostrar en el mazo de descarte
   const [turno, setTurno] = useState(true);   // Indica si es mi turno o no
 
 /*
@@ -34,7 +34,7 @@ function Partida () {
   
   const jugadores = [ {username: 'juan', esTurno: false, position: 7},
                       {username: 'pedro', esTurno: false, position: 1},
-                      {username: 'tute', esTurno: true, position: 2},
+                      {username: 'tute', esTurno: false, position: 2},
                       {username: 'nacho', esTurno: false, position: 3},
                       {username: 'cabeza', esTurno: false, position: 4},
                       {username: 'negro', esTurno: false, position: 5},

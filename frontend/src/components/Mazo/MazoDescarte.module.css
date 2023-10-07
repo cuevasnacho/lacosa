@@ -11,6 +11,7 @@
 }
 .mazoDescarte:hover {
     border-color: transparent;
+    background-color: transparent;
     cursor: default;
 }
 
