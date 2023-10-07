@@ -5,7 +5,7 @@ function Jugador({ username, esTurno }) {
 
     return (
         <div className={jugadorClase}>
-            <h3>{username}</h3>  
+            <p>{username}</p>
         </div>
     );
 }

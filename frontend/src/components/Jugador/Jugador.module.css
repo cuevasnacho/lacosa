@@ -1,9 +1,9 @@
 /* Jugador.module.css */
 .jugador {
-    background: lightblue;
+    background: #3a3a3a;
     border-radius: 50%;
-    width: 100px;
-    height: 100px;
+    width: 70px;
+    height: 70px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -11,11 +11,11 @@
     margin: 10px;
 }
 
-.jugador h3 {
+.jugador p {
     margin: 0;
-    color:black;
+    color: #c1c1c1;
 }
 
 .turno {
-    background: red; /* Cambia el color de fondo a rojo si es el turno */
+    background: green; /* Cambia el color de fondo a rojo si es el turno */
 }

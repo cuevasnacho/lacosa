@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import styles from './Partida.module.css';
 import ManoJugador from '../ManoJugador/ManoJugador.jsx';
-import Carta from '../Carta/Carta.jsx';
+import Jugadores from '../Jugador/Jugadores.jsx';
 
 function Partida () {
   // const { ws } = socket;
@@ -10,6 +10,7 @@ function Partida () {
 
   const [matchState, setMatchState] = useState([]);
   const [mazoDescarteState, setMazoDescarteState] = useState(1);
+  const [turno, setTurno] = useState(0);
 
   const toggleState = () => {
     setMazoDescarteState((prevState) => (prevState === 3 ? 1 : prevState + 1));
@@ -19,9 +20,6 @@ function Partida () {
     alert("levante una carta");
   }
 
-  const descarteError = function () {
-    alert("este es el mazo de descarte!");
-  }
 /*
   ws.onmessage = function (event) {
     const info = JSON.parse(event.data);
@@ -36,6 +34,15 @@ function Partida () {
   }
 */
   const cartas = ['analisis', 'lacosa', 'aterrador', 'cuerdas_podridas'];
+  const jugadores = [ {username: 'juan', esTurno: false, position: 0},
+                      {username: 'pedro', esTurno: false, position: 1},
+                      {username: 'tute', esTurno: true, position: 2},
+                      {username: 'nacho', esTurno: false, position: 3},
+                      {username: 'cabeza', esTurno: false, position: 4},
+                      {username: 'negro', esTurno: false, position: 5},
+                      {username: 'quito', esTurno: false, position: 6}];
+
+  const sortedJugadores = jugadores.sort((a,b) => a.position - b.position);
 
   return (
     <div className={styles.container}>
@@ -48,6 +55,7 @@ function Partida () {
         type='button' 
         onClick={toggleState} />
       <ManoJugador cartas={cartas} />
+      <Jugadores jugadores={sortedJugadores}/>
     </div>
   );
 }

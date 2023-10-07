@@ -2,7 +2,6 @@ import React from "react";
 import { useState } from 'react';
 import styles from "./Carta.module.css";
 import Diccionario from './Diccionario.jsx';
-import CustomButton from "../Boton/CustomButton";
 
 function Carta({ carta }) {
     const [isHover, setIsHover] = useState(false);
@@ -24,7 +23,7 @@ function Carta({ carta }) {
             { isHover && (
                 <div className={styles.botones}>
                     <button className={styles.boton} onClick={jugarCarta}>Jugar</button>
-                    <button className={styles.boton} onCanPlay={descartarCarta}>Descartar</button>
+                    <button className={styles.boton} onClick={descartarCarta}>Descartar</button>
                 </div>
             )}
         </div>
