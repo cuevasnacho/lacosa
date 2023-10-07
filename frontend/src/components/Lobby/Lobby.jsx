@@ -7,7 +7,7 @@ import JugadoresLobby from '../Lobby/JugadoresLobby.jsx';
 function Lobby() {
     const {idLobby} = useParams();
 
-    const esHost = window.localStorage.getItem('Host');
+    const esHost = window.sessionStorage.getItem('Host');
     //const esHost = true;
 
     function Menu() {
@@ -22,9 +22,9 @@ function Lobby() {
             service: `lobbys/${lobby_id}/refrescar`,
           });
           
-          window.localStorage.setItem('cantidadJugadores', response.lobby_pcount);
+          window.sessionStorage.setItem('cantidadJugadores', response.lobby_pcount);
 
-          window.localStorage.setItem('jugadores', JSON.stringify(response.lobby_names));
+          window.sessionStorage.setItem('jugadores', JSON.stringify(response.lobby_names));
           
           window.location.reload();
     
@@ -34,8 +34,8 @@ function Lobby() {
     };
 
     function IniciarPartida(idLobby) {
-        const cantidadJugadores = parseInt(window.localStorage.getItem('cantidadJugadores'));  
-        const cantidadMinima = parseInt(window.localStorage.getItem('minPlayers'));
+        const cantidadJugadores = parseInt(window.sessionStorage.getItem('cantidadJugadores'));  
+        const cantidadMinima = parseInt(window.sessionStorage.getItem('minPlayers'));
         
         if (cantidadMinima <= cantidadJugadores) 
         {
@@ -67,8 +67,8 @@ function Lobby() {
             <div className={styles.container}>
                 <div className={styles.jugadores}>
                     <h1>Jugadores</h1>   
-                    <h3> {window.localStorage.getItem('cantidadJugadores')} </h3> 
-                    <JugadoresLobby jugadores={JSON.parse(window.localStorage.getItem('jugadores'))}/>
+                    <h3> {window.sessionStorage.getItem('cantidadJugadores')} </h3> 
+                    <JugadoresLobby jugadores={JSON.parse(window.sessionStorage.getItem('jugadores'))}/>
                 </div>
                 
                 <div className={styles.botones}>

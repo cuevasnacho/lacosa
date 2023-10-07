@@ -7,8 +7,8 @@ import MazoDescarte from '../Mazo/MazoDescarte.jsx';
 
 function Partida () {
   // const { ws } = socket;
-  // const user_id = JSON.parse(localStorage.getItem('user_id'));
-  // const username = JSON.parse(localStorage.getItem('username'));
+  // const user_id = JSON.parse(sessionStorage.getItem('user_id'));
+  // const username = JSON.parse(sessionStorage.getItem('username'));
 
   const [matchState, setMatchState] = useState([]);
   const [mazoDescarteState, setMazoDescarteState] = useState(2);  // Dice que carta se va a mostrar en el mazo de descarte
