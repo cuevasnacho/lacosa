@@ -3,7 +3,7 @@ import styles from './Partida.module.css';
 import ManoJugador from '../ManoJugador/ManoJugador.jsx';
 import Jugadores from '../Jugador/Jugadores.jsx';
 import Mazo from '../Mazo/Mazo.jsx';
-import MazoDescarte from '../Mazo/MazoDescarte';
+import MazoDescarte from '../Mazo/MazoDescarte.jsx';
 
 function Partida () {
   // const { ws } = socket;
@@ -27,7 +27,11 @@ function Partida () {
     }
   }
 */
-  const cartas = ['analisis', 'lacosa', 'aterrador', 'cuerdas_podridas'];
+  const cartas = [{cartaNombre: 'analisis', id: 2, tipo: 0},
+                  {cartaNombre: 'lacosa', id: 3, tipo: 0},
+                  {cartaNombre: 'aterrador', id: 5, tipo: 0},
+                  {cartaNombre: 'cuerdas_podridas', id: 1, tipo: 1}];
+  
   const jugadores = [ {username: 'juan', esTurno: false, position: 7},
                       {username: 'pedro', esTurno: false, position: 1},
                       {username: 'tute', esTurno: true, position: 2},
@@ -41,8 +45,9 @@ function Partida () {
   return (
     <div className={styles.container}>
       {turno && (<div className={styles.tuTurno}/>)}
+      <div className={styles.detalleMesa}/>
       <Mazo esTurno={turno}/>
-      <MazoDescarte mazoDescarteState={mazoDescarteState} />
+      <MazoDescarte mazoDescarteState={mazoDescarteState}/>
       <ManoJugador cartas={cartas} esTurno={turno}/>
       <Jugadores jugadores={sortedJugadores}/>
     </div>

@@ -21,7 +21,7 @@ function Carta({ carta, esTurno }) {
             className={cartaState} 
             onMouseEnter={() => setIsHover(true)}
             onMouseLeave={() => setIsHover(false)}>
-            <img src={Diccionario[carta]} width={130}/>
+            <img src={Diccionario[carta.cartaNombre]} width={130}/>
             { isHover && esTurno && (
                 <div className={styles.botones}>
                     <button className={styles.boton} onClick={jugarCarta}>Jugar</button>
