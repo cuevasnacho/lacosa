@@ -1,7 +1,7 @@
 import React from 'react';
 import {useForm} from 'react-hook-form';
 import CustomButton from '../../Boton/CustomButton';
-import './FormCrearPartida.css';
+import styles from './FormCrearPartida.css';
 import {httpRequest} from '../../../services/HttpService';
 
 function FormCrearPartida() {
@@ -51,6 +51,7 @@ function FormCrearPartida() {
 
   return (
     <>
+      <div className={styles.container}>
       <h2>Formulario de Creación</h2>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div>
@@ -143,6 +144,7 @@ function FormCrearPartida() {
 
           <input type="submit" value="Ingresar" />
         </form>
+      </div>
     </>
   );
 }

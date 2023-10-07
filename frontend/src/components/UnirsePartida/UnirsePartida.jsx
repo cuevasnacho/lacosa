@@ -8,11 +8,11 @@ import "./EstiloBoton.css"
 import { Link } from 'react-router-dom'
 
 function UnirsePartida() {
-    const [partidas, setPartidas] = useState([])  
+    const [partidas, setPartidas] = useState([])
     
     /* No usar JSON.parse */
-    let {username} = window.localStorage.getItem('username');
-
+    let username = window.localStorage.getItem('username');
+    console.log(username)
      useEffect(() => {
         const fetchpPartidas = async () => {
             let headers = {
@@ -28,15 +28,14 @@ function UnirsePartida() {
               console.log(error);
             }
           }
-          
             fetchpPartidas()
      }, [])
   return (
  
     <div>
         <video className='videobg' src={videobg} autoPlay loop muted />
+        <h4>{username}</h4>
         <div className='contenedor-tabla'>
-            <h4>{username}</h4>
             <h3 className='titulo-tabla'>Lista de Partidas</h3>
                 <div className='tabla-unirsePartida'>
                     <table>
