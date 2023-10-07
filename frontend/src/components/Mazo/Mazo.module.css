@@ -1,0 +1,19 @@
+.mazo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 180px;
+    width: 130px;
+    margin: 0px 10px;
+    border-radius: 10px;
+    background-image: url('../../media/designs/cartas/misteriosa.png');
+    background-size: 100%;
+    transition: box-shadow 0.25s;
+    z-index: 1;
+    border: none;
+    cursor: default;
+}
+.mazoTurno:hover {
+    box-shadow: 0px 0px 15px #cadf14;
+    cursor: pointer;
+}

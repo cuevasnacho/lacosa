@@ -2,6 +2,8 @@ import { useState } from 'react';
 import styles from './Partida.module.css';
 import ManoJugador from '../ManoJugador/ManoJugador.jsx';
 import Jugadores from '../Jugador/Jugadores.jsx';
+import Mazo from '../Mazo/Mazo.jsx';
+import MazoDescarte from '../Mazo/MazoDescarte';
 
 function Partida () {
   // const { ws } = socket;
@@ -11,14 +13,6 @@ function Partida () {
   const [matchState, setMatchState] = useState([]);
   const [mazoDescarteState, setMazoDescarteState] = useState(1);  // Dice que carta se va a mostrar en el mazo de descarte
   const [turno, setTurno] = useState(true);   // Indica si es mi turno o no
-
-  const toggleState = () => {
-    setMazoDescarteState((prevState) => (prevState === 3 ? 1 : prevState + 1));
-  };
-
-  const levantarCarta = function () {
-    alert("levante una carta");
-  }
 
 /*
   ws.onmessage = function (event) {
@@ -47,15 +41,9 @@ function Partida () {
   return (
     <div className={styles.container}>
       {turno && (<div className={styles.tuTurno}/>)}
-      <button 
-        className={styles.mazo} 
-        type='button' 
-        onClick={levantarCarta} />
-      <button
-        className={`${styles.mazoDescarte} ${styles[`mazoDescarteState${mazoDescarteState}`]}`}
-        type='button' 
-        onClick={toggleState} />
-      <ManoJugador cartas={cartas} esTurno={turno} />
+      <Mazo esTurno={turno}/>
+      <MazoDescarte mazoDescarteState={mazoDescarteState} />
+      <ManoJugador cartas={cartas} esTurno={turno}/>
       <Jugadores jugadores={sortedJugadores}/>
     </div>
   );
