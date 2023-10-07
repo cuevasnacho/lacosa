@@ -4,8 +4,8 @@ from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 from definitions import match_status
 from pony import orm 
-from . import Create_Desk
-from . import deal_cards
+from api.match.create_desk import *
+from api.match.deal_cards import *
 import json 
 
 router = APIRouter()
@@ -69,7 +69,7 @@ async def start_match(lobby_id : int):
         #asociar un mazo
         number_players = get_player_number(lobby_id)
         match_id = get_match_id(lobby_id)
-        Create_Desk.create_desk(number_players, match_id)
+        create_desk.create_desk(number_players, match_id)
 
         #repartir cartas
         deal_cards.deal_cards(match_id)
