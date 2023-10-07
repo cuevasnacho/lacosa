@@ -1,11 +1,11 @@
 import styles from './InicioForm.module.css';
 import { httpRequest } from '../../services/HttpService.js';
-
+import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-//import { useNavigate } from 'react-router-dom';
-
 
 const InicioForm = () => {
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -52,7 +52,7 @@ const InicioForm = () => {
             },
             maxLength: { value: 20, message: '20 caracteres máximo' },
           })}
-          id="player_name"
+          data-testid="player_name"
         />
         <div>
           {errors.player_name && <p className={styles.textdanger}>{errors.player_name.message}</p>}
