@@ -2,22 +2,55 @@ import React from "react";
 import { useState } from 'react';
 import styles from "./Carta.module.css";
 import Diccionario from './Diccionario.jsx';
+import { httpRequest } from '../../services/HttpService';
 
-function Carta({ carta, esTurno }) {
+function Carta({ carta, esTurno , actualizar, mano}) {
     const [isHover, setIsHover] = useState(false);
 
     function jugarCarta() {
         if(carta.cartaNombre === 'lacosa')
             alert(`No puedes jugar la carta ${carta.cartaNombre}`);
         else
+        {
             alert(`Jugue la carta ${carta.id} ${carta.cartaNombre}`);
+            descartarCarta();
+        }
+
     }
 
-    function descartarCarta() {
+    async function descartarCarta() 
+    {
         if(carta.cartaNombre === 'lacosa')
-            alert(`No puedes jugar la carta ${carta.cartaNombre}`);
+            alert(`No puedes descartar ni jugar la carta ${carta.cartaNombre}`);
         else
-            alert(`Descarte la carta ${carta.id} ${carta.cartaNombre}`);
+        {
+            try 
+            {
+                if (mano.length > 1)
+                {
+                    const playerID = window.sessionStorage.getItem('user_id');
+                    
+                    let response = await httpRequest({
+                        method: 'PUT',
+                        service: 'carta/descartar/' + playerID + '/' + carta.id,
+                    });
+                    
+                    
+                    actualizar((manoPrevia) => {
+                        return manoPrevia.filter(cartaPrevia => cartaPrevia.id !== carta.id);
+                    });
+                }
+                else
+                {
+                    alert("No puedes descartar la carta, ya que no tienes suficientes cartas en la mano");
+                }
+            } 
+            catch (error) 
+            {
+                alert(error);
+            }
+        }
+
     }
 
     const cartaState = esTurno ? `${styles.carta} ${styles.cartaTurno}` : styles.carta;
