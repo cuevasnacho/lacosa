@@ -4,6 +4,7 @@ from unittest.mock import MagicMock, patch
 from main import app 
 from pony.orm import db_session
 from db.database import Lobby as db_lobby
+from db.database import Match as db_match
 from db.database import Player
 import pytest
 
@@ -140,7 +141,8 @@ def test_create_delete_lobby(mock_create_lobby):
 
 
     with db_session:
-        assert db_lobby.get(lobby_id = 2) == None
+      assert db_lobby.get(lobby_id = 2) == None
+      assert db_match.get(match_id = 2) == None
 
 
 # para correr:
