@@ -1,16 +1,10 @@
 from pydantic import *
-from enum import Enum
-from typing import Optional, List, Any
-from fastapi import FastAPI, HTTPException, APIRouter, Query, status
+from fastapi import APIRouter
 from fastapi.responses import JSONResponse
-from pony.orm import db_session, commit ,select, ObjectNotFound
-from definitions import player_roles
-
+from pony.orm import db_session, commit, ObjectNotFound
 from db.database import Player as db_player
 
 router = APIRouter()
-
-
 
 class PlayerIn(BaseModel):
     player_name: str

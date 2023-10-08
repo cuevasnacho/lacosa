@@ -8,16 +8,15 @@ from fastapi.responses import HTMLResponse
 from db.database import Player as db_player
 from pony.orm import db_session
 
-from api.home import router as home_router
-from api.discard_card import router as discard_router
-from api.show_matches import router as show_matches_router
-from api.models.user import router as user_router
-from api.models.lobby import router as lobby_router
-from api.request_join import router as request_join_router
-from api.start_match import router as start_match_router
+from api.player.discard_card import router as discard_router
+from api.lobby.show_lobbys import router as show_matches_router
+from api.player.player import router as user_router
+from api.lobby.lobby import router as lobby_router
+from api.lobby.request_join import router as request_join_router
+from api.lobby.start_lobby import router as start_match_router
 from fastapi.middleware.cors import CORSMiddleware
-from api.load_templates import load_templates
-from api.play_card import router as play_card_router
+from api.card.load_templates import load_templates
+from api.player.play_card import router as play_card_router
 
 app = FastAPI()
 
@@ -41,7 +40,7 @@ templates = Jinja2Templates(directory="/templates")
 load_templates()
 
 #agregar el router de usuarios a la aplicación
-app.include_router(home_router)
+
 app.include_router(discard_router)
 app.include_router(show_matches_router)
 app.include_router(user_router)

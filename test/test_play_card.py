@@ -1,4 +1,4 @@
-from api.play_card import play_card 
+from api.player.play_card import play_card 
 from fastapi.testclient import TestClient
 from unittest.mock import MagicMock, patch
 from main import app 

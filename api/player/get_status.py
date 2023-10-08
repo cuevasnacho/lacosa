@@ -1,5 +1,3 @@
-
-
 from db import database
 from db.database import Lobby, Match, Player, Card
 from pony.orm import db_session
@@ -8,9 +6,8 @@ from fastapi.responses import JSONResponse
 from definitions import match_status, results
 from pydantic import BaseModel
 from pony import orm 
-from models.user import get_jugador
-import json
-
+from api.player.player import get_jugador
+from typing import List 
 
 router = APIRouter()
 
@@ -20,7 +17,7 @@ class card_response(BaseModel):
     card_name : str
 
 class status_response(BaseModel):
-    cards_owned : [card_response]
+    cards_owned : List[card_response]
     actual_turn : int
     finished : bool
 
