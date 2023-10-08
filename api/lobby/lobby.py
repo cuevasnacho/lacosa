@@ -85,7 +85,9 @@ async def delete_lobby(lobby_id: int) :
     with db_session:
         try:
             fetch_lobby = get_lobby(lobby_id)
+            fetch_match = get_match(lobby_id)
             db_lobby[lobby_id].delete()
+            db_match[lobby_id].delete()
         except ObjectNotFound:
             message = "El lobby no existe"
             status_code = 404 # not found
@@ -93,6 +95,7 @@ async def delete_lobby(lobby_id: int) :
     message = "lobby borrado!"
     status_code = 200 # no acceptable
     return JSONResponse(content=message, status_code=status_code)
+
 
 
 class Lobby(BaseModel):
