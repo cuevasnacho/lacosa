@@ -26,19 +26,19 @@ function Carta({ carta, esTurno , actualizar, mano}) {
         {
             try 
             {
-                if (mano.length > 1)
+                if (mano.length > 1) // cambiar a 4
                 {
                     const playerID = window.sessionStorage.getItem('user_id');
-                    
-                    let response = await httpRequest({
+                    /*
+                    await httpRequest({
                         method: 'PUT',
                         service: 'carta/descartar/' + playerID + '/' + carta.id,
                     });
-                    
-                    
+                    */
                     actualizar((manoPrevia) => {
-                        return manoPrevia.filter(cartaPrevia => cartaPrevia.id !== carta.id);
+                       return manoPrevia.filter(cartaPrevia => cartaPrevia.id !== carta.id);
                     });
+
                 }
                 else
                 {
@@ -54,6 +54,8 @@ function Carta({ carta, esTurno , actualizar, mano}) {
     }
 
     const cartaState = esTurno ? `${styles.carta} ${styles.cartaTurno}` : styles.carta;
+
+    //const cartaState = esTurno ? `${styles.carta} ${styles.cartaTurno}` : styles.carta;
 
     return (
         <div 
