@@ -23,8 +23,8 @@ const InicioForm = () => {
         payload: data
       });
       
-      window.localStorage.setItem('user_id', response.player_id);
-      window.localStorage.setItem('username', response.player_name);
+      window.sessionStorage.setItem('user_id', response.player_id);
+      window.sessionStorage.setItem('username', response.player_name);
       
       window.location = '/home';
 

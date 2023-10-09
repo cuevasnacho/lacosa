@@ -48,6 +48,16 @@ def get_not_initialized_matches():
     return json.loads(json.dumps([obj.dict() for obj in response]))
 
 @router.get("/partidas/listar")
+async def show_matches():
+    try:
+        content = get_not_initialized_matches() 
+        return JSONResponse(content = content, status_code = 200) 
+    except: 
+            content = "No hay partidas disponibles"
+            return JSONResponse(content = content, status_code = 404) 
+
+'''
+@router.get("/partidas/listar")
 async def show_matches(websocket : WebSocket):
     await manager.connect(websocket)
     try:
@@ -65,5 +75,5 @@ async def show_matches(websocket : WebSocket):
             manager.disconnect(websocket)
             content = "Websocket desconectado"
             return JSONResponse(content = content, status_code = 200) 
-    
+'''    
 

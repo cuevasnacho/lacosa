@@ -2,12 +2,13 @@ import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styles from './Lobby.module.css';
 import JugadoresLobby from '../Lobby/JugadoresLobby.jsx';
+import React, { useEffect } from 'react';
 
-function Lobby({params}) {
-    const { ws } = params;
-    const esHost = window.localStorage.getItem('Host');
+function Lobby(params) {
+    const { ws } = params;      
+    const esHost = window.sessionStorage.getItem('Host');
 
-    const jugadores = useState([]);
+    const [jugadores, setJugadores] = useState([]);
 
     function Menu() {
         /* No hay un endpoint del back para volver al home*/
@@ -16,10 +17,14 @@ function Lobby({params}) {
 
     ws.onmessage = function (event) {
         const info = JSON.parse(event.data);
-
+        console.log(event);
+        console.log(info);
+        console.log(info.action);
+        console.log(info.data);
+        
         switch (info.action) {
             case 'lobby_players':
-                jugadores = JSON.stringify(info.data);
+                setJugadores(info.data); 
                 return;
             default:
                 return;
@@ -31,6 +36,11 @@ function Lobby({params}) {
         ws.send(mensaje);
     }
 
+    useEffect(() => {
+        mandarMensaje();
+      }, []); // El segundo argumento vacío [] asegura que se ejecute solo una vez al montar el componente
+    
+    
     return(
         <>
             <div className={styles.container}>
@@ -39,7 +49,6 @@ function Lobby({params}) {
                     <h3> {jugadores.length} </h3> 
                     <JugadoresLobby jugadores={jugadores}/>
                 </div>
-                <button className={styles.botonPrueba} onClick={mandarMensaje} type='button'>Mandar</button>
             </div>
         </>
     );

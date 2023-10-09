@@ -67,26 +67,24 @@ async def Crear_Lobby(new_lobby: CreateLobby):
 
 @router.websocket("/ws/lobbys/{lobby_id}/refrescar")
 async def players_in_lobby(lobby_id : int, websocket : WebSocket):  
-    players_names = []
     await manager.connect(websocket)
     try:
         while True:
             data = await websocket.receive_json() 
-            if data['action'] == "recibir_mensaje":
-                with db_session:
-                    players = db_player.select(lambda player : player.player_lobby.lobby_id == lobby_id)
-                    for player in players:
-                        players_names.append(player.player_name)
-                    
-                    if players:
-                        content = json.loads(json.dumps({"action" : "lobby_players","data" : players_names}))
-                        response = JSONResponse(content = content, status_code = 200)            
-                    else:
-                        content = f"El lobby {lobby_id} no tiene jugadores / No existe"
-                    response = JSONResponse(content = content, status_code = 404)
-                    
-                    await manager.send_data(response)
-                    await manager.broadcast(response)
+            players_names = []
+            
+            with db_session:
+                players = db_player.select(lambda player : player.player_lobby.lobby_id == lobby_id)
+                for player in players:
+                    players_names.append(player.player_name)
+                
+                if players:
+                    content = json.loads(json.dumps({"action" : "lobby_players","data" : players_names, "status_code" : 200}))
+                else:
+                    content = json.loads(json.dumps({"action" : "lobby_players","data" : [],"status_code" : 404}))
+            
+                #await manager.send_data(content,websocket)
+                await manager.broadcast(content)
     except WebSocketDisconnect:
         manager.disconnect(websocket)
         content = "Websocket desconectado"

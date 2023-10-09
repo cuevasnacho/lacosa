@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom';
 import Lobby from './Lobby.jsx';
 
-const WsSala = function () {
+const LobbyWS = function () {
     const {idLobby} = useParams();
     const ws = new WebSocket(`ws://localhost:8000/ws/lobbys/${idLobby}/refrescar`);
 
@@ -10,4 +10,4 @@ const WsSala = function () {
   );
 };
 
-export default WsSala;
+export default LobbyWS;

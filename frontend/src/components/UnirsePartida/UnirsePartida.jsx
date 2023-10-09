@@ -11,7 +11,7 @@ function UnirsePartida() {
     const [partidas, setPartidas] = useState([])
     
     /* No usar JSON.parse */
-    let {username} = window.localStorage.getItem('username');
+    let {username} = window.sessionStorage.getItem('username');
 
      useEffect(() => {
         const fetchpPartidas = async () => {
