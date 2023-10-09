@@ -1,32 +1,33 @@
 import styles from './InicioForm.module.css';
 import { httpRequest } from '../../services/HttpService.js';
-
+import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { Navigate } from 'react-router-dom';
 
 const InicioForm = () => {
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
     formState: {errors},
   } = useForm();
-
+  
   const onSubmit = async (data) => {
     try {
       // Log the data before sending the POST request
       console.log('Data to be sent:', data);
-
+      
       const response = await httpRequest({
         method: 'POST',
-        service: 'players',
+        service: 'players/',
         payload: data
       });
       
-      window.sessionStorage.setItem('logged', JSON.stringify({
-        user_id: response.id,
-        username: response.name,
-      }));
-      Navigate('/main');
+      window.localStorage.setItem('user_id', response.player_id);
+      window.localStorage.setItem('username', response.player_name);
+      
+      window.location = '/home';
+
     } catch (error) {
       console.log(error);
     }
@@ -51,7 +52,7 @@ const InicioForm = () => {
             },
             maxLength: { value: 20, message: '20 caracteres máximo' },
           })}
-          id="player_name"
+          data-testid="player_name"
         />
         <div>
           {errors.player_name && <p className={styles.textdanger}>{errors.player_name.message}</p>}

@@ -1,8 +1,7 @@
 
 from pydantic import *
-from api.alejate import *
-from pony.orm import db_session, commit , ObjectNotFound
-from pony.orm import Set, exists
+from api.card.alejate import *
+from pony.orm import db_session, commit
 from db.database import CardTemplate as db_cardT
 
 

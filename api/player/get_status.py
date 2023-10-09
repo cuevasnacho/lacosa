@@ -8,7 +8,7 @@ from fastapi.responses import JSONResponse
 from definitions import match_status, results
 from pydantic import BaseModel
 from pony import orm 
-from models.user import get_jugador
+from player import get_jugador
 import json
 
 
@@ -19,13 +19,8 @@ class card_response(BaseModel):
     card_type : bool
     card_name : str
 
-class player_response(BaseModel):
-    player_id : int
-    player_position : int
-
 class status_response(BaseModel):
     cards_owned : [card_response]
-    order : [player_response]
     actual_turn : int
     finished : bool
 
@@ -34,7 +29,7 @@ def get_Hand(player):
     hand = []
 
     cards_related = orm.select(
-            (card.card_id, card.card_type, card.card_cardT.cardT_name)
+            (card.card_id, card.card_type, card.card_name)
             for card in Card
             if card.card_player.player_id == player.player_id)
 
@@ -44,11 +39,11 @@ def get_Hand(player):
     return hand
 
 @router.get("/players/{player_id}/{match_id}")
-async def get_status(player_id: int, match_id: int) -> status_response:
+async def get_status(player_id: int, match_id: int):
     try :
         player =get_jugador(player_id)
 
-        if player.player_current_match_id != match_id :
+        if player.player_current_match_id == match_id :
             message = "El jugador no pertenece a la partida"
             status_code = 406 # no acceptable
             return JSONResponse(content=message, status_code=status_code)

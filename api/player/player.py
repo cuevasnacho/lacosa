@@ -1,16 +1,10 @@
 from pydantic import *
-from enum import Enum
-from typing import Optional, List, Any
-from fastapi import FastAPI, HTTPException, APIRouter, Query, status
+from fastapi import APIRouter
 from fastapi.responses import JSONResponse
-from pony.orm import db_session, commit ,select, ObjectNotFound
-from definitions import player_roles
-
+from pony.orm import db_session, commit, ObjectNotFound
 from db.database import Player as db_player
 
 router = APIRouter()
-
-
 
 class PlayerIn(BaseModel):
     player_name: str
@@ -30,16 +24,17 @@ def get_jugador(player_id):
         status_code = 404 # not found
         return JSONResponse(content=message, status_code=status_code)
 
-@router.post("/players/", status_code=status.HTTP_201_CREATED)
+@router.post("/players")
 async def Crear_Jugador(new_player: PlayerIn) -> PlayerOut:
     if len(new_player.player_name) > 20: 
-        message = "Nombe demasiado largo"
+        message = "Nombre demasiado largo"
         status_code = 406 # no acceptable
         return JSONResponse(content=message, status_code=status_code)
     with db_session:
-        player = db_player(player_name=new_player.player_name, player_ingame = False, player_isHost=True, player_role = None,
-        player_position=None, player_exchangeL=True, player_exchangeR=True, player_dead = False)
-        commit() #OJO QUE PLAYER POR DEFECTO ES HOST
+        player = db_player(player_name= new_player.player_name, player_ingame = False, player_isHost=False, 
+                           player_dead = False, player_position = 0, player_exchangeR = 0, player_exchangeL = 0,
+                            player_role = 0, player_lobby = None, player_current_match_id = None )
+        commit()
         return PlayerOut(player_id=player.player_id, player_name=player.player_name)
 
 
