@@ -68,7 +68,7 @@ function Lobby({params}) {
 
         switch (info.action) {
             case 'lobby_players':
-                window.localStorage.setItem(info.data);
+                window.localStorage.setItem('jugadores',info.data);
                 return;
             default:
                 return;

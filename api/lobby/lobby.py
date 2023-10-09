@@ -1,7 +1,7 @@
 from pydantic import *
 from typing import Optional
 from api.player.player import get_jugador
-from fastapi import APIRouter
+from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 from fastapi.responses import JSONResponse
 from pony.orm import db_session, commit ,ObjectNotFound
 from definitions import match_status
@@ -10,8 +10,10 @@ from db.database import Match as db_match
 from db.database import Player as db_player
 from definitions import match_status
 import json 
+from api.lobby.lobby_websocket import ConnectionManager
 
 router = APIRouter()
+manager = ConnectionManager()
 
 class CreateLobby(BaseModel):
     player_id : int
@@ -63,22 +65,33 @@ async def Crear_Lobby(new_lobby: CreateLobby):
         return JSONResponse(content= content, status_code=404)
 
 
-@router.get("/lobbys/{lobby_id}/refrescar")
-async def players_in_lobby(lobby_id : int):  
+@router.websocket("/ws/lobbys/{lobby_id}/refrescar")
+async def players_in_lobby(lobby_id : int, websocket : WebSocket):  
     players_names = []
-    with db_session:
-        players = db_player.select(lambda player : player.player_lobby.lobby_id == lobby_id)
-        for player in players:
-            players_names.append(player.player_name)
-        
-        if players:
-            content = json.loads(json.dumps({"players" : players_names}))
-            return JSONResponse(content = content, status_code = 200)            
-            
-        else:
-            content = f"El lobby {lobby_id} no tiene jugadores / No existe"
-            return JSONResponse(content = content, status_code = 404)            
-            
+    await manager.connect(websocket)
+    try:
+        while True:
+            data = await websocket.receive_json() 
+            if data['action'] == "recibir_mensaje":
+                with db_session:
+                    players = db_player.select(lambda player : player.player_lobby.lobby_id == lobby_id)
+                    for player in players:
+                        players_names.append(player.player_name)
+                    
+                    if players:
+                        content = json.loads(json.dumps({"action" : "lobby_players","data" : players_names}))
+                        response = JSONResponse(content = content, status_code = 200)            
+                    else:
+                        content = f"El lobby {lobby_id} no tiene jugadores / No existe"
+                    response = JSONResponse(content = content, status_code = 404)
+                    
+                    await manager.send_data(response)
+                    await manager.broadcast(response)
+    except WebSocketDisconnect:
+        manager.disconnect(websocket)
+        content = "Websocket desconectado"
+        return JSONResponse(content = content, status_code = 200) 
+
 #para que sea consistene faltaria borrar match
 @router.delete("/lobbys/{lobby_id}")
 async def delete_lobby(lobby_id: int) :
