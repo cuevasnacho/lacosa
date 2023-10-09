@@ -1,8 +1,7 @@
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
 import styles from './Lobby.module.css';
 import JugadoresLobby from '../Lobby/JugadoresLobby.jsx';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
 function Lobby(params) {
     const { ws } = params;      
@@ -17,10 +16,6 @@ function Lobby(params) {
 
     ws.onmessage = function (event) {
         const info = JSON.parse(event.data);
-        console.log(event);
-        console.log(info);
-        console.log(info.action);
-        console.log(info.data);
         
         switch (info.action) {
             case 'lobby_players':
@@ -38,8 +33,7 @@ function Lobby(params) {
 
     useEffect(() => {
         mandarMensaje();
-      }, []); // El segundo argumento vacío [] asegura que se ejecute solo una vez al montar el componente
-    
+    }, []);
     
     return(
         <>
