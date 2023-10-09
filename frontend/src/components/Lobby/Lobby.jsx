@@ -4,11 +4,12 @@ import styles from './Lobby.module.css';
 import { httpRequest } from '../../services/HttpService.js';
 import JugadoresLobby from '../Lobby/JugadoresLobby.jsx';
 
-function Lobby() {
+function Lobby({params}) {
+    const { ws } = params;
+
     const {idLobby} = useParams();
 
     const esHost = window.localStorage.getItem('Host');
-    //const esHost = true;
 
     function Menu() {
         /* No hay un endpoint del back para volver al home*/
@@ -62,6 +63,23 @@ function Lobby() {
         }
     }
 
+    ws.onmessage = function (event) {
+        const info = JSON.parse(event.data);
+
+        switch (info.action) {
+            case 'lobby_players':
+                window.localStorage.setItem(info.data);
+                return;
+            default:
+                return;
+        }
+    }
+
+    function mandarMensaje () {
+        const mensaje = JSON.stringify({action: 'recibir_mensaje', data: 'Recibi tu mensaje'});
+        ws.send(mensaje);
+    }
+
     return(
         <>
             <div className={styles.container}>
@@ -70,7 +88,7 @@ function Lobby() {
                     <h3> {window.localStorage.getItem('cantidadJugadores')} </h3> 
                     <JugadoresLobby jugadores={JSON.parse(window.localStorage.getItem('jugadores'))}/>
                 </div>
-                
+                <button className={styles.botonPrueba} onClick={mandarMensaje} type='button'>Mandar</button>
                 <div className={styles.botones}>
                     <CustomButton label="Volver al menu principal" onClick={Menu} />
                     {esHost && <CustomButton label="Iniciar Partida" onClick={() => IniciarPartida(idLobby)} />}
