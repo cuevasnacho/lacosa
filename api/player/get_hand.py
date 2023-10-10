@@ -1,0 +1,60 @@
+from db.database import Card
+from pony.orm import db_session, ObjectNotFound
+from fastapi import APIRouter
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel
+from typing import List
+from pony import orm 
+from api.player.player import get_jugador
+
+router = APIRouter()
+
+class card_response(BaseModel):
+    card_id : int
+    card_type : bool
+    card_name : str
+
+class hand(BaseModel):
+    cards: List[card_response]
+
+@db_session
+def get_Hand(player):
+    hand = []
+
+    cards_related = list(orm.select(
+            (card.card_id, card.card_type, card.card_name)
+            for card in Card
+            if card.card_player.player_id == player.player_id))
+
+    for card in cards_related:
+        hand.append(card_response(card_id = card.card_id, 
+                                  card_type = card.card_cardT.cardT_type, 
+                                  card_name = card.card_cardT.cardT_name))
+
+    if len(hand) == 0:
+        raise ObjectNotFound("El jugador no tiene ninguna carta asociada")
+
+    return hand
+
+@router.get("/players/{player_id}/{match_id}")
+async def get_hand(player_id: int, match_id: int)-> hand:
+    try :
+        player =get_jugador(player_id)
+
+        if player.player_current_match_id == match_id :
+            message = "El jugador no pertenece a la partida"
+            status_code = 406 # no acceptable
+            return JSONResponse(content=message, status_code=status_code)
+
+        player_hand = get_Hand(player)
+
+        return hand(cards =player_hand)
+    
+    except ObjectNotFound as e: 
+        content = str(e)
+        return JSONResponse(content=content, status_code=404)
+
+    except Exception as e:
+        print(f"Error al acceder a los datos: {e}")
+        content = f"Error al acceder a los datos de {player_id}"
+        return JSONResponse(content = content, status_code = 410) #comportamiento inesperado

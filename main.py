@@ -18,6 +18,10 @@ from api.match.next_turn import router as next_turn_router
 from fastapi.middleware.cors import CORSMiddleware
 from api.card.load_templates import load_templates
 from api.player.play_card import router as play_card_router
+from api.player.steal_card import router as steal_card_router
+from api.player.get_hand import router as get_hand_router
+from api.player.get_status import router as get_status_router
+
 
 app = FastAPI()
 
@@ -50,3 +54,7 @@ app.include_router(request_join_router)
 app.include_router(start_match_router)
 app.include_router(play_card_router)
 app.include_router(next_turn_router)
+app.include_router(steal_card_router)
+app.include_router(get_hand_router)
+app.include_router(get_status_router)
+

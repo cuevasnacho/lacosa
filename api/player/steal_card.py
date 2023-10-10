@@ -14,15 +14,6 @@ class carta_robada(BaseModel):
     card_type : bool
     card_name : str 
 
-@db_session
-def get_match(id_match):
-    try:
-        match = Match.get(match_id = id_match)
-
-    except ObjectNotFound:
-        message = "La partida asociada al jugador no existe"
-        status_code = 404 # not found
-        return JSONResponse(content=message, status_code=status_code)
 
 @db_session
 def discard_to_deck(match_id):
@@ -38,7 +29,6 @@ def discard_to_deck(match_id):
 
 @db_session
 def get_card_from_deck(match_id):
-    try :
         card_steal = Card.select(lambda c : c.card_match.match_id == match_id and
                            c.card_location == card_position.DECK.value).random(1)[0]
 
@@ -47,12 +37,17 @@ def get_card_from_deck(match_id):
             card_steal = Card.select(lambda c : c.card_match.match_id == match_id and
                            c.card_location == card_position.DECK.value).random(1)[0]
 
+        if card_steal is None:
+            raise ObjectNotFound("No hay cartas asociadas a la partida")
+    
         return card_steal
 
-    except ObjectNotFound:
-        message = "No hay cartas asociadas a la partida"
-        status_code = 404 # not found
-        return JSONResponse(content=message, status_code=status_code)
+@db_session
+def get_match(id_match):
+    match = Match.get(match_id=id_match)
+    if match is None:
+        raise ObjectNotFound("La partida asociada al jugador no existe")
+    return match
 
 @router.post("/card/{player_id}")
 async def steal_card(player_id : int)-> carta_robada:
@@ -65,7 +60,7 @@ async def steal_card(player_id : int)-> carta_robada:
                 content = "El jugador no esta en una partida"
                 return JSONResponse(content = content, status_code = 406)
             
-            match = Match.get(match_id = player.player_current_match_id.match_id)
+            match = get_match(player.player_current_match_id.match_id)
 
             if (match.match_status != match_status.INITIALIZED.value):
                 content = "La partida no esta inicializada o ya finalizo"
@@ -84,8 +79,12 @@ async def steal_card(player_id : int)-> carta_robada:
 
             content = carta_robada(card_id =card.card_id, card_type = card.card_cardT.cardT_type, card_name =card.card_cardT.cardT_name)
             return content
+
+        except ObjectNotFound as e:
+            content = str(e)
+            return JSONResponse(content=content, status_code=404)
         
         except Exception as e:
             print(f"Error durante el robo de cartas: {e}")
-            content = "No hay cartas en el mazo ni en la pila de descartes"
+            content = str(f"Error durante el robo de cartas: {e}")
             return JSONResponse(content = content, status_code = 406)
