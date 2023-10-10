@@ -7,6 +7,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
 from db.database import Player as db_player
 from pony.orm import db_session
+from fastapi.middleware.cors import CORSMiddleware
 
 from api.player.discard_card import router as discard_router
 from api.lobby.show_lobbys import router as show_matches_router

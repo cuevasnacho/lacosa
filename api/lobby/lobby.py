@@ -70,7 +70,7 @@ async def players_in_lobby(lobby_id : int, websocket : WebSocket):
     await manager.connect(websocket)
     try:
         while True:
-            data = await websocket.receive_json() 
+            data = await websocket.receive_text() 
             players_names = []
             
             with db_session:

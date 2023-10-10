@@ -7,6 +7,7 @@ import React, { useEffect } from 'react';
 function Lobby(params) {
     const { ws } = params;      
     const esHost = window.sessionStorage.getItem('Host');
+    const {idLobby} = useParams();
 
     const [jugadores, setJugadores] = useState([]);
 
@@ -15,32 +16,29 @@ function Lobby(params) {
         alert("Volver al menu principal");
     }
 
-    ws.onmessage = function (event) {
-        const info = JSON.parse(event.data);
-        console.log(event);
-        console.log(info);
-        console.log(info.action);
-        console.log(info.data);
-        
-        switch (info.action) {
-            case 'lobby_players':
-                setJugadores(info.data); 
-                return;
-            default:
-                return;
-        }
-    }
-
     function mandarMensaje () {
         const mensaje = JSON.stringify({action: 'recibir_mensaje', data: 'Recibi tu mensaje'});
         ws.send(mensaje);
     }
 
     useEffect(() => {
-        mandarMensaje();
-      }, []); // El segundo argumento vacío [] asegura que se ejecute solo una vez al montar el componente
+        const url = `ws://localhost:8000/ws/lobbys/${idLobby}/refrescar`;
+        const ws = new WebSocket(url);
     
+        ws.onopen = (event) => {
+          ws.send("Connect");
+        };
     
+        // recieve message every start page
+        ws.onmessage = (e) => {
+            const info = JSON.parse(e.data);
+            setJugadores(info.data); 
+        };
+    
+        //clean up function when we close page
+        return () => ws.close();
+      }, []);
+
     return(
         <>
             <div className={styles.container}>
