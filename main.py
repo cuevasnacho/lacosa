@@ -14,6 +14,7 @@ from api.player.player import router as user_router
 from api.lobby.lobby import router as lobby_router
 from api.lobby.request_join import router as request_join_router
 from api.lobby.start_lobby import router as start_match_router
+from api.match.next_turn import router as next_turn_router
 from fastapi.middleware.cors import CORSMiddleware
 from api.card.load_templates import load_templates
 from api.player.play_card import router as play_card_router
@@ -48,3 +49,4 @@ app.include_router(lobby_router)
 app.include_router(request_join_router)
 app.include_router(start_match_router)
 app.include_router(play_card_router)
+app.include_router(next_turn_router)
