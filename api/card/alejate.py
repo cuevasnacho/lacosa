@@ -22,7 +22,7 @@ lanz_Effect = "Eliminar el jugador objetivo"
 
 class lanzallamas_T(card_template):
     def __init__(self):
-        super().__init__(False, cards_subtypes.ACTION.value,lanz_Effect,"Lanzallamas")
+        super().__init__(False, cards_subtypes.ACTION.value,lanz_Effect,"lanzallamas")
 
     @db_session
     def aplicar_efecto(self,objective_id):
@@ -37,9 +37,22 @@ cosa_Effect = "something"
 class laCosa_T(card_template):
 
     def __init__(self):
-        super().__init__(False, cards_subtypes.INFECTION.value,cosa_Effect,"La_Cosa")
+        super().__init__(False, cards_subtypes.INFECTION.value,cosa_Effect,"lacosa")
 
     @db_session
     def aplicar_efecto(self,objective_id):
         message = "Accion invalida"
         return JSONResponse(content = message, status_code=406)
+
+
+nada_de_barbacoas_effect = "Anula carta Lanzallamas"
+
+class NadaDeBarbacoa(card_template):
+    def __init__(self):
+        super().__init__(False,cards_subtypes.DEFENSE.value,nada_de_barbacoas_effect,"nada_de_barbacoas")
+    
+    @db_session
+    def aplicar_efecto(objective_id):
+        objective_player = Player.get(player_id = objective_id)
+        objective_player.player_dead = False
+        commit()
