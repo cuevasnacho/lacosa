@@ -86,7 +86,7 @@ async def play_card(player_id : int, card_id : int, oponent_id : int):
     if check_pre_conditions(player_id, card_id):
         try:
             apply_card_efect(card_id, oponent_id)
-            if can_player_defend_himself(oponent_id,card_id):
+            if can_player_defend_himself(oponent_id,card_id) and oponent_id != player_id:
                     content = players_status_after_play_card(player_id,oponent_id,True)                
             else:
                 content = players_status_after_play_card(player_id,oponent_id,False)
