@@ -10,9 +10,9 @@ from db.database import Player as db_player
 router = APIRouter()
 
 class carta_robada(BaseModel):
-    card_id : int
-    card_type : bool
-    card_name : str 
+    cartaNombre : str
+    id : int
+    tipo : bool
 
 
 @db_session
@@ -77,7 +77,10 @@ async def steal_card(player_id : int)-> carta_robada:
             match.match_cardsCount -= 1
             commit()
 
-            content = carta_robada(card_id =card.card_id, card_type = card.card_cardT.cardT_type, card_name =card.card_cardT.cardT_name)
+            content = carta_robada(cartaNombre = card.card_cardT.cardT_name,
+                                  id = card.card_id, 
+                                  tipo = card.card_cardT.cardT_type)
+
             return content
 
         except ObjectNotFound as e:

@@ -10,12 +10,12 @@ from api.player.player import get_jugador
 router = APIRouter()
 
 class card_response(BaseModel):
-    card_id : int
-    card_type : bool
-    card_name : str
+    cartaNombre : str
+    id : int
+    tipo : bool
 
 class hand(BaseModel):
-    cards: List[card_response]
+    cartas: List[card_response]
 
 @db_session
 def get_Hand(player):
@@ -27,9 +27,9 @@ def get_Hand(player):
             if card.card_player.player_id == player.player_id))
 
     for card in cards_related:
-        hand.append(card_response(card_id = card.card_id, 
-                                  card_type = card.card_cardT.cardT_type, 
-                                  card_name = card.card_cardT.cardT_name))
+        hand.append(card_response(cartaNombre = card.card_cardT.cardT_name,
+                                  id = card.card_id, 
+                                  tipo = card.card_cardT.cardT_type))
 
     if len(hand) == 0:
         raise ObjectNotFound("El jugador no tiene ninguna carta asociada")
@@ -48,7 +48,7 @@ async def get_hand(player_id: int, match_id: int)-> hand:
 
         player_hand = get_Hand(player)
 
-        return hand(cards =player_hand)
+        return hand(cartas =player_hand)
     
     except ObjectNotFound as e: 
         content = str(e)
