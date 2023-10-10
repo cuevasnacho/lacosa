@@ -16,7 +16,6 @@ def set_env():
     create_database_command = "python3 db/database.py"
     get_into_database = "sqlite3 db/lacosa.sqlite"
     file_entrys = "db/test_check_defense.txt"
-
     if os.path.exists(database):
         os.remove(database)
         time.sleep(0.1)
@@ -79,12 +78,45 @@ output_cant_defense = [
   }
 ]
 
+output_play_no_barbacoa = [
+  {
+    "player_id": 2,
+    "player_ingame": 1,
+    "player_position": 0,
+    "player_exchangeR": 0,
+    "player_exchangeL": 0,
+    "player_role": 0,
+    "player_dead": False,
+    "player_defense": False
+  },
+  {
+    "player_id": 2,
+    "player_ingame": 1,
+    "player_position": 0,
+    "player_exchangeR": 0,
+    "player_exchangeL": 0,
+    "player_role": 0,
+    "player_dead": False,
+    "player_defense": False
+  }
+]
+
 #jugador puede defenderse
 def test_check_defense_ok():
     set_env()
     with patch("api.player.play_card.play_card"):
         response = client.put("/carta/jugar/1/2/2")
         assert json.loads(response.content) == output
+        assert response.status_code == 200
+
+#jugador se defiende
+def test_check_player_defense():
+    update_databse_defense_case = "sqlite3 db/lacosa.sqlite" + " " + '"UPDATE Match SET match_currentP = 2 WHERE match_id = 1;"'
+    subprocess.run(update_databse_defense_case, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    time.sleep(0.1)
+    with patch("api.player.play_card.play_card"):
+        response = client.put("/carta/jugar/2/1/2") # notar que el jugador se aplica la carta a si mismo
+        assert json.loads(response.content) == output_play_no_barbacoa
         assert response.status_code == 200
 
 def test_check_cant_defense():
@@ -122,4 +154,4 @@ def test_check_defense_error_no_card():
 
 #como correr test
 #1.mover al directorio lacosa/
-#2.ejecutar pytest test_check_defense.py
+#2.ejecutar pytest test_check_defense.py -vv
