@@ -20,6 +20,15 @@ export default function TablaFila(elem) {
           service: `lobbys/${lobby_id}/${user_id}`
       });
         setPartidas([...partidas, data]);
+
+        const data = {
+          lobby_min: 0,
+          lobby_max: max_players,
+          lobby_name: lobby_name,
+          lobby_password: ''
+        }
+        window.sessionStorage.setItem('Partida', JSON.stringify(data));
+      
         window.location=`/lobby/${lobby_id}`
       } catch (error) {
         console.log(error);
