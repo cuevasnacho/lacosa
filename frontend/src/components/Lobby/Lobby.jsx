@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import styles from './Lobby.module.css';
 import JugadoresLobby from '../Lobby/JugadoresLobby.jsx';
 
@@ -7,6 +8,7 @@ function Lobby() {
     const partida = JSON.parse(window.sessionStorage.getItem('Partida'));
     const minJugadores = parseInt(partida.lobby_min);
     const maxJugadores = parseInt(partida.lobby_max);
+    const { idLobby } = useParams();
 
     const [jugadores, setJugadores] = useState([]);
 
