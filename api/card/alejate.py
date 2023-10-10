@@ -52,7 +52,7 @@ class NadaDeBarbacoa(card_template):
         super().__init__(False,cards_subtypes.DEFENSE.value,nada_de_barbacoas_effect,"nada_de_barbacoas")
     
     @db_session
-    def aplicar_efecto(objective_id):
+    def aplicar_efecto(self,objective_id):
         objective_player = Player.get(player_id = objective_id)
         objective_player.player_dead = False
         commit()
