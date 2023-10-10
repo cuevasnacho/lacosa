@@ -1,10 +1,10 @@
 import React from "react"
 import styles from "./Carta.module.css"
 
-function Carta({carta}) {
+function Carta({ carta, isSelected, onSelect }) {
     
     return (
-        <div className={styles.carta}>
+        <div className={isSelected ? styles.selected : styles.notSelected} onClick={handleClick}>
             <img src={carta} width={130}/>
         </div>
     );
