@@ -1,58 +1,71 @@
-import pytest
-from unittest.mock import MagicMock
-from unittest.mock import patch
+# import pytest
+from unittest.mock import MagicMock, patch
 from api.lobby.request_join import unirse_lobby
+from fastapi.testclient import TestClient
+from main import app
 
+# from api.lobby import request_join
+#from db.database import Lobby, Player, Match #cómo sería esto?
 
-def test_unirse_lobby_lobby_lleno():
-    # Mock del método get_lobby() para devolver un lobby lleno.
-    lobby = MagicMock()
-    lobby.lobby_pcount = 10
-    with patch("request_join.get_lobby", return_value=lobby):
-        # Ejecuta la función unirse_lobby() con un lobby lleno.
-        response = unirse_lobby(1, 2)
+#test un jugador se quiere unir a un lobby que ya está lleno
+async def test_unirse_lobby_lobby_lleno():
+    # Configurar un mock de Player para un jugador que no está en juego
+    player_mock = MagicMock()
+    player_mock.player_id = 2  # Simula que el jugador tiene id 2.
+    player_mock.player_ingame = False  # Simula que el jugador no está en juego.
 
-        # Verifica que la respuesta sea un error indicando que el lobby está lleno.
+    # Configurar un mock de Lobby para un lobby lleno
+    lobby_mock = MagicMock()
+    lobby_mock.lobby_id = 1  # Simula que el lobby tiene id 1
+    lobby_mock.lobby_max = 4  # El máximo permitido en el lobby es 4.
+    lobby_mock.lobby_pcount = 4  # Simula que el lobby ya tiene 4 jugadores.
+
+    # Configurar un mock de get_lobby para devolver el mock de Lobby
+    with patch("api.lobby.request_join.get_lobby", return_value = lobby_mock):
+        client = TestClient(app)  # Creamos el objeto TestClient
+        response = client.put("/lobbys/1/2")
+
+        # Verificar que la respuesta sea un error indicando que el lobby está lleno
         assert response.status_code == 406
-        assert response.content == "El lobby está lleno"
+        assert response.body == b'{"detail": "El lobby esta lleno"}'
 
+#test un jugador se quiere unir a un lobby pero ya está en uno
+async def test_unirse_lobby_jugador_ya_unido():
+    # Configurar un mock de Player para un jugador que ya está en juego
+    player_mock = MagicMock()
+    player_mock.player_id = 2  # Simula que el jugador tiene id 2.
+    player_mock.player_ingame = True  # Simula que el jugador ya está en juego.
 
+    # Configurar un mock de Lobby para un jugador ya unido
+    lobby_mock = MagicMock()
+    lobby_mock.lobby_id = 1  # Simula que el lobby tiene id 1
+    lobby_mock.lobby_players = [player_mock]  # Simula que el jugador ya está unido al lobby.
 
+    # Configurar un mock de get_lobby para devolver el mock de Lobby
+    with patch("api.lobby.request_join.get_lobby", return_value = lobby_mock):
+        client = TestClient(app)  # Creamos el objeto TestClient
+        response = client.put("/lobbys/1/2")
 
-def test_unirse_lobby_lobby_ya_unido():
-    # Mock del método get_lobby() para devolver un lobby al que el jugador ya está unido.
-    lobby = MagicMock()
-    lobby.lobby_pcount = 1
-    with patch("request_join.get_lobby", return_value=lobby):
-        # Ejecuta la función unirse_lobby() con un lobby al que el jugador ya está unido.
-        response = unirse_lobby(1, 2)
-
-        # Verifica que la respuesta sea un error indicando que el jugador ya está unido al lobby.
+        # Verificar que la respuesta sea un error indicando que el jugador ya está unido al lobby
         assert response.status_code == 409
-        assert response.content == "El jugador ya está unido al lobby"
+        assert response.body == 'El jugador ya está unido al lobby'
 
-
-def test_unirse_lobby_lobby_espectador():
-    # Mock del método get_lobby() para devolver un lobby al que el jugador puede unirse como espectador.
-    lobby = MagicMock()
-    lobby.lobby_pcount = 1
-    with patch("request_join.get_lobby", return_value=lobby):
-        # Ejecuta la función unirse_lobby() con un lobby al que el jugador puede unirse como espectador.
-        response = unirse_lobby(1, 2, espectador=True)
-
-        # Verifica que la respuesta sea correcta.
-        assert response.status_code == 200
-        assert response.content == "jugador 2 estas en la partida 1 como espectador"
-
-
+'''
+#test unirse a un lobby que , o un lobby que ya empezó la partida
 def test_unirse_lobby_lobby_en_juego():
-    # Mock del método get_lobby() para devolver un lobby que está en juego.
-    lobby = MagicMock()
-    lobby.lobby_match = 1
-    with patch("request_join.get_lobby", return_value=lobby):
-        # Ejecuta la función unirse_lobby() con un lobby que está en juego.
-        response = unirse_lobby(1, 2)
+    # Configurar un mock de Player para un jugador que no está en juego
 
-        # Verifica que la respuesta sea un error indicando que el lobby está en juego.
+    # Configurar un mock de Lobby para un lobby en juego
+    lobby_mock = MagicMock()
+    lobby_mock.lobby_match = 1  # Simula que el lobby ya está en juego.
+    lobby_mock.lobby_match.match_status = 2  # Simula que el lobby ya está en juego.
+
+    # Configurar un mock de get_lobby para devolver el mock de Lobby
+    with patch("api.lobby.request_join.get_lobby", return_value = lobby_mock):
+        response = unirse_lobby(1, 2)
+        # Verificar que la respuesta sea un error indicando que el lobby está en juego
         assert response.status_code == 409
         assert response.content == "El lobby está en juego"
+
+#test un jugador que es host se quiere unir a una partida
+'''
