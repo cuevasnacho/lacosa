@@ -22,7 +22,7 @@ function Lobby(params) {
     }
 
     useEffect(() => {
-        const url = `ws://localhost:8000/ws/lobbys/${idLobby}/refrescar`;
+        const url = `ws://localhost:8000/ws/lobbys/${idLobby}`;
         const ws = new WebSocket(url);
     
         ws.onopen = (event) => {

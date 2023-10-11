@@ -65,7 +65,7 @@ async def Crear_Lobby(new_lobby: CreateLobby):
         return JSONResponse(content= content, status_code=404)
 
 
-@router.websocket("/ws/lobbys/{lobby_id}/refrescar")
+@router.websocket("/ws/lobbys/{lobby_id}")
 async def players_in_lobby(lobby_id : int, websocket : WebSocket):  
     await manager.connect(websocket)
     try:
