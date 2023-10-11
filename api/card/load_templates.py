@@ -7,10 +7,11 @@ from db.database import CardTemplate as db_cardT
 
 lanzallamas = lanzallamas_T()
 la_cosa = laCosa_T()
-
+nada_de_barbacoas = NadaDeBarbacoa()
 Template_Diccionary = {
-    "Lanzallamas" : lanzallamas,
-    "La_Cosa"     : la_cosa
+    "lanzallamas" : lanzallamas,
+    "lacosa"     : la_cosa,
+    "nada_de_barbacoas" : nada_de_barbacoas
 }
 
 def already_load(name):
