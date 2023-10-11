@@ -1,11 +1,13 @@
 from db.database import Card
 from pony.orm import db_session, ObjectNotFound
-from fastapi import APIRouter
+from fastapi import APIRouter, WebSocket
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from typing import List
 from pony import orm 
 from api.player.player import get_jugador
+from definitions import match_status
+from api.player.steal_card import get_match
 
 router = APIRouter()
 
@@ -42,7 +44,14 @@ async def get_hand(player_id: int, match_id: int)-> hand:
         player =get_jugador(player_id)
 
         if player.player_current_match_id == match_id :
-            message = "El jugador no pertenece a la partida"
+            message = "El jugador no pertenece a la partida indicada"
+            status_code = 406 # no acceptable
+            return JSONResponse(content=message, status_code=status_code)
+        
+        match = get_match(match_id)
+
+        if match.match_status == match_status.INITIALIZED.value:
+            message = "El jugador no pertenece a una partida iniciada"
             status_code = 406 # no acceptable
             return JSONResponse(content=message, status_code=status_code)
 

@@ -1,11 +1,11 @@
 from pydantic import *
-from fastapi import FastAPI, HTTPException, APIRouter, Query, status
+from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 from db.database import Match, Player, Card
 from pony.orm import db_session, commit ,select, ObjectNotFound
 from definitions import match_status , card_position
 from api.player.player import get_jugador
-from db.database import Player as db_player
+from db.database import Player
 
 router = APIRouter()
 
