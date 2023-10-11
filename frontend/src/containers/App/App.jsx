@@ -4,7 +4,7 @@ import Inicio from '../../components/Inicio/Inicio.jsx';
 import Lobby from '../../components/Lobby/Lobby.jsx';
 import FormCrearPartida from '../../components/Formularios/CrearPartida/FormCrearPartida.jsx';
 import UnirsePartida from '../../components/UnirsePartida/UnirsePartida';
-import InfoPartida from '../../components/Partida/InfoPartida.jsx';
+import Partida from '../../components/Partida/Partida.jsx';
 
 function App() {
   return (

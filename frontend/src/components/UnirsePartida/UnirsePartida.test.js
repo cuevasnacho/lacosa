@@ -23,15 +23,15 @@ beforeAll(()=>server.listen());
 afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 //funcion para setear storage
-const setLocalStorage=(id,data)=>{
-  window.localStorage.setItem(id,data)
+const setsessionStorage=(id,data)=>{
+  window.sessionStorage.setItem(id,data)
 };
 
 test("Local storage guarda username:'pepito'",()=>{
   const mockId ="username";
   const mockJson="pepito";
-  setLocalStorage(mockId,mockJson);
-  expect(localStorage.getItem(mockId)).toEqual(mockJson);
+  setsessionStorage(mockId,mockJson);
+  expect(sessionStorage.getItem(mockId)).toEqual(mockJson);
 })
 test('Conectado y hay 4 partidas disponibles ,con una partida repetida', async () => {
   const component = render(<Router>
