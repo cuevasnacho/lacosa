@@ -8,6 +8,7 @@ function Lobby(params) {
     const { ws } = params;      
     const esHost = window.sessionStorage.getItem('Host');
     const {idLobby} = useParams();
+    const idPlayer = parseInt(window.sessionStorage.getItem('user_id'));
 
     const [jugadores, setJugadores] = useState([]);
 
@@ -22,7 +23,7 @@ function Lobby(params) {
     }
 
     useEffect(() => {
-        const url = `ws://localhost:8000/ws/lobbys/${idLobby}`;
+        const url = `ws://localhost:8000/ws/lobbys/${idLobby}/${idPlayer}`;
         const ws = new WebSocket(url);
     
         ws.onopen = (event) => {

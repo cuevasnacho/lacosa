@@ -65,9 +65,9 @@ async def Crear_Lobby(new_lobby: CreateLobby):
         return JSONResponse(content= content, status_code=404)
 
 
-@router.websocket("/ws/lobbys/{lobby_id}")
-async def players_in_lobby(lobby_id : int, websocket : WebSocket):  
-    await manager.connect(websocket)
+@router.websocket("/ws/lobbys/{lobby_id}/{player_id}")
+async def players_in_lobby(lobby_id : int, player_id : int, websocket : WebSocket):  
+    await manager.connect(websocket,lobby_id,player_id)
     try:
         while True:
             data = await websocket.receive_text() 
@@ -84,9 +84,9 @@ async def players_in_lobby(lobby_id : int, websocket : WebSocket):
                     content = json.loads(json.dumps({"action" : "lobby_players","data" : [],"status_code" : 404}))
             
                 #await manager.send_data(content,websocket)
-                await manager.broadcast(content)
+                await manager.broadcast(content,lobby_id)
     except WebSocketDisconnect:
-        manager.disconnect(websocket)
+        manager.disconnect(websocket,lobby_id,player_id)
         content = "Websocket desconectado"
         return JSONResponse(content = content, status_code = 200) 
 
