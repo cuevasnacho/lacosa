@@ -20,6 +20,13 @@ export default function TablaFila(elem) {
           service: `lobbys/${lobby_id}/${user_id}`
       });
         setPartidas([...partidas, data]);
+        
+        window.sessionStorage.setItem('Host',false);
+        window.sessionStorage.setItem('Partida', JSON.stringify({
+          lobby_min: 0,
+          lobby_max: max_players,
+        }));
+        
         window.location=`/lobby/${lobby_id}`
       } catch (error) {
         console.log(error);
