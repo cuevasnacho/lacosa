@@ -1,9 +1,16 @@
 import styles from "./JugarCarta.module.css"
 
-export default function JugarCarta(carta,ws) {
+export default function JugarCarta(carta,target,ws) {
     const jugarCarta = ()=>{
-        const data = JSON.stringify({ action: 'jugar_carta', data: carta.id });
-        ws.send(data);
+      const datos ={
+        action:'jugar_carta',
+        data:{
+          carta_id:carta.id,
+          target_id:target
+        } 
+      }  
+      const data = JSON.stringify(datos);
+      ws.send(data);
     }
   return (
     <button onClick={jugarCarta} className= {styles.terror}>Jugar</button>
