@@ -2,8 +2,12 @@ import { httpRequest } from "../..//services/HttpService";
 
 export async function robarCarta(mano, actualizarMano)
 {
-    const response = await httpRequest('GET', '/cartas/robar');
-    const nuevaCarta = {cartaNombre: 'aterrador', id: 1, tipo: 0};
-    const manoNueva = [...mano, nuevaCarta];
-    actualizarMano(manoNueva);
+    const user_id = window.sessionStorage.getItem('user_id');
+    const response = await httpRequest({
+        method: 'POST',
+        service: '/card/' + user_id
+    });
+    //const nuevaCarta = {cartaNombre: response.cartaNombre, id: response.id, tipo: response.tipo};
+    //const manoNueva = [...mano, nuevaCarta];
+    //actualizarMano(manoNueva);
 }
