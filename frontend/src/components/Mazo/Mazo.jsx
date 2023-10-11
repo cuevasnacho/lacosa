@@ -5,7 +5,7 @@ function Mazo ({esTurno, mano, actualizarMano}) {
   
   const mazoState = esTurno ? `${styles.mazo} ${styles.mazoTurno}` : styles.mazo;
 
-  const handleRobarCarta = () => {
+  function handleRobarCarta () {
     if (mano.length <= 4) {
       robarCarta(mano, actualizarMano);
     }
