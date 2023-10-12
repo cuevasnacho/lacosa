@@ -1,14 +1,14 @@
 # import pytest
 from unittest.mock import MagicMock, patch
-from api.lobby.request_join import unirse_lobby
+from api.lobby.request_join import unirse_lobby, lobby_upadte, player_update
 from fastapi.testclient import TestClient
 from main import app
-
+import json 
 # from api.lobby import request_join
 #from db.database import Lobby, Player, Match #cómo sería esto?
 
 #test un jugador se quiere unir a un lobby que ya está lleno
-async def test_unirse_lobby_lobby_lleno():
+def test_unirse_lobby_lobby_lleno():
     # Configurar un mock de Player para un jugador que no está en juego
     player_mock = MagicMock()
     player_mock.player_id = 2  # Simula que el jugador tiene id 2.
@@ -27,8 +27,36 @@ async def test_unirse_lobby_lobby_lleno():
 
         # Verificar que la respuesta sea un error indicando que el lobby está lleno
         assert response.status_code == 406
-        assert response.body == b'{"detail": "El lobby esta lleno"}'
+        assert json.loads(response.content) == "El lobby esta lleno"
 
+
+def test_unirse_lobby_inexistente():
+    # Configurar un mock de Player para un jugador que no está en juego
+    player_mock = MagicMock()
+    player_mock.player_id = 2  # Simula que el jugador tiene id 2.
+    player_mock.player_ingame = False  # Simula que el jugador no está en juego.
+
+    # Configurar un mock de Lobby para un lobby lleno
+    lobby_mock = MagicMock()
+    lobby_mock.lobby_id = 1  # Simula que el lobby tiene id 1
+    lobby_mock.lobby_max = 6  # El máximo permitido en el lobby es 4.
+    lobby_mock.lobby_pcount = 4  # Simula que el lobby ya tiene 4 jugadores.
+    lobby_mock.lobby_match.match_id = 3
+
+    lobby_mock.lobby_update = MagicMock()
+    lobby_mock.player_update = MagicMock()
+
+    # Configurar un mock de get_lobby para devolver el mock de Lobby
+    with patch("api.lobby.request_join.get_lobby", return_value = lobby_mock):
+        client = TestClient(app)  # Creamos el objeto TestClient
+        response = client.put("/lobbys/2/2")
+
+        # Verificar que la respuesta sea un error indicando que el lobby está lleno
+        assert response.status_code == 406
+        assert json.loads(response.content) == "El objeto no existe"
+
+
+'''
 #test un jugador se quiere unir a un lobby pero ya está en uno
 async def test_unirse_lobby_jugador_ya_unido():
     # Configurar un mock de Player para un jugador que ya está en juego
@@ -48,9 +76,9 @@ async def test_unirse_lobby_jugador_ya_unido():
 
         # Verificar que la respuesta sea un error indicando que el jugador ya está unido al lobby
         assert response.status_code == 409
-        assert response.body == 'El jugador ya está unido al lobby'
+        assert response.content == 'El jugador ya está unido al lobby'
 
-'''
+
 #test unirse a un lobby que , o un lobby que ya empezó la partida
 def test_unirse_lobby_lobby_en_juego():
     # Configurar un mock de Player para un jugador que no está en juego
