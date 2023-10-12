@@ -4,11 +4,13 @@ import ManoJugador from '../ManoJugador/ManoJugador.jsx';
 import Jugadores from '../Jugador/Jugadores.jsx';
 import Mazo from '../Mazo/Mazo.jsx';
 import MazoDescarte from '../Mazo/MazoDescarte.jsx';
+import { useParams } from 'react-router-dom';
 
 function Partida () {
-  // const { ws } = socket;
-  // const user_id = JSON.parse(sessionStorage.getItem('user_id'));
-  // const username = JSON.parse(sessionStorage.getItem('username'));
+  
+  const idPlayer = JSON.parse(sessionStorage.getItem('user_id'));
+  const { idPartida } = useParams();
+  const [websocket, setWebsocket] = useState(null);
 
   const [matchState, setMatchState] = useState({});
   const [mazoDescarteState, setMazoDescarteState] = useState(1);  // Dice que carta se va a mostrar en el mazo de descarte
@@ -17,22 +19,6 @@ function Partida () {
   const [cartas, setCartas] = useState([]); // cartas de la mano del jugador
   const [listo, setListo] = useState(false); // cuando todos los jugadores estan listos comienza la partida
 
-/*
-  ws.onmessage = function (event) {
-    const info = JSON.parse(event.data);
-    switch (info.action) {
-      case 'cartas':
-        datos = info.data.cartas;
-        setCartas(datos);
-        return;
-
-      case ''
-
-      default:
-        return;
-    }
-  }
-*/
   const cartass = [{cartaNombre: 'analisis', id: 2, tipo: 0},
                   {cartaNombre: 'lacosa', id: 3, tipo: 0},
                   {cartaNombre: 'aterrador', id: 5, tipo: 0},
@@ -47,6 +33,28 @@ function Partida () {
                       {username: 'quito', esTurno: false, position: 6}];
 
   const sortedJugadores = jugadoress.sort((a,b) => a.position - b.position);
+
+  useEffect (() => {
+    const url = `ws://localhost:8000/ws/partida/${idPartida}/${idPlayer}`;
+    const ws = new WebSocket(url);
+
+    ws.onopen = (event) => {
+      const mensaje = JSON.stringify({action: 'get_status'});
+      ws.send(mensaje);
+
+      // establecer estado inicial de la partida
+    };
+
+    setWebsocket(ws);
+    // recieve message every start page
+    ws.onmessage = (e) => {
+      const info = JSON.parse(e.data);
+      console.log(info);
+    };
+  
+    //clean up function when we close page
+    return () => ws.close();
+  }, []);
 
   return (
     <div className={styles.container}>
