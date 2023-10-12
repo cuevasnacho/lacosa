@@ -5,8 +5,7 @@ import styles from './Lobby.module.css';
 import JugadoresLobby from '../Lobby/JugadoresLobby.jsx';
 import React, { useEffect } from 'react';
 
-function Lobby(params) {
-  const { ws } = params;      
+function Lobby() {
   
   const esHost = JSON.parse(window.sessionStorage.getItem('Host'));
   const infoPartida = JSON.parse(window.sessionStorage.getItem('Partida'));
@@ -17,6 +16,7 @@ function Lobby(params) {
   const idPlayer = parseInt(window.sessionStorage.getItem('user_id'));
 
   const [jugadores, setJugadores] = useState([]);
+  const [websocket, setWebsocket] = useState(null);
 
   async function iniciarPartida () {
     if (minJugadores <= jugadores.length && jugadores.length <= maxJugadores) {
@@ -24,10 +24,11 @@ function Lobby(params) {
         method: 'PUT',
         service: `partida/iniciar/${idLobby}`,
       });
-      
-      const match = JSON.parse(response);
-      const mensaje = JSON.stringify({action: 'start_match', match_id: match.match_id})
-      ws.send(mensaje);
+
+      const mensaje = JSON.stringify({action: 'start_match', match_id: response.match_id})
+      console.log(mensaje);
+      websocket.send(mensaje);
+
     }
     else {
       alert("La cantidad de jugadores no es la permitida");
@@ -43,8 +44,9 @@ function Lobby(params) {
       ws.send(mensaje);
     };
 
+    setWebsocket(ws);
     // recieve message every start page
-    ws.onmessage = async (e) => {
+    ws.onmessage = (e) => {
       const info = JSON.parse(e.data);
       switch (info.action) {
         case 'lobby_players':
@@ -52,6 +54,7 @@ function Lobby(params) {
           break;
 
         case 'start_match':
+          console.log(info.data);
           window.location = `/partida/${info.data}`;
       }
     };

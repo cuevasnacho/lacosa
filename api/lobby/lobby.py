@@ -70,21 +70,28 @@ async def players_in_lobby(lobby_id : int, player_id : int, websocket : WebSocke
     await manager.connect(websocket,lobby_id,player_id)
     try:
         while True:
-            data = await websocket.receive_text() 
-            players_names = []
-            
-            with db_session:
-                players = db_player.select(lambda player : player.player_lobby.lobby_id == lobby_id)
-                for player in players:
-                    players_names.append(player.player_name)
+            ws = await websocket.receive_json()
+            print(ws)
+            if ws["action"] == "lobby_players": 
+                players_names = []
+                with db_session:
+                    players = db_player.select(lambda player : player.player_lobby.lobby_id == lobby_id)
+                    for player in players:
+                        players_names.append(player.player_name)
+                    
+                    if players:
+                        content = json.loads(json.dumps({"action" : "lobby_players","data" : players_names, "status_code" : 200}))
+                    else:
+                        content = json.loads(json.dumps({"action" : "lobby_players","data" : [],"status_code" : 404}))
                 
-                if players:
-                    content = json.loads(json.dumps({"action" : "lobby_players","data" : players_names, "status_code" : 200}))
-                else:
-                    content = json.loads(json.dumps({"action" : "lobby_players","data" : [],"status_code" : 404}))
+                    await manager.broadcast(content,lobby_id)
             
-                #await manager.send_data(content,websocket)
+            elif ws["action"] == "start_match":
+                print("actionllego")
+                match_id = ws['match_id']
+                content = {"action" : "start_match","data" : match_id }
                 await manager.broadcast(content,lobby_id)
+
     except WebSocketDisconnect:
         manager.disconnect(websocket,lobby_id,player_id)
         content = "Websocket desconectado"
