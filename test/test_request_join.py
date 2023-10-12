@@ -4,6 +4,7 @@ from api.lobby.request_join import unirse_lobby, lobby_upadte, player_update
 from fastapi.testclient import TestClient
 from main import app
 import json 
+from pony.orm import ObjectNotFound
 # from api.lobby import request_join
 #from db.database import Lobby, Player, Match #cómo sería esto?
 
@@ -29,30 +30,20 @@ def test_unirse_lobby_lobby_lleno():
         assert response.status_code == 406
         assert json.loads(response.content) == "El lobby esta lleno"
 
-
 def test_unirse_lobby_inexistente():
     # Configurar un mock de Player para un jugador que no está en juego
     player_mock = MagicMock()
     player_mock.player_id = 2  # Simula que el jugador tiene id 2.
     player_mock.player_ingame = False  # Simula que el jugador no está en juego.
 
-    # Configurar un mock de Lobby para un lobby lleno
-    lobby_mock = MagicMock()
-    lobby_mock.lobby_id = 1  # Simula que el lobby tiene id 1
-    lobby_mock.lobby_max = 6  # El máximo permitido en el lobby es 4.
-    lobby_mock.lobby_pcount = 4  # Simula que el lobby ya tiene 4 jugadores.
-    lobby_mock.lobby_match.match_id = 3
-
-    lobby_mock.lobby_update = MagicMock()
-    lobby_mock.player_update = MagicMock()
-
-    # Configurar un mock de get_lobby para devolver el mock de Lobby
-    with patch("api.lobby.request_join.get_lobby", return_value = lobby_mock):
+    # Configurar un mock de get_lobby para devolver el mock de Lobby  
+    with patch("api.lobby.request_join.player_update"),\
+        patch("api.lobby.request_join.lobby_upadte"):
         client = TestClient(app)  # Creamos el objeto TestClient
         response = client.put("/lobbys/2/2")
 
         # Verificar que la respuesta sea un error indicando que el lobby está lleno
-        assert response.status_code == 406
+        assert response.status_code == 404
         assert json.loads(response.content) == "El objeto no existe"
 
 
