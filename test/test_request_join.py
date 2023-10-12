@@ -36,6 +36,11 @@ def test_unirse_lobby_inexistente():
     player_mock.player_id = 2  # Simula que el jugador tiene id 2.
     player_mock.player_ingame = False  # Simula que el jugador no está en juego.
 
+    # Configurar un mock de Lobby para un lobby lleno
+    lobby_mock = MagicMock()
+    lobby_mock.lobby_id = 1  # Simula que el lobby tiene id 1
+    lobby_mock.lobby_max = 4  # El máximo permitido en el lobby es 4.
+    lobby_mock.lobby_pcount = 6 # es un lobby que tiene espacio pero en realidad no existe
     # Configurar un mock de get_lobby para devolver el mock de Lobby  
     with patch("api.lobby.request_join.player_update"),\
         patch("api.lobby.request_join.lobby_upadte"):
