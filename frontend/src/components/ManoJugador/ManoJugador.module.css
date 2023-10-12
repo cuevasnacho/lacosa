@@ -7,4 +7,5 @@
     left: 0;
     right: 0;
     padding: 10px; /* Add padding if needed */
+    z-index: 2;
 }

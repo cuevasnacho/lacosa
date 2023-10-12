@@ -1,12 +1,24 @@
 /* Estilo para Jugadores.module.css */
 .jugadoresContainer {
     display: flex;
-    justify-content: flex-start; /* Cambiado a 'flex-start' */
+    width: 100%;
+    justify-content: space-around;
     align-items: center;
     padding: 10px;
     position: absolute;
     top: 0;
-    width: 100%;
-  }
-  
+}
 
+.jugadorLeft {
+  display: flex;
+  left: 0;
+  top: 50%;
+  position: absolute;
+}
+
+.jugadorRight {
+  display: flex;
+  right: 0;
+  top: 50%;
+  position: absolute;
+}

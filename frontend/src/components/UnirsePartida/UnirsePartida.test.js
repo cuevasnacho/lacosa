@@ -12,22 +12,32 @@ const MOCK_GET = [
      ,host_name: 'host2',min_players:4,max_players:12,is_private:false},
      { lobby_id:3,match_id: 3, lobby_name: 'TercerPartida',number_of_players:8
      ,host_name: 'host3',min_players:4,max_players:12,is_private:false},
-     { lobby_id:1,match_id: 1, lobby_name: 'PrimerPartida',number_of_players:6
+     { lobby_id:1,match_id: 1, lobby_name: 'PrimerPartida2',number_of_players:6
      ,host_name: 'host1',min_players:4,max_players:12,is_private:false},
   ];
-
   const server = setupServer(
-    rest.get('http://127.0.0.1:8000/partidas/listar', (req, res, ctx) => res(ctx.status(200), ctx.json(MOCK_GET))),
+    rest.get('http://localhost:8000/partidas/listar', (req, res, ctx) => res(ctx.status(200), ctx.json(MOCK_GET))),
   ); 
 
 beforeAll(()=>server.listen());
 afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
+//funcion para setear storage
+const setsessionStorage=(id,data)=>{
+  window.sessionStorage.setItem(id,data)
+};
 
+test("Local storage guarda username:'pepito'",()=>{
+  const mockId ="username";
+  const mockJson="pepito";
+  setsessionStorage(mockId,mockJson);
+  expect(sessionStorage.getItem(mockId)).toEqual(mockJson);
+})
 test('Conectado y hay 4 partidas disponibles ,con una partida repetida', async () => {
   const component = render(<Router>
     <UnirsePartida />
-  </Router>);
+    </Router>
+    );  
   await component.findByText('Lista de Partidas');
   await component.findByText('Nombre de Partida');
   await component.findByText('Host');

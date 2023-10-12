@@ -46,7 +46,9 @@ def get_player_number(id_lobby):
 def change_match_status(lobby_id):
     match_id = get_match_id(lobby_id)
     get_match = Match.get(match_id = match_id)
-    get_match.match_status = match_status.INITIALIZED.value                
+    get_match.match_status = match_status.INITIALIZED.value           
+    first_turn = Player.get(lambda p: p.player_position == 0)
+    get_match.match_currentP = first_turn.player_id     
     commit()
 
 @db_session
