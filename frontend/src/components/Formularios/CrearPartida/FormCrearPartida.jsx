@@ -33,11 +33,9 @@ function FormCrearPartida() {
         payload: algonuevo
       });
 
-      window.sessionStorage.setItem('Partida', JSON.stringify(data));
-      window.sessionStorage.setItem('cantidadJugadores', 1);
       window.sessionStorage.setItem('Host', true);
+      window.sessionStorage.setItem('Partida', JSON.stringify(data));
       window.sessionStorage.setItem('lobby_id', response.lobby_id);
-      window.sessionStorage.setItem('jugadores', JSON.stringify([USERNAME]));
       
       window.location = `/lobby/${response.lobby_id}`;
       

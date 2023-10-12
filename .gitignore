@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+*.pyc
+*.sqlite
+=======
 
 *.sqlite
 # Ignore Python pycache directory
@@ -8,3 +12,4 @@ __pycache__/
 *.pyd
 
 
+>>>>>>> 4103a935ca18999028872707b8d0b67da89001a5

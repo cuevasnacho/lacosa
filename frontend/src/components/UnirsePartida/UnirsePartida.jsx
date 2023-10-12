@@ -21,7 +21,7 @@ function UnirsePartida() {
             try 
             {
               const data = await httpRequest({ method: 'GET',headers:headers, service: 'partidas/listar' });
-              console.log(data)
+              console.log(data);
               setPartidas(data);
             } 
             catch (error) {
