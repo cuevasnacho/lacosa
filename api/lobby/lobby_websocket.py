@@ -20,4 +20,3 @@ class ConnectionManager:
         if lobby_id in self.active_connections:
             for connection in self.active_connections[lobby_id]:
                 await connection[1].send_json(data)     
-        print(self.active_connections)

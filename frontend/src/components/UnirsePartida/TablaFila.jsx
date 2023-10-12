@@ -28,9 +28,6 @@ export default function TablaFila(elem) {
         }));
         
         window.location=`/lobby/${lobby_id}`
-      } catch (error) {
-        console.log(error);
-      }
     } catch (error) {
       console.log(error);
       }

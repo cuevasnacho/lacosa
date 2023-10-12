@@ -25,7 +25,7 @@ class CreateLobby(BaseModel):
 @router.post("/lobbys")
 async def Crear_Lobby(new_lobby: CreateLobby):
     if len(new_lobby.lobby_name)>20:
-        message = "Nombre demasiado largo"
+        message = "Nombe demasiado largo"
         status_code = 406 # no acceptable
         return JSONResponse(content=message, status_code=status_code)
     if new_lobby.lobby_max>12:
@@ -103,9 +103,7 @@ async def delete_lobby(lobby_id: int) :
     with db_session:
         try:
             fetch_lobby = get_lobby(lobby_id)
-            fetch_match = get_match(lobby_id)
             db_lobby[lobby_id].delete()
-            db_match[lobby_id].delete()
         except ObjectNotFound:
             message = "El lobby no existe"
             status_code = 404 # not found
@@ -113,7 +111,6 @@ async def delete_lobby(lobby_id: int) :
     message = "lobby borrado!"
     status_code = 200 # no acceptable
     return JSONResponse(content=message, status_code=status_code)
-
 
 
 class Lobby(BaseModel):
