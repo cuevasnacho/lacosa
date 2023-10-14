@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { httpRequest } from '../../services/HttpService.jsx';
+import { httpRequest } from '../../services/HttpService.js';
 import { sortPlayers } from './functions.js';
 import styles from './Partida.module.css';
 import ManoJugador from '../ManoJugador/ManoJugador.jsx';
