@@ -15,26 +15,19 @@ export default function TablaFila(elem) {
     const user_id = window.sessionStorage.getItem('user_id');
     console.log(user_id);
     try {
-      const data = await httpRequest({
-      method: 'PUT',
-      service: `lobbys/${lobby_id}/${user_id}`
-    });
-      setPartidas([...partidas, data]);
-      window.sessionStorage.setItem('cantidadJugadores', number_of_players + 1);
-      window.sessionStorage.setItem('Host', false);
-      window.sessionStorage.setItem('lobby_id', lobby_id);
-
-      try {
-        const response = await httpRequest({
-          method: 'GET',
-          service: `lobbys/${lobby_id}/refrescar`
-        });
-        window.sessionStorage.setItem('jugadores', JSON.stringify(response.players));
-
-        window.location=`/lobby/${lobby_id}`;
-      } catch (error) {
-        console.log(error);
-      }
+        const data = await httpRequest({
+          method: 'PUT',
+          service: `lobbys/${lobby_id}/${user_id}`
+      });
+        setPartidas([...partidas, data]);
+        
+        window.sessionStorage.setItem('Host',false);
+        window.sessionStorage.setItem('Partida', JSON.stringify({
+          lobby_min: 0,
+          lobby_max: max_players,
+        }));
+        
+        window.location=`/lobby/${lobby_id}`
     } catch (error) {
       console.log(error);
       }

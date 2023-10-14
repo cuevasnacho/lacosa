@@ -1,82 +1,82 @@
-import CustomButton from '../Boton/CustomButton.jsx'
+import { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import styles from './Lobby.module.css';
 import { httpRequest } from '../../services/HttpService.js';
+import styles from './Lobby.module.css';
 import JugadoresLobby from '../Lobby/JugadoresLobby.jsx';
+import React, { useEffect } from 'react';
 
 function Lobby() {
-    const {idLobby} = useParams();
+  
+  const esHost = JSON.parse(window.sessionStorage.getItem('Host'));
+  const infoPartida = JSON.parse(window.sessionStorage.getItem('Partida'));
+  const minJugadores = infoPartida.lobby_min;
+  const maxJugadores = infoPartida.lobby_max;
 
-    const esHost = window.sessionStorage.getItem('Host');
-    //const esHost = true;
+  const { idLobby } = useParams();
+  const idPlayer = parseInt(window.sessionStorage.getItem('user_id'));
 
-    function Menu() {
-        /* No hay un endpoint del back para volver al home*/
-        alert("Volver al menu principal");
+  const [jugadores, setJugadores] = useState([]);
+  const [websocket, setWebsocket] = useState(null);
+
+  async function iniciarPartida () {
+    if (minJugadores <= jugadores.length && jugadores.length <= maxJugadores) {
+      const response = await httpRequest({
+        method: 'PUT',
+        service: `partida/iniciar/${idLobby}`,
+      });
+
+      const mensaje = JSON.stringify({action: 'start_match', match_id: response.match_id})
+      console.log(mensaje);
+      websocket.send(mensaje);
+
     }
+    else {
+      alert("La cantidad de jugadores no es la permitida");
+    }
+  }
 
-    async function refrescar () {
-        try {
-          const response = await httpRequest({
-            method: 'GET',
-            service: `lobbys/${idLobby}/refrescar`,
-          });
-          
-          window.sessionStorage.setItem('cantidadJugadores', response.players.length);
-          window.sessionStorage.setItem('jugadores', JSON.stringify(response.players));
-          window.location.reload();
-    
-        } catch (error) {
-          console.log(error);
-        }
+  useEffect (() => {
+    const url = `ws://localhost:8000/ws/lobbys/${idLobby}/${idPlayer}`;
+    const ws = new WebSocket(url);
+
+    ws.onopen = (event) => {
+      const mensaje = JSON.stringify({action: 'lobby_players'});
+      ws.send(mensaje);
     };
 
-    function IniciarPartida(idLobby) {
-        const cantidadJugadores = parseInt(window.sessionStorage.getItem('cantidadJugadores'));  
-        const cantidadMinima = parseInt(window.sessionStorage.getItem('minPlayers'));
-        
-        if (cantidadMinima <= cantidadJugadores) 
-        {
-            alert("Partida iniciada");
+    setWebsocket(ws);
+    // recieve message every start page
+    ws.onmessage = (e) => {
+      const info = JSON.parse(e.data);
+      switch (info.action) {
+        case 'lobby_players':
+          setJugadores(info.data);
+          break;
 
-            try 
-            {
-                const response = httpRequest({
-                    method: 'PUT',
-                    service: 'partida/iniciar/' + idLobby,
-                });
-                const idPartida = JSON.stringify(response.match_id);
-                
-                window.location = '/partida/' + idPartida;
-            } 
-            catch (error) 
-            {
-                console.log(error);                
-            }
-        }  
-        else 
-        {
-            alert("No se puede iniciar la partida, faltan jugadores");
-        }
-    }
+        case 'start_match':
+          console.log(info.data);
+          window.location = `/partida/${info.data}`;
+      }
+    };
 
-    return(
-        <>
-            <div className={styles.container}>
-                <div className={styles.jugadores}>
-                    <h1>Jugadores</h1>   
-                    <h3> {window.sessionStorage.getItem('cantidadJugadores')} </h3> 
-                    <JugadoresLobby jugadores={JSON.parse(window.sessionStorage.getItem('jugadores'))}/>
-                </div>
-                
-                <div className={styles.botones}>
-                    <CustomButton label="Volver al menu principal" onClick={Menu} />
-                    {esHost && <CustomButton label="Iniciar Partida" onClick={() => IniciarPartida(idLobby)} />}
-                    <CustomButton label="Refrescar" onClick={refrescar} />
-                </div>
-            </div>
-        </>
-    );
+    //clean up function when we close page
+    return () => ws.close();
+  }, []);
+
+  return(
+    <>
+      <div className={styles.container}>
+        <div className={styles.jugadores}>
+          <h1>Jugadores</h1>   
+          <h3> {jugadores.length} </h3> 
+          <JugadoresLobby jugadores={jugadores}/>
+          { esHost && (
+          <button className={styles.botonIniciar} type='button' onClick={iniciarPartida}>Iniciar Partida</button>
+          )}
+        </div>
+      </div>
+    </>
+  );
 }    
-    
+  
 export default Lobby;

@@ -7,12 +7,15 @@ import MazoDescarte from '../Mazo/MazoDescarte.jsx';
 
 function Partida () {
 
-  const [matchState, setMatchState] = useState([]);
+
+  const [matchState, setMatchState] = useState({});
   const [mazoDescarteState, setMazoDescarteState] = useState(1);  // Dice que carta se va a mostrar en el mazo de descarte
   const [turno, setTurno] = useState(true);   // Indica si es mi turno o no
+  const [jugadores, setJugadores] = useState([]); // username: string, id: int, esTurno: bool, posicion: int, eliminado: bool	
+  const [cartas, setCartas] = useState([]); // cartas de la mano del jugador
   const [listo, setListo] = useState(false); // cuando todos los jugadores estan listos comienza la partida
-  
-  
+
+
 /*
   ws.onmessage = function (event) {
     const info = JSON.parse(event.data);
@@ -48,6 +51,9 @@ function Partida () {
 
   const [manoJugador, setManoJugador] = useState(cartas);   // Indica las cartas que tengo en la mano
 
+  const sortedJugadores = jugadoress.sort((a,b) => a.position - b.position);
+
+
   return (
     <div className={styles.container}>
       {turno && (<div className={styles.tuTurno}/>)}
@@ -56,6 +62,7 @@ function Partida () {
       <MazoDescarte mazoDescarteState={mazoDescarteState}/>
       <ManoJugador cartas={manoJugador} esTurno={turno} actualizar={setManoJugador}/>
       <Jugadores jugadores={jugadores}/>
+
     </div>
   );
 }

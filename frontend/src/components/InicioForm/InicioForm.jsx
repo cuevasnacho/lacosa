@@ -1,11 +1,8 @@
 import styles from './InicioForm.module.css';
 import { httpRequest } from '../../services/HttpService.js';
-import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 
 const InicioForm = () => {
-  const navigate = useNavigate();
-
   const {
     register,
     handleSubmit,

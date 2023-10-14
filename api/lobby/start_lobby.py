@@ -69,10 +69,10 @@ async def start_match(lobby_id : int):
         #asociar un mazo
         number_players = get_player_number(lobby_id)
         match_id = get_match_id(lobby_id)
-        create_desk.create_desk(number_players, match_id)
+        create_desk(number_players, match_id)
 
         #repartir cartas
-        deal_cards.deal_cards(match_id)
+        deal_cards(match_id)
 
         #asignar orden a los jugadores
         sort_players(lobby_id)
