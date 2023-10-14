@@ -1,4 +1,4 @@
-import { httpRequest } from "../..//services/HttpService";
+import { httpRequest } from "../../services/HttpService";
 
 export async function robarCarta(mano, actualizarMano)
 {
