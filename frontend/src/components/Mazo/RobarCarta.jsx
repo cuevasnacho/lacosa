@@ -7,7 +7,7 @@ export async function robarCarta(mano, actualizarMano)
         method: 'POST',
         service: '/card/' + user_id
     });
-    //const nuevaCarta = {cartaNombre: response.cartaNombre, id: response.id, tipo: response.tipo};
-    //const manoNueva = [...mano, nuevaCarta];
-    //actualizarMano(manoNueva);
+    const nuevaCarta = {cartaNombre: response.cartaNombre, id: response.id, tipo: response.tipo};
+    const manoNueva = [...mano, nuevaCarta];
+    actualizarMano(manoNueva);
 }
