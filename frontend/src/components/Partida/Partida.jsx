@@ -6,9 +6,7 @@ import Mazo from '../Mazo/Mazo.jsx';
 import MazoDescarte from '../Mazo/MazoDescarte.jsx';
 
 function Partida () {
-  // const { ws } = socket;
-  // const user_id = JSON.parse(sessionStorage.getItem('user_id'));
-  // const username = JSON.parse(sessionStorage.getItem('username'));
+
 
   const [matchState, setMatchState] = useState({});
   const [mazoDescarteState, setMazoDescarteState] = useState(1);  // Dice que carta se va a mostrar en el mazo de descarte
@@ -16,6 +14,7 @@ function Partida () {
   const [jugadores, setJugadores] = useState([]); // username: string, id: int, esTurno: bool, posicion: int, eliminado: bool	
   const [cartas, setCartas] = useState([]); // cartas de la mano del jugador
   const [listo, setListo] = useState(false); // cuando todos los jugadores estan listos comienza la partida
+
 
 /*
   ws.onmessage = function (event) {
@@ -25,21 +24,21 @@ function Partida () {
         datos = info.data.cartas;
         setCartas(datos);
         return;
-
-      case ''
-
-      default:
-        return;
-    }
+        
+        case ''
+        
+        default:
+          return;
+        }
   }
 */
-  const cartass = [{cartaNombre: 'analisis', id: 2, tipo: 0},
+  let cartas = [{cartaNombre: 'analisis', id: 2, tipo: 0},
                   {cartaNombre: 'lacosa', id: 3, tipo: 0},
                   {cartaNombre: 'lanzallamas', id: 5, tipo: 0},
                   {cartaNombre: 'cuerdas_podridas', id: 1, tipo: 1}];
   
 
-  const jugadoress = [ {username: 'juan', esTurno: false, position: 7},
+  const players = [ {username: 'juan', esTurno: false, position: 7},
                       {username: 'pedro', esTurno: false, position: 1},
                       {username: 'tute', esTurno: false, position: 2},
                       {username: 'nacho', esTurno: false, position: 3},
@@ -47,16 +46,23 @@ function Partida () {
                       {username: 'negro', esTurno: false, position: 5},
                       {username: 'quito', esTurno: false, position: 6}];
 
+  const sortedJugadores = players.sort((a,b) => a.position - b.position);
+  const [jugadores, setJugadores] = useState(sortedJugadores); // username: string, id: int, esTurno: bool, posicion: int, eliminado: bool	
+
+  const [manoJugador, setManoJugador] = useState(cartas);   // Indica las cartas que tengo en la mano
+
   const sortedJugadores = jugadoress.sort((a,b) => a.position - b.position);
+
 
   return (
     <div className={styles.container}>
       {turno && (<div className={styles.tuTurno}/>)}
       <div className={styles.detalleMesa}/>
-      <Mazo esTurno={turno}/>
+      <Mazo esTurno={turno} mano={manoJugador} actualizarMano={setManoJugador}/>
       <MazoDescarte mazoDescarteState={mazoDescarteState}/>
-      <ManoJugador cartas={cartass} esTurno={turno}/>
-      <Jugadores jugadores={sortedJugadores}/>
+      <ManoJugador cartas={manoJugador} esTurno={turno} actualizar={setManoJugador}/>
+      <Jugadores jugadores={jugadores}/>
+
     </div>
   );
 }
