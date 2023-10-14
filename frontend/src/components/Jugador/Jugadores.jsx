@@ -12,14 +12,14 @@ function Jugadores({ jugadores }) {
     <>
       <div className={styles.jugadoresContainer}>
         {middle.map((jugador, index) => (
-          <Jugador key={index} username={jugador.username} esTurno={jugador.esTurno} />
+          <Jugador key={index} username={jugador.username} esTurno={jugador.esTurno} eliminado={jugador.eliminado}/>
         ))}
       </div>
       <div className={styles.jugadorLeft}>
-        <Jugador username={left.username} esTurno={left.esTurno}/>
+        <Jugador username={left.username} esTurno={left.esTurno} eliminado={left.eliminado}/>
       </div>
       <div className={styles.jugadorRight}>
-        <Jugador username={right.username} esTurno={right.esTurno}/>
+        <Jugador username={right.username} esTurno={right.esTurno} eliminado={right.eliminado}/>
       </div>
     </>
   );

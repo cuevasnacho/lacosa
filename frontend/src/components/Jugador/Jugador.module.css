@@ -19,6 +19,10 @@
 }
 
 .turno {
-    background: #008000; /* Cambia el color de fondo a rojo si es el turno */
+    background: #008000; /* Cambia el color de fondo a verde si es el turno */
     box-shadow: 0px 0px 15px #008000;
+}
+
+.eliminado {
+    background: #7a0505; /* Cambia el color de fondo a rojo si esta eliminado */
 }
