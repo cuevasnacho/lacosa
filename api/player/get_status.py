@@ -1,53 +1,67 @@
+
 from db import database
-from db.database import Lobby, Match, Player, Card
-from pony.orm import db_session
+from pony.orm import db_session, ObjectNotFound
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
-from definitions import match_status, results
+from definitions import match_status
 from pydantic import BaseModel
-from pony import orm 
-from api.player.player import get_jugador
-from typing import List 
+from api.player.steal_card import get_match
+from typing import List
 
 router = APIRouter()
 
-class card_response(BaseModel):
-    card_id : int
-    card_type : bool
-    card_name : str
+class player_response(BaseModel):
+    username  : str
+    id : int  
+    esTurno   : bool 
+    posicion  : int
+    eliminado : bool
 
 class status_response(BaseModel):
-    cards_owned : List[card_response]
-    actual_turn : int
-    finished : bool
+    jugador : player_response
+    jugadores :  List[player_response]
 
-@database
-def get_Hand(player):
-    hand = []
+@db_session
+def generate_status_response(match_id):
+    match = get_match(match_id)        
+    players_data = [] 
 
-    cards_related = orm.select(
-            (card.card_id, card.card_type, card.card_name)
-            for card in Card
-            if card.card_player.player_id == player.player_id)
+    players = list(match.match_players)
 
-    for card in cards_related:
-        hand.append(card_response(card_id = card[0], card_type = card[1], card_name = card[2]))
+    if len(players) == 0:
+        raise ObjectNotFound("No hay jugadores asociados a la partida")
 
-    return hand
+    for player in players :
+        enTurno = match.match_currentP.player_id = player.player_id
+        player_data = player_response(username = player.player_name,
+                                      id = player.player_id,
+                                      esTurno= enTurno,
+                                      posicion = player.player_position,
+                                      eliminado = player.player_dead)
+        if enTurno:
+            player_in_turn = player_data
+        else:
+            players_data.append(player_data)
 
-@router.get("/players/{player_id}/{match_id}")
-async def get_status(player_id: int, match_id: int):
-    try :
-        player =get_jugador(player_id)
+    ended = match.match_status == match_status.FINISHED.value
 
-        if player.player_current_match_id == match_id :
-            message = "El jugador no pertenece a la partida"
-            status_code = 406 # no acceptable
-            return JSONResponse(content=message, status_code=status_code)
+    full_status = status_response(jugador = player_in_turn,
+                                  jugadores = player_data)
 
-        hand = get_Hand(player)
+    return full_status
+
+@router.get("/partida/status/{match_id}")
+async def get_status(match_id: int) -> status_response:
+    try:
+        full_status = generate_status_response(match_id)
+            
+        return full_status
+
+    except ObjectNotFound as e:
+        content = str(e)
+        return JSONResponse(content=content, status_code=404)
 
     except Exception as e:
         print(f"Error al acceder a los datos: {e}")
-        content = f"Error al acceder a los datos de {player_id}"
+        content = f"Error al acceder a los datos de la partida {match_id}"
         return JSONResponse(content = content, status_code = 410) #comportamiento inesperado

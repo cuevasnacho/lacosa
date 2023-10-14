@@ -19,7 +19,7 @@ def player_update(player_id,lobby_id,match_id):
     player_get.player_current_match_id = match_id
 
 @db_session
-def lobby_upadte(lobby_id,match_id):
+def lobby_update(lobby_id,match_id):
     lobby_get = Lobby[lobby_id]
     lobby_get.lobby_pcount = lobby_get.lobby_pcount + 1
     lobby_get.lobby_match = match_id
@@ -50,7 +50,7 @@ async def unirse_lobby(lobby_id : int, player_id : int):
         player_update(player_id,lobby_id,match_id)
 
         #cambiar estado lobby
-        lobby_upadte(lobby_id, match_id)
+        lobby_update(lobby_id, match_id)
         commit()
     return JSONResponse(content=f"jugador {player_id} estas en la partida {lobby_id}", status_code=200)
 #en db_session, vez de hacer un db_player, tomo el id del jugador y modifico los campos que quiero
