@@ -32,8 +32,8 @@ export default function Finalizar({jugadoresDB}) {
                         </tbody>
                     </table>
                 </div> 
-                <Link className="boton-terror" to="/home">Volver Inicio</Link>
             </div>
+            <Link className="boton-terror" to="/home">Volver Inicio</Link>
         </div>
     </article>
   )

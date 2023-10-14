@@ -39,8 +39,9 @@
   }
   .container-tabla{
     display:flex;
-    align-items: flex-end;
+    align-items: flex-start;
     justify-content: space-between;
+    height: 18rem;
     max-width: 100vh;
 }
   .tabla-unirsePartida{
@@ -81,7 +82,7 @@
     background-color: #212121;
     cursor: pointer;
     transition: border-color 0.25s, background-color 0.25s, color 0.25s;
-    margin-right: 1rem;
+    margin-left: 20rem;
 }
 .boton-terror:hover {
     border-color: #a2d31c;
