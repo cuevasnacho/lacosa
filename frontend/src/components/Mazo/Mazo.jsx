@@ -18,7 +18,8 @@ function Mazo ({esTurno, mano, actualizarMano}) {
     <button 
       className={mazoState} 
       type='button' 
-      onClick={handleRobarCarta} />
+      onClick={handleRobarCarta}
+      data-testid='mazo' />
   );
 }
 

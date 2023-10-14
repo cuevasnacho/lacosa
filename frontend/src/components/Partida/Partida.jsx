@@ -69,7 +69,6 @@ function Partida () {
       <MazoDescarte mazoDescarteState={mazoDescarteState}/>
       <ManoJugador cartas={manoJugador} esTurno={turno} actualizar={setManoJugador}/>
       <Jugadores jugadores={jugadores}/>
-
     </div>
   );
 }
