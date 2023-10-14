@@ -6,14 +6,18 @@ import CustomButton from '../Boton/CustomButton';
 function ManoJugador({ cartas, esTurno }) {
   const [cartasMano, setCartasMano] = useState(cartas);
 
+  function actualizarMano(nuevaMano) {
+    setCartasMano(nuevaMano);
+  }
+
   return (
     <div className={style.ManoJugador}>
-      {cartas.map((carta, index) => (
+      {cartasMano.map((carta, index) => (
         <div
           key={index}
           style={{ position: 'relative' }}
         >
-          <Carta carta={carta} esTurno={esTurno} />
+          <Carta carta={carta} esTurno={esTurno} actualizar={actualizarMano} mano={cartasMano} />
         </div>
       ))}
     </div>

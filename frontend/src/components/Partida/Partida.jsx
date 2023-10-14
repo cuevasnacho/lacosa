@@ -35,9 +35,10 @@ function Partida () {
 */
   const cartass = [{cartaNombre: 'analisis', id: 2, tipo: 0},
                   {cartaNombre: 'lacosa', id: 3, tipo: 0},
-                  {cartaNombre: 'aterrador', id: 5, tipo: 0},
+                  {cartaNombre: 'lanzallamas', id: 5, tipo: 0},
                   {cartaNombre: 'cuerdas_podridas', id: 1, tipo: 1}];
   
+
   const jugadoress = [ {username: 'juan', esTurno: false, position: 7},
                       {username: 'pedro', esTurno: false, position: 1},
                       {username: 'tute', esTurno: false, position: 2},
