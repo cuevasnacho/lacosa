@@ -10,10 +10,9 @@ from db.database import Match as db_match
 from db.database import Player as db_player
 from definitions import match_status
 import json 
-from api.lobby.lobby_websocket import ConnectionManager
+from api.websocket import *
 
 router = APIRouter()
-manager = ConnectionManager()
 
 class CreateLobby(BaseModel):
     player_id : int
