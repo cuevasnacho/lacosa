@@ -9,13 +9,13 @@ import Mazo from '../Mazo/Mazo.jsx';
 import MazoDescarte from '../Mazo/MazoDescarte.jsx';
 
 function Partida () {
-  
+
   const idPlayer = JSON.parse(sessionStorage.getItem('user_id'));
   const { idPartida } = useParams();
   // const [websocket, setWebsocket] = useState(null);
 
   const [playerState, setPlayerState] = useState({});
-  const [cards, setCards] = useState([]); // cartas de la mano del jugador
+  const [manoJugador, setManoJugador] = useState(cartas);   // Indica las cartas que tengo en la mano
   const [matchState, setMatchState] = useState([]); // username: string, id: int, esTurno: bool, posicion: int, eliminado: bool	
   const [mazoDescarteState, setMazoDescarteState] = useState(1);  // Dice que carta se va a mostrar en el mazo de descarte
 
@@ -60,14 +60,16 @@ function Partida () {
     return () => ws.close();
   }, []);
 
+
   return (
     <div className={styles.container}>
       {playerState.esTurno && (<div className={styles.tuTurno}/>)}
       <div className={styles.detalleMesa}/>
-      <Mazo esTurno={playerState.esTurno}/>
+      <Mazo esTurno={turno} mano={manoJugador} actualizarMano={setManoJugador}/>
       <MazoDescarte mazoDescarteState={mazoDescarteState}/>
-      <ManoJugador cartas={cards} esTurno={playerState.esTurno}/>
-      <Jugadores jugadores={matchState}/>
+      <ManoJugador cartas={manoJugador} esTurno={turno} actualizar={setManoJugador}/>
+      <Jugadores jugadores={jugadores}/>
+
     </div>
   );
 }
