@@ -26,8 +26,7 @@ function Partida () {
     });
     console.log(responseStatus);
     const status = responseStatus;
-    const pos = parseInt(status.jugador.posicion);
-    const jugadores = sortPlayers(status.jugadores, pos);
+    const jugadores = sortPlayers(status.jugadores);
     console.log(jugadores);
     console.log(status);
     setMatchState(jugadores);
