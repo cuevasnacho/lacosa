@@ -1,8 +1,7 @@
 
 from db.database import Lobby, Match, Player
 from pony.orm import db_session
-from fastapi import APIRouter, WebSocket, WebSocketDisconnect
-from api.lobby.lobby_websocket import ConnectionManager
+from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 from definitions import match_status
 from pydantic import BaseModel
@@ -11,7 +10,6 @@ import json
 
 router = APIRouter()
 
-manager = ConnectionManager()
 
 class data_item(BaseModel):
     lobby_id : int
@@ -55,25 +53,4 @@ async def show_matches():
     except: 
             content = "No hay partidas disponibles"
             return JSONResponse(content = content, status_code = 404) 
-
-'''
-@router.get("/partidas/listar")
-async def show_matches(websocket : WebSocket):
-    await manager.connect(websocket)
-    try:
-        while True:
-            try :
-                data = await websocket.receive_json()
-                content = get_not_initialized_matches() 
-                response = JSONResponse(content = content, status_code = 200) 
-            except :
-                content = "No hay partidas disponibles"
-                response = JSONResponse(content = content, status_code = 404) 
-            await manager.send_data(response)
-            await manager.broadcast(response)
-    except WebSocketDisconnect: 
-            manager.disconnect(websocket)
-            content = "Websocket desconectado"
-            return JSONResponse(content = content, status_code = 200) 
-'''    
 

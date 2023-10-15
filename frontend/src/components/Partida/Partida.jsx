@@ -15,34 +15,36 @@ function Partida () {
   // const [websocket, setWebsocket] = useState(null);
 
   const [playerState, setPlayerState] = useState({});
-  const [manoJugador, setManoJugador] = useState(cartas);   // Indica las cartas que tengo en la mano
+  const [manoJugador, setManoJugador] = useState([]);   // Indica las cartas que tengo en la mano
   const [matchState, setMatchState] = useState([]); // username: string, id: int, esTurno: bool, posicion: int, eliminado: bool	
   const [mazoDescarteState, setMazoDescarteState] = useState(1);  // Dice que carta se va a mostrar en el mazo de descarte
 
   const initializeGame = async (ws) => {
     const responseStatus = await httpRequest({
       method: 'GET',
-      service: `/partida/status/${idPartida}`,
+      service: `partida/status/${idPartida}/${idPlayer}`,
     });
-
-    const status = JSON.parse(responseStatus);
+    console.log(responseStatus);
+    const status = responseStatus;
     const pos = parseInt(status.jugador.posicion);
     const jugadores = sortPlayers(status.jugadores, pos);
-
+    console.log(jugadores);
+    console.log(status);
     setMatchState(jugadores);
     setPlayerState(status.jugador);
 
     const responseCards = await httpRequest({
       method: 'GET',
-      service: `/players/${idPlayer}/${idPartida}`,
+      service: `players/${idPlayer}/${idPartida}`,
     });
-
-    const cards = JSON.parse(responseCards);
-    setCards(cards);
+    console.log(responseCards);
+    const cards = responseCards.cartas;
+    console.log(cards);
+    setManoJugador(cards);
   }
 
   useEffect (() => {
-    const url = `ws://localhost:8000/ws/partida/${idPartida}/${idPlayer}`;
+    const url = `ws://localhost:8000/ws/match/${idPartida}/${idPlayer}`;
     const ws = new WebSocket(url);
 
     ws.onopen = (event) => {
@@ -53,7 +55,6 @@ function Partida () {
     // recieve message every start page
     ws.onmessage = (e) => {
       const info = JSON.parse(e.data);
-      console.log(info);
     };
   
     //clean up function when we close page
@@ -65,10 +66,10 @@ function Partida () {
     <div className={styles.container}>
       {playerState.esTurno && (<div className={styles.tuTurno}/>)}
       <div className={styles.detalleMesa}/>
-      <Mazo esTurno={turno} mano={manoJugador} actualizarMano={setManoJugador}/>
+      <Mazo esTurno={playerState.esTurno} mano={manoJugador} actualizarMano={setManoJugador}/>
       <MazoDescarte mazoDescarteState={mazoDescarteState}/>
-      <ManoJugador cartas={manoJugador} esTurno={turno} actualizar={setManoJugador}/>
-      <Jugadores jugadores={jugadores}/>
+      <ManoJugador cartas={manoJugador} esTurno={playerState.esTurno} actualizar={setManoJugador}/>
+      <Jugadores jugadores={matchState}/>
     </div>
   );
 }

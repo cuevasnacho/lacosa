@@ -23,7 +23,7 @@ def deal_cards(id_match):
         cards_list = list(cards_to_deal_query)
 
         la_cosa = Card.select(lambda card : card.card_match.match_id == id_match and 
-                              card.card_cardT.cardT_name == "La_Cosa").first()
+                              card.card_cardT.cardT_name == "lacosa").first()
 
         cards_list.append(la_cosa)
 
