@@ -2,7 +2,7 @@
 from db.database import Lobby, Match, Player
 from pony.orm import db_session
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
-from api.lobby.lobby_websocket import ConnectionManager
+from api.websocket import ConnectionManager
 from fastapi.responses import JSONResponse
 from definitions import match_status
 from pydantic import BaseModel

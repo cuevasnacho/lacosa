@@ -53,7 +53,7 @@ def change_match_status(lobby_id):
 def sort_players(lobby_id):
     #dar un orden a los jugadores y cambiar estado a en juego
     players = Player.select(lambda player : player.player_lobby.lobby_id == lobby_id)
-    position = 0
+    position = 1
     for player in players:
         player.player_ingame = True
         player.player_position = position

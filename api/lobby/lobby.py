@@ -70,7 +70,6 @@ async def players_in_lobby(lobby_id : int, player_id : int, websocket : WebSocke
     try:
         while True:
             ws = await websocket.receive_json()
-            print(ws)
             if ws["action"] == "lobby_players": 
                 players_names = []
                 with db_session:
@@ -86,7 +85,6 @@ async def players_in_lobby(lobby_id : int, player_id : int, websocket : WebSocke
                     await manager.broadcast(content,lobby_id)
             
             elif ws["action"] == "start_match":
-                print("actionllego")
                 match_id = ws['match_id']
                 content = {"action" : "start_match","data" : match_id }
                 await manager.broadcast(content,lobby_id)

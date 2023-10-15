@@ -8,7 +8,9 @@ class ConnectionManager:
         await websocket.accept()
         if lobby_id not in self.active_connections:
             self.active_connections[lobby_id] = []
-        self.active_connections[lobby_id].append((player_id, websocket))
+        for element in self.active_connections[lobby_id]:
+            if (player_id, websocket) != element : 
+                self.active_connections[lobby_id].append((player_id, websocket))
         
     def disconnect(self, websocket : WebSocket,lobby_id,player_id):
         self.active_connections[lobby_id].remove((player_id,websocket))

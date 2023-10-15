@@ -4,10 +4,17 @@ import Jugador from "./Jugador";
 import styles from "./Jugadores.module.css";
 
 function Jugadores({ jugadores }) {
-  const left = jugadores[0];
-  const right = jugadores[jugadores.length-1];
-  const middle = jugadores.slice(1,-1);
-
+  let left,right,middle;
+  if (jugadores.length >= 3){
+    left = jugadores[0];
+    right = jugadores[jugadores.length-1];
+    middle = jugadores.slice(1,-1);
+  }
+  else{
+    left = {username: 'null', esTurno: false, eliminado: false};
+    right = {username: 'null', esTurno: false, eliminado: false};
+    middle = [{username: 'null', esTurno: false, eliminado: false}];
+  }
   return (
     <>
       <div className={styles.jugadoresContainer}>

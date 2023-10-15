@@ -60,7 +60,7 @@ function Lobby() {
     };
 
     //clean up function when we close page
-    return () => ws.close();
+    return () => ws.close();  
   }, []);
 
   return(

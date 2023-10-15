@@ -15,7 +15,7 @@ function Partida () {
   // const [websocket, setWebsocket] = useState(null);
 
   const [playerState, setPlayerState] = useState({});
-  const [manoJugador, setManoJugador] = useState(cartas);   // Indica las cartas que tengo en la mano
+  const [manoJugador, setManoJugador] = useState([]);   // Indica las cartas que tengo en la mano
   const [matchState, setMatchState] = useState([]); // username: string, id: int, esTurno: bool, posicion: int, eliminado: bool	
   const [mazoDescarteState, setMazoDescarteState] = useState(1);  // Dice que carta se va a mostrar en el mazo de descarte
 
@@ -24,11 +24,13 @@ function Partida () {
       method: 'GET',
       service: `/partida/status/${idPartida}`,
     });
-
+    console.log("linea27");
     const status = JSON.parse(responseStatus);
     const pos = parseInt(status.jugador.posicion);
     const jugadores = sortPlayers(status.jugadores, pos);
-
+    console.log(status);
+    console.log(pos);
+    console.log(jugadores);
     setMatchState(jugadores);
     setPlayerState(status.jugador);
 
@@ -36,16 +38,19 @@ function Partida () {
       method: 'GET',
       service: `/players/${idPlayer}/${idPartida}`,
     });
-
+    
     const cards = JSON.parse(responseCards);
-    setCards(cards);
+    setManoJugador(cards);
+    console.log("linea42");
   }
 
   useEffect (() => {
-    const url = `ws://localhost:8000/ws/partida/${idPartida}/${idPlayer}`;
+    const url = `ws://localhost:8000/ws/match/${idPartida}/${idPlayer}`;
+    console.log(url);
     const ws = new WebSocket(url);
 
     ws.onopen = (event) => {
+      console.log("linea52");
       initializeGame(ws);
     };
 
@@ -65,10 +70,10 @@ function Partida () {
     <div className={styles.container}>
       {playerState.esTurno && (<div className={styles.tuTurno}/>)}
       <div className={styles.detalleMesa}/>
-      <Mazo esTurno={turno} mano={manoJugador} actualizarMano={setManoJugador}/>
+      <Mazo esTurno={playerState.esTurno} mano={manoJugador} actualizarMano={setManoJugador}/>
       <MazoDescarte mazoDescarteState={mazoDescarteState}/>
-      <ManoJugador cartas={manoJugador} esTurno={turno} actualizar={setManoJugador}/>
-      <Jugadores jugadores={jugadores}/>
+      <ManoJugador cartas={manoJugador} esTurno={playerState.esTurno} actualizar={setManoJugador}/>
+      <Jugadores jugadores={matchState}/>
     </div>
   );
 }
