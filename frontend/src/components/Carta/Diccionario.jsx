@@ -4,6 +4,7 @@ import cuerdas_podridas from '../../media/designs/cartas/panico/cuerdas_podridas
 import aterrador from '../../media/designs/cartas/alejate/aterrador.png'
 import misteriosa from '../../media/designs/cartas/misteriosa.png'
 import lanzallamas from '../../media/designs/cartas/alejate/lanzallamas.png'
+import nada_de_barbacoas from '../../media/designs/cartas/alejate/nada_de_barbacoas.png'
 
 const Diccionario = {
     "analisis": analisis,
@@ -11,7 +12,8 @@ const Diccionario = {
     "cuerdas_podridas": cuerdas_podridas,
     "aterrador": aterrador,
     "misteriosa": misteriosa,
-    "lanzallamas": lanzallamas
+    "lanzallamas": lanzallamas,
+    "nada_de_barbacoas": nada_de_barbacoas 
 };
 
 export default Diccionario;

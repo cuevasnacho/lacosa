@@ -10,9 +10,10 @@ from db.database import Match as db_match
 from db.database import Player as db_player
 from definitions import match_status
 import json 
-from api.lobby.lobby_websocket import ConnectionManager
+from api.websocket import ConnectionManager
 
 router = APIRouter()
+
 manager = ConnectionManager()
 
 class CreateLobby(BaseModel):
@@ -71,7 +72,6 @@ async def players_in_lobby(lobby_id : int, player_id : int, websocket : WebSocke
     try:
         while True:
             ws = await websocket.receive_json()
-            print(ws)
             if ws["action"] == "lobby_players": 
                 players_names = []
                 with db_session:
@@ -87,14 +87,15 @@ async def players_in_lobby(lobby_id : int, player_id : int, websocket : WebSocke
                     await manager.broadcast(content,lobby_id)
             
             elif ws["action"] == "start_match":
-                print("actionllego")
                 match_id = ws['match_id']
                 content = {"action" : "start_match","data" : match_id }
                 await manager.broadcast(content,lobby_id)
 
     except WebSocketDisconnect:
+        print("algo")
         manager.disconnect(websocket,lobby_id,player_id)
         content = "Websocket desconectado"
+        print("algo2")
         return JSONResponse(content = content, status_code = 200) 
 
 #para que sea consistene faltaria borrar match

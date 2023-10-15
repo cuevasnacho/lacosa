@@ -3,7 +3,7 @@ import style from './ManoJugador.module.css';
 import CustomButton from '../Boton/CustomButton';
 
 function ManoJugador({ cartas, esTurno , actualizar}) {
-  
+  console.log(cartas);  
   return (
     <div className={style.ManoJugador}>
       {cartas.map((carta, index) => (

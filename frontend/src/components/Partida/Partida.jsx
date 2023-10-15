@@ -1,4 +1,7 @@
 import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { httpRequest } from '../../services/HttpService.js';
+import { sortPlayers } from './functions.js';
 import styles from './Partida.module.css';
 import ManoJugador from '../ManoJugador/ManoJugador.jsx';
 import Jugadores from '../Jugador/Jugadores.jsx';
@@ -7,62 +10,60 @@ import MazoDescarte from '../Mazo/MazoDescarte.jsx';
 
 function Partida () {
 
+  const idPlayer = JSON.parse(sessionStorage.getItem('user_id'));
+  const { idPartida } = useParams();
+  // const [websocket, setWebsocket] = useState(null);
 
-  const [matchState, setMatchState] = useState({});
+  const [playerState, setPlayerState] = useState({});
+  const [manoJugador, setManoJugador] = useState([]);   // Indica las cartas que tengo en la mano
+  const [matchState, setMatchState] = useState([]); // username: string, id: int, esTurno: bool, posicion: int, eliminado: bool	
   const [mazoDescarteState, setMazoDescarteState] = useState(1);  // Dice que carta se va a mostrar en el mazo de descarte
-  const [turno, setTurno] = useState(true);   // Indica si es mi turno o no
-  const [jugadores, setJugadores] = useState([]); // username: string, id: int, esTurno: bool, posicion: int, eliminado: bool	
-  const [cartas, setCartas] = useState([]); // cartas de la mano del jugador
-  const [listo, setListo] = useState(false); // cuando todos los jugadores estan listos comienza la partida
 
+  const initializeGame = async (ws) => {
+    const responseStatus = await httpRequest({
+      method: 'GET',
+      service: `partida/status/${idPartida}/${idPlayer}`,
+    });
+    const status = responseStatus;
+    const jugadores = sortPlayers(status.jugadores);
+    setMatchState(jugadores);
+    setPlayerState(status.jugador);
 
-/*
-  ws.onmessage = function (event) {
-    const info = JSON.parse(event.data);
-    switch (info.action) {
-      case 'cartas':
-        datos = info.data.cartas;
-        setCartas(datos);
-        return;
-        
-        case ''
-        
-        default:
-          return;
-        }
+    const responseCards = await httpRequest({
+      method: 'GET',
+      service: `players/${idPlayer}/${idPartida}`,
+    });
+    const cards = responseCards.cartas;
+    setManoJugador(cards);
   }
-*/
-  let cartas = [{cartaNombre: 'analisis', id: 2, tipo: 0},
-                  {cartaNombre: 'lacosa', id: 3, tipo: 0},
-                  {cartaNombre: 'lanzallamas', id: 5, tipo: 0},
-                  {cartaNombre: 'cuerdas_podridas', id: 1, tipo: 1}];
+
+  useEffect (() => {
+    const url = `ws://localhost:8000/ws/match/${idPartida}/${idPlayer}`;
+    const ws = new WebSocket(url);
+
+    ws.onopen = (event) => {
+      initializeGame(ws);
+    };
+
+    // setWebsocket(ws);
+    // recieve message every start page
+    ws.onmessage = (e) => {
+      const info = JSON.parse(e.data);
+    };
   
-
-  const players = [ {username: 'juan', esTurno: false, position: 7},
-                      {username: 'pedro', esTurno: false, position: 1},
-                      {username: 'tute', esTurno: false, position: 2},
-                      {username: 'nacho', esTurno: false, position: 3},
-                      {username: 'cabeza', esTurno: false, position: 4},
-                      {username: 'negro', esTurno: false, position: 5},
-                      {username: 'quito', esTurno: false, position: 6}];
-
-  const sortedJugadores = players.sort((a,b) => a.position - b.position);
-  const [jugadores, setJugadores] = useState(sortedJugadores); // username: string, id: int, esTurno: bool, posicion: int, eliminado: bool	
-
-  const [manoJugador, setManoJugador] = useState(cartas);   // Indica las cartas que tengo en la mano
-
-  const sortedJugadores = jugadoress.sort((a,b) => a.position - b.position);
+    //clean up function when we close page
+    return () => ws.close();
+  }, []);
 
 
   return (
     <div className={styles.container}>
-      {turno && (<div className={styles.tuTurno}/>)}
+      {playerState.esTurno && (<div className={styles.tuTurno}/>)}
       <div className={styles.detalleMesa}/>
-      <Mazo esTurno={turno} mano={manoJugador} actualizarMano={setManoJugador}/>
+      <Mazo esTurno={playerState.esTurno} mano={manoJugador} actualizarMano={setManoJugador}/>
       <MazoDescarte mazoDescarteState={mazoDescarteState}/>
-      <ManoJugador cartas={manoJugador} esTurno={turno} actualizar={setManoJugador}/>
-      <Jugadores jugadores={jugadores}/>
-
+      <ManoJugador cartas={manoJugador} esTurno={playerState.esTurno} actualizar={setManoJugador}/>
+      <Jugadores jugadores={matchState}/>
     </div>
   );
 }
