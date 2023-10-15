@@ -38,8 +38,8 @@ def generate_status_response(match_id,id_player):
                                    eliminado = player.player_dead)
         if player.player_id == id_player:
             player_view = response.dict()
-        else:
-            players_data.append(response)
+        
+        players_data.append(response)
     
     full_response = {'jugador' : player_view, 'jugadores' : [obj.dict() for obj in players_data]}
 
