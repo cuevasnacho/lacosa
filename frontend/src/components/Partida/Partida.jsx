@@ -24,11 +24,8 @@ function Partida () {
       method: 'GET',
       service: `partida/status/${idPartida}/${idPlayer}`,
     });
-    console.log(responseStatus);
     const status = responseStatus;
     const jugadores = sortPlayers(status.jugadores);
-    console.log(jugadores);
-    console.log(status);
     setMatchState(jugadores);
     setPlayerState(status.jugador);
 
@@ -36,9 +33,7 @@ function Partida () {
       method: 'GET',
       service: `players/${idPlayer}/${idPartida}`,
     });
-    console.log(responseCards);
     const cards = responseCards.cartas;
-    console.log(cards);
     setManoJugador(cards);
   }
 

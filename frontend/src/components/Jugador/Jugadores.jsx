@@ -8,17 +8,32 @@ function mod(i, n) {
 }
 
 function Jugadores({ jugadores }) {
-  const user_id = parseInt(window.sessionStorage.getItem('user_id'));
-  const user_obj = jugadores.find(jugador => jugador.id === user_id);
-  const user_pos = user_obj.posicion;
   
   let left,right,middle;
   if (jugadores.length >= 3){
-    const middleLeft = jugadores.slice(0,mod(user_pos-1, jugadores.length));
-    const middleRight = jugadores.slice(mod(user_pos+2, jugadores.length));
+    const user_id = parseInt(window.sessionStorage.getItem('user_id'));
+    console.log(jugadores);
+    console.log(user_id);
+    const user_obj = jugadores.find(jugador => jugador.id === user_id);
+    const user_pos = user_obj.posicion;
+    let middleLeft = [];
+    let middleRight = [];
+    
+    if (user_pos == 0)
+      middleRight = jugadores.slice(2,jugadores.length-1).reverse();
+    else if (user_pos == jugadores.length-1)
+      middleRight = jugadores.slice(1,jugadores.length-2).reverse();
+    else{
+      if (mod(user_pos-1, jugadores.length) < user_pos)
+        middleLeft = jugadores.slice(0,mod(user_pos-1, jugadores.length)).reverse();
+    
+      if (mod(user_pos+2, jugadores.length) > user_pos)
+        middleRight = jugadores.slice(mod(user_pos+2, jugadores.length)).reverse();
+    }
+
     left = jugadores[mod(user_pos-1, jugadores.length)];
     right = jugadores[mod(user_pos+1, jugadores.length)];
-    middle = middleLeft.concat(middleRight.reverse());
+    middle = middleLeft.concat(middleRight);
   }
   else{
     left = {username: 'null', esTurno: false, eliminado: false};
