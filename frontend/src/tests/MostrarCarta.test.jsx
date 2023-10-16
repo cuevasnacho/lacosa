@@ -1,7 +1,6 @@
 import { render,screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import MostrarCarta from './MostrarCarta';
-import Diccionario from '../Carta/Diccionario';
+import MostrarCarta from '../components/MostrarCarta/MostrarCarta.jsx';
 
 
 test('src analisis con exito', () => {
