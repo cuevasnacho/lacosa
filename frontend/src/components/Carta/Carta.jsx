@@ -3,19 +3,10 @@ import { useState } from 'react';
 import styles from "./Carta.module.css";
 import Diccionario from './Diccionario.jsx';
 import { descartarCarta } from './DescartarCarta.jsx';
+import  JugarCarta  from './JugarCarta.jsx';
 
-function Carta({ carta, esTurno , actualizar, mano}) {
+function Carta({ carta, esTurno , actualizar, mano, socket, jugadores}) {
     const [isHover, setIsHover] = useState(false);
-
-    function jugarCarta() {
-        if(carta.cartaNombre === 'lacosa')
-            alert(`No puedes jugar la carta ${carta.cartaNombre}`);
-        else
-        {
-            alert(`Jugue la carta ${carta.id} ${carta.cartaNombre}`);
-            descartarCarta(actualizar, mano);
-        }
-    }
     
     const cartaState = esTurno ? `${styles.carta} ${styles.cartaTurno}` : styles.carta;
 
@@ -27,7 +18,7 @@ function Carta({ carta, esTurno , actualizar, mano}) {
             <img alt={carta.cartaNombre} src={Diccionario[carta.cartaNombre]} width={130}/>
             { isHover && esTurno && (
                 <div className={styles.botones}>
-                    <button className={styles.boton} onClick={jugarCarta}>Jugar</button>
+                    <JugarCarta carta={carta} socket={socket} jugadores={jugadores}/>
                     <button className={styles.boton} onClick={() => descartarCarta(actualizar, mano, carta)}>Descartar</button>
                 </div>
             )}

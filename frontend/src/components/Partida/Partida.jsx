@@ -12,7 +12,7 @@ function Partida () {
 
   const idPlayer = JSON.parse(sessionStorage.getItem('user_id'));
   const { idPartida } = useParams();
-  // const [websocket, setWebsocket] = useState(null);
+  const [websocket, setWebsocket] = useState(null);
 
   const [playerState, setPlayerState] = useState({});
   const [manoJugador, setManoJugador] = useState([]);   // Indica las cartas que tengo en la mano
@@ -45,7 +45,7 @@ function Partida () {
       initializeGame(ws);
     };
 
-    // setWebsocket(ws);
+    setWebsocket(ws);
     // recieve message every start page
     ws.onmessage = (e) => {
       const info = JSON.parse(e.data);
@@ -62,7 +62,12 @@ function Partida () {
       <div className={styles.detalleMesa}/>
       <Mazo esTurno={playerState.esTurno} mano={manoJugador} actualizarMano={setManoJugador}/>
       <MazoDescarte mazoDescarteState={mazoDescarteState}/>
-      <ManoJugador cartas={manoJugador} esTurno={playerState.esTurno} actualizar={setManoJugador}/>
+      <ManoJugador 
+        cartas={manoJugador} 
+        esTurno={playerState.esTurno} 
+        actualizar={setManoJugador} 
+        socket={websocket} 
+        jugadores={matchState}/>
       <Jugadores jugadores={matchState}/>
     </div>
   );
