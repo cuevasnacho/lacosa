@@ -3,9 +3,9 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import FormCrearPartida from './FormCrearPartida';
 
-// Mock localStorage
+// Mock sessionStorage
 beforeEach(() => {
-  Object.defineProperty(window, 'localStorage', {
+  Object.defineProperty(window, 'sessionStorage', {
     value: {
       getItem: jest.fn(),
       setItem: jest.fn(),
@@ -29,8 +29,8 @@ test('submits the form with the default values', async () => {
   // Wait for the form submission to complete (you might need to adjust the timing)
   await waitFor(() => {
     // Assertions after the form is submitted
-    expect(window.localStorage.setItem).toHaveBeenCalled();
-    expect(window.localStorage.setItem).toHaveBeenCalledWith('CrearPartida', expect.any(String));
+    expect(window.sessionStorage.setItem).toHaveBeenCalled();
+    expect(window.sessionStorage.setItem).toHaveBeenCalledWith('CrearPartida', expect.any(String));
   });
 
   // You can add more assertions if needed

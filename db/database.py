@@ -33,7 +33,7 @@ class Match (db.Entity):
     match_id = PrimaryKey(int, auto=True)
     match_status = Required(int)
     match_direction = Required(bool)
-    match_currentP = Required(int)
+    match_currentP = Required(int)      #currentP es el jugador en turno
     match_cardsCount= Required(int)
 
     match_lobby = Optional("Lobby")

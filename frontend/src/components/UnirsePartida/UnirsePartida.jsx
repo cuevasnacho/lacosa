@@ -11,8 +11,8 @@ function UnirsePartida() {
     const [partidas, setPartidas] = useState([])
     
     /* No usar JSON.parse */
-    let {username} = window.localStorage.getItem('username');
-
+    let username = window.sessionStorage.getItem('username');
+    console.log(username)
      useEffect(() => {
         const fetchpPartidas = async () => {
             let headers = {
@@ -21,20 +21,20 @@ function UnirsePartida() {
             try 
             {
               const data = await httpRequest({ method: 'GET',headers:headers, service: 'partidas/listar' });
-              console.log(data)
+              console.log(data);
               setPartidas(data);
             } 
             catch (error) {
               console.log(error);
             }
           }
-          
             fetchpPartidas()
      }, [])
   return (
  
     <div>
         <video className='videobg' src={videobg} autoPlay loop muted />
+        <h4>{username}</h4>
         <div className='contenedor-tabla'>
             <h3 className='titulo-tabla'>Lista de Partidas</h3>
                 <div className='tabla-unirsePartida'>

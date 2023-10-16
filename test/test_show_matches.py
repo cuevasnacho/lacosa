@@ -1,4 +1,4 @@
-from api.show_matches import show_matches
+from api.lobby.show_lobbys import show_matches
 from fastapi.testclient import TestClient
 from unittest.mock import MagicMock, patch
 from main import app 
