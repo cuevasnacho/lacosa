@@ -10,6 +10,7 @@ function ManoJugador({ cartas, esTurno , actualizar}) {
         <div
           key={index}
           style={{ position: 'relative' }}
+          data-testid={carta.nombre}
         >
           <Carta carta={carta} esTurno={esTurno} actualizar={actualizar} mano={cartas} />
         </div>
