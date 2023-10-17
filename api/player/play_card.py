@@ -52,7 +52,8 @@ def apply_card_efect(card_id, oponent_id):
     name = get_card_name(card_id)
     
     card_tamplate = Template_Diccionary[name]
-    card_tamplate.aplicar_efecto(oponent_id)
+    #AGREGAR METODO PARA COMPROBAR JUGADA VALIDA Y AUTOMATICAMENTE LLAMAR A APLICAR EFECTO
+    card_tamplate.aplicar_efecto(oponent_id) #ESTE METODO YA ASUME QUE LA JUGADA ES VALIDA Y NO LO CHECKEEA
 
 #atributos que pueden cambiar despues de ejecutar una carta
 class data_item(BaseModel):

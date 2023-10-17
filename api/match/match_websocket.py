@@ -18,7 +18,7 @@ async def match_websocket(websocket : WebSocket,match_id : int, player_id : int)
             ws = await websocket.receive_json()
             if ws['action'] == 'discard_card': 
                 card_type = ws['data']
-                content = {'action' : 'discard_card','data' : card_type}
+                content = {'action' : 'discard_card','data' : card_type} #forma de return para las cartas
                 await manager.broadcast(content,match_id)
         
     except WebSocketDisconnect:
