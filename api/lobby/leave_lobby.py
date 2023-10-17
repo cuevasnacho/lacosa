@@ -11,7 +11,7 @@ from db.database import Lobby, Player, Match
 router = APIRouter()
 
 #obtener el lobby
-@db_session()
+@db_session
 def get_lobby_id(lobby_id):
     return Lobby[lobby_id]
 
@@ -72,18 +72,6 @@ async def leave_Lobby(lobby_id : int, player_id : int):
             commit()
     else:
         with db_session:
-            #Si el jugador es el host, (y ademas hay otro jugador en el lobby aparte del host), abandona la partida, y se le transfiere el host a otro jugador.
-            if Player.player_isHost and lobby.lobby_pcount > 1:
-                #removemos al host de la partida
-                #player_name = Player[player_id].player_name
-                lobby.lobby_player.remove(Player.player_id)
-                #tengo que obtener el jugador con el id mas chico y hacerlo host (criterio de seleccion para el nuevo host, dudas con esto)
-                players_id = get_players_id(lobby_id)
-                new_host_id = players_id[0]
-                new_host = Player.new_host_id
-                new_host.player_isHost = True
-                lobby_update(lobby_id)
-                commit()
             #si es host y no hay otro jugador, se elimina el lobby y el match asociado.
             if Player.player_isHost and lobby.lobby_pcount == 1:
                 #actualizamos al jugador
@@ -94,5 +82,18 @@ async def leave_Lobby(lobby_id : int, player_id : int):
                 #borramos el match
                 match = get_match_id(lobby_id)
                 match.delete()
+                commit()
+                
+            #Si el jugador es el host, (y ademas hay otro jugador en el lobby aparte del host), abandona la partida, y se le transfiere el host a otro jugador.
+            else:
+                #removemos al host de la partida
+                #player_name = Player[player_id].player_name
+                lobby.lobby_player.remove(Player.player_id)
+                #tengo que obtener el jugador con el id mas chico y hacerlo host (criterio de seleccion para el nuevo host, dudas con esto)
+                players_id = get_players_id(lobby_id)
+                new_host_id = players_id[0]
+                new_host = Player.new_host_id
+                new_host.player_isHost = True
+                lobby_update(lobby_id)
                 commit()
     return JSONResponse(content=f"jugador {player_id} abandonaste el lobby {lobby_id}", status_code=200)
