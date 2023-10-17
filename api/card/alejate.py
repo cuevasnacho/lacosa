@@ -56,3 +56,13 @@ class NadaDeBarbacoa(card_template):
         objective_player = Player.get(player_id = objective_id)
         objective_player.player_dead = False
         commit()
+
+whisky_effect = "Muestro mis cartas a todos los jugadores"
+
+class Whisky(card_template):
+    def __init__(self):
+        super().__init__(False,cards_subtypes.ACTION.value,whisky_effect,"whisky")
+
+    @db_session
+    def aplicar_efecto(self):
+        pass
