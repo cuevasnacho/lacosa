@@ -5,6 +5,7 @@ function Mazo ({esTurno, mano, actualizarMano}) {
   
   const mazoState = esTurno ? `${styles.mazo} ${styles.mazoTurno}` : styles.mazo;
 
+  // No sacar del componente, deja de funcionar
   function handleRobarCarta () {
     if (mano.length <= 4 && esTurno) {
       robarCarta(mano, actualizarMano);
