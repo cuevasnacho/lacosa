@@ -8,19 +8,21 @@ import styles from './JugarCarta.module.css'
 function JugarCarta({carta, socket, jugadores}) {
   
   const player_id = JSON.parse(sessionStorage.getItem('user_id'));
+  const username = sessionStorage.getItem('username');
   const [dropdownm, setDropdown] = useState(false);
 
   function abrirCerrarMenu() {
     setDropdown(!dropdownm);
   }
 
-  async function jugar(target_id){
+  async function jugar(target_id, target_username){
     await httpRequest({
       method: 'PUT',
       service: `carta/jugar/${player_id}/${carta.id}/${target_id}`,
     });
     
-    const mensaje = JSON.stringify({action: 'play_card', data: {card: carta.cartaNombre ,player: player_id, target: target_id}});
+    const mensaje = JSON.stringify({action: 'play_card', data: 
+    {card: carta.cartaNombre ,player: username, target: target_username}});
     socket.send(mensaje);
   }
   
@@ -34,7 +36,7 @@ function JugarCarta({carta, socket, jugadores}) {
         { jugadores.map((jugador, index) => (
           <DropdownItem 
                         key={index} 
-                        onClick={() => jugar(jugador.id)}>
+                        onClick={() => jugar(jugador.id, jugador.username)}>
                         {jugador.username} {jugador.id}
           </DropdownItem>
           ))}

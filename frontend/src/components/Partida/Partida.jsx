@@ -64,7 +64,12 @@ function Partida () {
       switch (info.action) {
         case 'play_card':
           getStatus();
-          toast("Se jugo una carta");
+          toast(`${info.data.player} jugó la carta ${info.data.card} sobre ${info.data.target}`);
+          break;
+
+        case 'next_turn':
+          getStatus();
+          toast(`Es el turno de ${info.data.username}`);
           break;
       }
     };
