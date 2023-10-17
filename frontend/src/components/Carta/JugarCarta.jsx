@@ -5,29 +5,23 @@ import {Dropdown, DropdownItem, DropdownMenu, DropdownToggle} from 'reactstrap';
 import { descartarCarta } from "./DescartarCarta";
 import styles from './JugarCarta.module.css'
 
-function JugarCarta({carta,ws, jugadores}) {
+function JugarCarta({carta, ws, jugadores}) {
   
   const player_id = JSON.parse(sessionStorage.getItem('user_id'));
-  const [oponentId, setOponentId] = useState(null);
   const [dropdownm, setDropdown] = useState(false);
 
   function abrirCerrarMenu() {
     setDropdown(!dropdownm);
   }
 
-
-  async function jugar(){
+  async function jugar(target_id){
     
     await httpRequest({
       method: 'PUT',
-      service: `carta/jugar/${player_id}/${carta.id}/${oponentId}}`,
+      service: `carta/jugar/${player_id}/${carta.id}/${target_id}`,
     });
-  }
 
-  function handleDropdownItemClick(jugadorId) {
-    const id_oponente = parseInt(jugadorId);
-    setOponentId(id_oponente);
-    jugar();
+    ws.send({action: 'play_card', data: {card: carta.cartaNombre ,player: player_id, target: target_id}});
   }
   
   return(
@@ -40,8 +34,8 @@ function JugarCarta({carta,ws, jugadores}) {
         { jugadores.map((jugador, index) => (
           <DropdownItem 
                         key={index} 
-                        onClick={() => handleDropdownItemClick(jugador.id)}>
-                        {jugador.username}{jugador.id}
+                        onClick={() => jugar(jugador.id)}>
+                        {jugador.username} {jugador.id}
           </DropdownItem>
           ))}
       </DropdownMenu>

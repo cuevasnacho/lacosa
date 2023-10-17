@@ -20,6 +20,11 @@ async def match_websocket(websocket : WebSocket,match_id : int, player_id : int)
                 card_type = ws['data']
                 content = {'action' : 'discard_card','data' : card_type}
                 await manager.broadcast(content,match_id)
+
+            elif ws['action'] == 'play_card':
+                content = {'action': 'play_card','data': ws['data']}
+
+                await manager.broadcast(content,match_id)
         
     except WebSocketDisconnect:
         manager.disconnect(websocket,match_id,player_id)

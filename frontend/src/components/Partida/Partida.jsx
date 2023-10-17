@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { httpRequest } from '../../services/HttpService.js';
 import { sortPlayers } from './functions.js';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import styles from './Partida.module.css';
 import ManoJugador from '../ManoJugador/ManoJugador.jsx';
 import Jugadores from '../Jugador/Jugadores.jsx';
@@ -19,7 +21,7 @@ function Partida () {
   const [matchState, setMatchState] = useState([]); // username: string, id: int, esTurno: bool, posicion: int, eliminado: bool	
   const [mazoDescarteState, setMazoDescarteState] = useState(1);  // Dice que carta se va a mostrar en el mazo de descarte
 
-  const initializeGame = async (ws) => {
+  const getStatus = async () => {
     const responseStatus = await httpRequest({
       method: 'GET',
       service: `partida/status/${idPartida}/${idPlayer}`,
@@ -28,6 +30,10 @@ function Partida () {
     const jugadores = sortPlayers(status.jugadores);
     setMatchState(jugadores);
     setPlayerState(status.jugador);
+  }
+
+  const initializeGame = async (ws) => {
+    getStatus();
 
     const responseCards = await httpRequest({
       method: 'GET',
@@ -49,6 +55,11 @@ function Partida () {
     // recieve message every start page
     ws.onmessage = (e) => {
       const info = JSON.parse(e.data);
+      switch (info.data) {
+        case 'play_card':
+          getStatus();
+          toast("Se jugo una carta");
+      }
     };
   
     //clean up function when we close page
@@ -58,6 +69,7 @@ function Partida () {
 
   return (
     <div className={styles.container}>
+      <ToastContainer />
       {playerState.esTurno && (<div className={styles.tuTurno}/>)}
       <div className={styles.detalleMesa}/>
       <Mazo esTurno={playerState.esTurno} mano={manoJugador} actualizarMano={setManoJugador}/>
