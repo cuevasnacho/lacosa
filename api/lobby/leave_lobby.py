@@ -64,21 +64,6 @@ async def leave_Lobby(lobby_id : int, player_id : int):
         return JSONResponse(content = message, status_code = status_code)
 
     #Si el jugador NO es el host, se lo elimina del lobby, y se actualiza el estado de ese lobby y de ese jugador.
-<<<<<<< HEAD
-    if not Player[player_id].player_isHost:
-        with db_session:
-            #player_name = Player[player_id].player_name
-            lobby.lobby_player.remove(Player[player_id]) #remove es una función set de pony
-            lobby_update(lobby_id)
-            commit()    
-    else:
-        with db_session:
-            #Si el jugador es el host, (y ademas hay otro jugador en el lobby aparte del host), abandona la partida, y se le transfiere el host a otro jugador.
-            if Player[player_id].player_isHost and lobby.lobby_pcount > 1:
-                #removemos al host de la partida
-                #player_name = Player[player_id].player_name
-                lobby.lobby_player.remove(Player[player_id])
-=======
     if not Player.player_isHost:
         with db_session:
             #player_name = Player[player_id].player_name
@@ -92,7 +77,6 @@ async def leave_Lobby(lobby_id : int, player_id : int):
                 #removemos al host de la partida
                 #player_name = Player[player_id].player_name
                 lobby.lobby_player.remove(Player.player_id)
->>>>>>> 0ef60cd6577f5a2ecc5929dff7efe64d24dff4c2
                 #tengo que obtener el jugador con el id mas chico y hacerlo host (criterio de seleccion para el nuevo host, dudas con esto)
                 players_id = get_players_id(lobby_id)
                 new_host_id = players_id[0]
@@ -101,11 +85,7 @@ async def leave_Lobby(lobby_id : int, player_id : int):
                 lobby_update(lobby_id)
                 commit()
             #si es host y no hay otro jugador, se elimina el lobby y el match asociado.
-<<<<<<< HEAD
-            if Player[player_id].player_isHost and lobby.lobby_pcount == 1:    
-=======
             if Player.player_isHost and lobby.lobby_pcount == 1:
->>>>>>> 0ef60cd6577f5a2ecc5929dff7efe64d24dff4c2
                 #actualizamos al jugador
                 #player_name = Player[player_id].player_name
                 player_update(player_id)
