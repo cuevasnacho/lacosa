@@ -6,7 +6,8 @@ import { descartarCarta } from "./DescartarCarta";
 import styles from './JugarCarta.module.css'
 
 function JugarCarta({carta,ws, jugadores}) {
-
+  
+  const player_id = JSON.parse(sessionStorage.getItem('user_id'));
   const [oponentId, setOponentId] = useState(null);
   const [dropdownm, setDropdown] = useState(false);
 
@@ -14,19 +15,18 @@ function JugarCarta({carta,ws, jugadores}) {
     setDropdown(!dropdownm);
   }
 
-  const player_id = JSON.parse(sessionStorage.getItem('user_id'));
 
   async function jugar(){
     
     await httpRequest({
       method: 'PUT',
-      service: 'carta/jugar/' + player_id + '/' + carta.id + '/' + oponentId,
+      service: `carta/jugar/${player_id}/${carta.id}/${oponentId}}`,
     });
   }
 
   function handleDropdownItemClick(jugadorId) {
-    alert(jugadorId)
-    setOponentId(jugadorId);
+    const id_oponente = parseInt(jugadorId);
+    setOponentId(id_oponente);
     jugar();
   }
   
