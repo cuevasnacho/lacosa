@@ -5,7 +5,7 @@ import {Dropdown, DropdownItem, DropdownMenu, DropdownToggle} from 'reactstrap';
 import { descartarCarta } from "./DescartarCarta";
 import styles from './JugarCarta.module.css'
 
-function JugarCarta({carta, ws, jugadores}) {
+function JugarCarta({carta, socket, jugadores}) {
   
   const player_id = JSON.parse(sessionStorage.getItem('user_id'));
   const [dropdownm, setDropdown] = useState(false);
@@ -15,13 +15,13 @@ function JugarCarta({carta, ws, jugadores}) {
   }
 
   async function jugar(target_id){
-    
     await httpRequest({
       method: 'PUT',
       service: `carta/jugar/${player_id}/${carta.id}/${target_id}`,
     });
-
-    ws.send({action: 'play_card', data: {card: carta.cartaNombre ,player: player_id, target: target_id}});
+    
+    const mensaje = JSON.stringify({action: 'play_card', data: {card: carta.cartaNombre ,player: player_id, target: target_id}});
+    socket.send(mensaje);
   }
   
   return(

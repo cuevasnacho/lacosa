@@ -21,7 +21,7 @@ function Partida () {
   const [matchState, setMatchState] = useState([]); // username: string, id: int, esTurno: bool, posicion: int, eliminado: bool	
   const [mazoDescarteState, setMazoDescarteState] = useState(1);  // Dice que carta se va a mostrar en el mazo de descarte
 
-  const getStatus = async () => {
+  async function getStatus() {
     const responseStatus = await httpRequest({
       method: 'GET',
       service: `partida/status/${idPartida}/${idPlayer}`,
@@ -30,6 +30,9 @@ function Partida () {
     const jugadores = sortPlayers(status.jugadores);
     setMatchState(jugadores);
     setPlayerState(status.jugador);
+    
+    console.log("Jugadores: " + jugadores);
+    console.log(status.jugador);
   }
 
   const initializeGame = async (ws) => {
@@ -43,6 +46,7 @@ function Partida () {
     setManoJugador(cards);
   }
 
+  
   useEffect (() => {
     const url = `ws://localhost:8000/ws/match/${idPartida}/${idPlayer}`;
     const ws = new WebSocket(url);
@@ -52,16 +56,19 @@ function Partida () {
     };
 
     setWebsocket(ws);
+  
     // recieve message every start page
     ws.onmessage = (e) => {
       const info = JSON.parse(e.data);
-      switch (info.data) {
+      console.log(info);
+      switch (info.action) {
         case 'play_card':
           getStatus();
           toast("Se jugo una carta");
+          break;
       }
     };
-  
+   
     //clean up function when we close page
     return () => ws.close();
   }, []);
