@@ -11,9 +11,10 @@ export default function BotonAbandonar({idJugador,idLobby}) {
     const handleClick= ()=>{
         const AbandonarLobby= async () => {
             try {
+                window.sessionStorage.setItem('Host', false);
                 const data = await httpRequest({
-                  method: 'PUT',
-                  service: `lobby/${idLobby}/${idJugador}`
+                  method: 'POST',
+                  service: `lobbys/${idLobby}/${idJugador}`
               });
                 window.location="/home"
               } catch (error) {

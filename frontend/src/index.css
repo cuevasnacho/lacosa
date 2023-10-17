@@ -5,13 +5,15 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: #191919;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+
+  overflow: hidden;
 }
 
 a {
@@ -29,6 +31,8 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  background-color: #191919;
+  background-image: linear-gradient(62deg, #000000 0%, #111111 100%);
 }
 
 h1 {

@@ -6,8 +6,8 @@ import {httpRequest} from '../../../services/HttpService';
 
 function FormCrearPartida() {
 
-  const USERNAME = window.localStorage.getItem('username');
-  const HOST_ID = parseInt(window.localStorage.getItem('user_id'));
+  const USERNAME = window.sessionStorage.getItem('username');
+  const HOST_ID = parseInt(window.sessionStorage.getItem('user_id'));
 
   const {
     register,
@@ -33,11 +33,9 @@ function FormCrearPartida() {
         payload: algonuevo
       });
 
-      window.localStorage.setItem('Partida', JSON.stringify(data));
-      window.localStorage.setItem('cantidadJugadores', 1);
-      window.localStorage.setItem('Host', true);
-      window.localStorage.setItem('lobby_id', response.lobby_id);
-      window.localStorage.setItem('jugadores', JSON.stringify([USERNAME]));
+      window.sessionStorage.setItem('Host', true);
+      window.sessionStorage.setItem('Partida', JSON.stringify(data));
+      window.sessionStorage.setItem('lobby_id', response.lobby_id);
       
       window.location = `/lobby/${response.lobby_id}`;
       

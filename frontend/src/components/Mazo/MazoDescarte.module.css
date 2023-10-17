@@ -1,0 +1,37 @@
+.mazoDescarte {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 180px;
+    width: 130px;
+    margin: 0px 10px;
+    border-radius: 10px;
+    transition: box-shadow 0.25s;
+    z-index: 1;
+}
+.mazoDescarte:hover {
+    border-color: transparent;
+    background-color: transparent;
+    cursor: default;
+}
+
+.mazoDescarteState1 {
+    background-color: transparent;
+    border-color: #3a3a3a;
+    border-width: 2px;
+}
+.mazoDescarteState1:hover {
+    background-color: transparent;
+    border-color: #3a3a3a;
+    border-width: 2px;
+}
+.mazoDescarteState2 {
+    background-image: url('../../media/designs/cartas/back_alejate.png');
+    background-size: 100%;
+    background-color: transparent;
+}
+.mazoDescarteState3 {
+    background-image: url('../../media/designs/cartas/back_panico.png');
+    background-size: 100%;
+    background-color: transparent;
+}

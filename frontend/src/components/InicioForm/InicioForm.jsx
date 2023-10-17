@@ -1,9 +1,6 @@
 import styles from './InicioForm.module.css';
 import { httpRequest } from '../../services/HttpService.js';
-
 import { useForm } from 'react-hook-form';
-//import { useNavigate } from 'react-router-dom';
-
 
 const InicioForm = () => {
   const {
@@ -23,8 +20,8 @@ const InicioForm = () => {
         payload: data
       });
       
-      window.localStorage.setItem('user_id', response.player_id);
-      window.localStorage.setItem('username', response.player_name);
+      window.sessionStorage.setItem('user_id', response.player_id);
+      window.sessionStorage.setItem('username', response.player_name);
       
       window.location = '/home';
 
@@ -52,7 +49,7 @@ const InicioForm = () => {
             },
             maxLength: { value: 20, message: '20 caracteres máximo' },
           })}
-          id="player_name"
+          data-testid="player_name"
         />
         <div>
           {errors.player_name && <p className={styles.textdanger}>{errors.player_name.message}</p>}
