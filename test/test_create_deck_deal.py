@@ -108,3 +108,7 @@ def test_create_deck_deal():
                     lacosa_amount +=1
 
         assert lacosa_amount == 1
+    
+#como correr test
+#1.mover al directorio lacosa/
+#2.ejecutar pytest test_create_deck_deal.py -vv
