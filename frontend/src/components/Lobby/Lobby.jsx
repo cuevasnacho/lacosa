@@ -4,9 +4,10 @@ import { httpRequest } from '../../services/HttpService.js';
 import styles from './Lobby.module.css';
 import JugadoresLobby from '../Lobby/JugadoresLobby.jsx';
 import React, { useEffect } from 'react';
+import BotonAbandonar from '../AbandonarPartida/BotonAbandonar.jsx';
 
 function Lobby() {
-  
+
   const esHost = JSON.parse(window.sessionStorage.getItem('Host'));
   const infoPartida = JSON.parse(window.sessionStorage.getItem('Partida'));
   const minJugadores = infoPartida.lobby_min;
@@ -67,16 +68,17 @@ function Lobby() {
     <>
       <div className={styles.container}>
         <div className={styles.jugadores}>
-          <h1>Jugadores</h1>   
-          <h3> {jugadores.length} </h3> 
+          <h1>Jugadores</h1>
+          <h3> {jugadores.length} </h3>
           <JugadoresLobby jugadores={jugadores}/>
           { esHost && (
           <button className={styles.botonIniciar} type='button' onClick={iniciarPartida}>Iniciar Partida</button>
           )}
+          <BotonAbandonar idJugador={idPlayer} idLobby={idLobby}></BotonAbandonar>
         </div>
       </div>
     </>
   );
-}    
-  
+}
+
 export default Lobby;
