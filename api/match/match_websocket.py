@@ -24,8 +24,12 @@ async def match_websocket(websocket : WebSocket,match_id : int, player_id : int)
 
             elif ws['action'] == 'play_card':
                 content = {'action': 'play_card','data': ws['data']}
-                print("Se jugo")
                 await manager.broadcast(content,match_id)
+
+            elif ws['action'] == 'next_turn':
+                content = {'action': 'next_turn'}
+                await manager.broadcast(content,match_id)
+
         
     except WebSocketDisconnect:
         manager.disconnect(websocket,match_id,player_id)

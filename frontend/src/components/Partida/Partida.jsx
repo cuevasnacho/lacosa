@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { httpRequest } from '../../services/HttpService.js';
-import { sortPlayers } from './functions.js';
+import { sortPlayers, nextTurn} from './functions.jsx';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import styles from './Partida.module.css';
@@ -19,7 +19,7 @@ function Partida () {
   const [playerState, setPlayerState] = useState({});
   const [manoJugador, setManoJugador] = useState([]);   // Indica las cartas que tengo en la mano
   const [matchState, setMatchState] = useState([]); // username: string, id: int, esTurno: bool, posicion: int, eliminado: bool	
-  const [mazoDescarteState, setMazoDescarteState] = useState(1);  // Dice que carta se va a mostrar en el mazo de descarte
+  const [mazoDescarteState, setMazoDescarteState] = useState(2);  // Dice que carta se va a mostrar en el mazo de descarte
 
   async function getStatus() {
     const responseStatus = await httpRequest({
@@ -30,7 +30,9 @@ function Partida () {
     const jugadores = sortPlayers(status.jugadores);
     setMatchState(jugadores);
     setPlayerState(status.jugador);
+
     
+
     console.log("Jugadores: " + jugadores);
     console.log(status.jugador);
   }
@@ -38,10 +40,13 @@ function Partida () {
   const initializeGame = async (ws) => {
     getStatus();
 
+    window.sessionStorage.setItem('match_id', idPartida);
+
     const responseCards = await httpRequest({
       method: 'GET',
       service: `players/${idPlayer}/${idPartida}`,
     });
+    
     const cards = responseCards.cartas;
     setManoJugador(cards);
   }
@@ -64,13 +69,16 @@ function Partida () {
       switch (info.action) {
         case 'play_card':
           getStatus();
+          const tipo_carta_descartada = info.data.tipo ? 1 : 0;
+          setMazoDescarteState(tipo_carta_descartada);
           toast(`${info.data.player} jugó la carta ${info.data.card} sobre ${info.data.target}`);
           break;
 
         case 'next_turn':
           getStatus();
-          toast(`Es el turno de ${info.data.username}`);
+          toast(`Finalizo el turno de ${info.data}`);
           break;
+        
       }
     };
    

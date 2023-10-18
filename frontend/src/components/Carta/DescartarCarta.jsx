@@ -1,11 +1,12 @@
 import { httpRequest } from '../../services/HttpService';
-
+import { nextTurn } from '../Partida/functions';
+import { useParams } from 'react-router-dom';
 /*
     actualizar: funcion que actualiza la mano del jugador
     mano: array de cartas que tiene el jugador
     carta: carta que se quiere descartar
 */
-export async function descartarCarta(actualizar, mano, carta) 
+export async function descartarCarta(actualizar, mano, carta, socket) 
     {
         if(carta.cartaNombre === 'lacosa')
             alert(`No puedes descartar ni jugar la carta ${carta.cartaNombre}`);
@@ -26,6 +27,11 @@ export async function descartarCarta(actualizar, mano, carta)
                     actualizar((manoPrevia) => {
                        return manoPrevia.filter(cartaPrevia => cartaPrevia.id !== carta.id);
                     });
+
+                    const username = window.sessionStorage.getItem('username');
+                    const match_id = window.sessionStorage.getItem('match_id');
+                    
+                    nextTurn(match_id, socket, username);
                 }
                 else
                 {
@@ -36,6 +42,7 @@ export async function descartarCarta(actualizar, mano, carta)
             {
                 alert(error);
             }
+
         }
 
     }

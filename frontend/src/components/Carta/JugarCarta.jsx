@@ -22,7 +22,7 @@ function JugarCarta({carta, socket, jugadores}) {
     });
     
     const mensaje = JSON.stringify({action: 'play_card', data: 
-    {card: carta.cartaNombre ,player: username, target: target_username}});
+    {card: carta.cartaNombre ,player: username, target: target_username, tipo: carta.tipo}});
     socket.send(mensaje);
   }
   

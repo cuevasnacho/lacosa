@@ -19,7 +19,7 @@ function Carta({ carta, esTurno , actualizar, mano, socket, jugadores}) {
             { isHover && esTurno && (
                 <div className={styles.botones}>
                     <JugarCarta carta={carta} socket={socket} jugadores={jugadores}/>
-                    <button className={styles.boton} onClick={() => descartarCarta(actualizar, mano, carta)}>Descartar</button>
+                    <button className={styles.boton} onClick={() => descartarCarta(actualizar, mano, carta, socket)}>Descartar</button>
                 </div>
             )}
         </div>
