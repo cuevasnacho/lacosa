@@ -49,7 +49,7 @@ def player_update(player_id):
     player.player_current_match_id = None
     commit()
 
-
+'''
 #funcion para hacer una lista con el id de los jugadores del lobby
 @db_session()
 def get_new_host_players_id(lobby_id):
@@ -60,6 +60,15 @@ def get_new_host_players_id(lobby_id):
         players_id.append(player.player_id)
         players_id.sort()
     return players_id[0]
+'''
+
+@db_session()
+def get_new_host_players_id(lobby_id):
+    players = Player.select(lambda player: player.player_lobby.lobby_id == lobby_id)
+    if not players:
+        return None
+    new_host_id = min(players, key=lambda player: player.player_id).player_id
+    return new_host_id
 
 @db_session
 def delete_entry(entry1,entry2):
@@ -74,7 +83,7 @@ def set_new_host(player_id):
     commit()
 
 @router.post("/lobbys/{lobby_id}/{player_id}")
-async def leave_Lobby(lobby_id : int, player_id : int):
+async def abandonar_lobby(lobby_id : int, player_id : int):
     try:
         lobby = get_lobby(lobby_id)
         player = get_player(player_id)
@@ -86,18 +95,20 @@ async def leave_Lobby(lobby_id : int, player_id : int):
     if not player.player_isHost:
         lobby_update(lobby_id)
         player_update(player_id)
+        message = f"Jugador {player_id} ha abandonado el lobby"
 
     #si es host y no hay otro jugador, se elimina el lobby y el match asociado.
     elif player.player_isHost and lobby.lobby_pcount == 1:
         #actualizamos al jugador
-        #player_name = Player[player_id].player_name
         player_update(player_id)
         match = get_match_id(lobby_id)
         #borramos match y lobby
         delete_entry(lobby,match)
+        message = f"Jugador {player_id} ha abandonado el lobby y se ha eliminado el lobby"
     #si es host y hay otro jugador, se actualiza el lobby y se elige un nuevo host
     else:
         player_update(player_id)
+        lobby_update(lobby_id)
         new_host_id = get_new_host_players_id(lobby_id)
-        #print(f"newgostttttt {new_host_id}")
         set_new_host(new_host_id)
+        message = f"El jugador host {player_id} ha abandonado el lobby y el nuevo host es {new_host_id}"
