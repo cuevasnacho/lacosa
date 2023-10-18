@@ -8,7 +8,7 @@ import BotonAbandonar from '../AbandonarPartida/BotonAbandonar.jsx';
 
 function Lobby() {
   
-  const esHost = JSON.parse(window.sessionStorage.getItem('Host'));
+  let esHost = JSON.parse(window.sessionStorage.getItem('Host'));
   const infoPartida = JSON.parse(window.sessionStorage.getItem('Partida'));
   const minJugadores = infoPartida.lobby_min;
   const maxJugadores = infoPartida.lobby_max;
@@ -35,7 +35,10 @@ function Lobby() {
       alert("La cantidad de jugadores no es la permitida");
     }
   }
-
+  if(idPlayer==parserInt(window.localStorage.getItem('new_host_id'))){
+    esHost=true;
+    window.localStorage.setItem('new_lobby_id',-1)
+  }
   useEffect (() => {
     const url = `ws://localhost:8000/ws/lobbys/${idLobby}/${idPlayer}`;
     const ws = new WebSocket(url);
