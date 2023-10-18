@@ -13,8 +13,8 @@ analisis = Analisis()
 Template_Diccionary = {
     "lanzallamas" : lanzallamas,
     "lacosa"     : la_cosa,
-    "nada_de_barbacoas" : nada_de_barbacoas
-    "sospecha" : sospecha
+    "nada_de_barbacoas" : nada_de_barbacoas,
+    "sospecha" : sospecha,
     "analisis" : analisis
 }
 
