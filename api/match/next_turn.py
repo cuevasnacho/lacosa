@@ -18,6 +18,12 @@ class nextPlayer(BaseModel):
     player_next_id : int
 
 
+
+def adjacent_players(cause_position,player_counter,target_position):
+    left = (cause_position - 1) % player_counter == target_position 
+    right = (cause_position + 1) % player_counter == target_position
+    return left or right
+
 @router.get("/partida/{id_match}/next")
 async def next_player(id_match : int): #id del player que esta jugando ahora   
 
@@ -37,30 +43,20 @@ async def next_player(id_match : int): #id del player que esta jugando ahora
         current_player_pos = current_player_obj.player_position
 
         if match_direction:
-            next_player_pos = current_player_pos + 1
-            if next_player_pos > player_counter - 1 : # esto por que las posiciones son de 0..player_counter -1
-                next_player_pos = 0
+            next_player_pos = (current_player_pos + 1) % player_counter
+            next_player_obj = db_player.get(lambda next: next.player_position == next_player_pos and next.player_current_match_id.match_id  == id_match)
+            while next_player_obj.player_dead == True:
+                next_player_pos = (next_player_pos + 1) % player_counter
                 next_player_obj = db_player.get(lambda next: next.player_position == next_player_pos and next.player_current_match_id.match_id  == id_match)
-                next_player_id = next_player_obj.player_id
-                fetch_match.match_currentP = next_player_id
-   
-
-            else:
-                next_player_obj = db_player.get(lambda next: next.player_position == next_player_pos and next.player_current_match_id.match_id  == id_match)
-                next_player_id = next_player_obj.player_id
-                fetch_match.match_currentP = next_player_id
-                
+            next_player_id = next_player_obj.player_id
+            fetch_match.match_currentP = next_player_id
         else:
-            next_player_pos = current_player_pos -1
-            if next_player_pos < 0 or next_player_pos > player_counter - 1: # es negativo o ocurrio un overflow aritmetico
-                next_player_pos = player_counter -1 # ultima posicion en la ronda
-                next_player_obj = db_player.get(lambda next: next.player_position == next_player_pos and next.player_current_match_id.match_id == id_match)
-                next_player_id = next_player_obj.player_id
-                fetch_match.match_currentP = next_player_id
-               
-            else:
+            next_player_pos = (current_player_pos - 1) % player_counter
+            next_player_obj = db_player.get(lambda next: next.player_position == next_player_pos and next.player_current_match_id.match_id  == id_match)
+            while next_player_obj.player_dead == True:
+                next_player_pos = (next_player_pos - 1) % player_counter
                 next_player_obj = db_player.get(lambda next: next.player_position == next_player_pos and next.player_current_match_id.match_id  == id_match)
-                next_player_id = next_player_obj.player_id
-                fetch_match.match_currentP = next_player_id
+            next_player_id = next_player_obj.player_id
+            fetch_match.match_currentP = next_player_id
                 
-    return JSONResponse(content=f"el proximo jugador tiene id: {next_player_id}", status_code=200)
+    return JSONResponse(content={"next_player" : next_player_id}, status_code=200)
