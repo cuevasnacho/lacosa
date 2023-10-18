@@ -8,7 +8,7 @@ import BotonAbandonar from '../AbandonarPartida/BotonAbandonar.jsx';
 
 function Lobby() {
 
-  const esHost = JSON.parse(window.sessionStorage.getItem('Host'));
+  let esHost = JSON.parse(window.sessionStorage.getItem('Host'));
   const infoPartida = JSON.parse(window.sessionStorage.getItem('Partida'));
   const minJugadores = infoPartida.lobby_min;
   const maxJugadores = infoPartida.lobby_max;
@@ -36,6 +36,10 @@ function Lobby() {
     }
   }
 
+  if (idPlayer === parseInt(window.localStorage.getItem('new_host_id'))) {
+    esHost = true;
+  }
+  
   useEffect (() => {
     const url = `ws://localhost:8000/ws/lobbys/${idLobby}/${idPlayer}`;
     const ws = new WebSocket(url);
@@ -52,19 +56,20 @@ function Lobby() {
       switch (info.action) {
         case 'lobby_players':
           setJugadores(info.data);
+          //console.log(parseInt(window.localStorage.getItem('new_host_id')))
           break;
 
-        case 'start_match':
-          console.log(info.data);
-          window.location = `/partida/${info.data}`;
-      }
-    };
+          case 'start_match':
+            console.log(info.data);
+            window.location = `/partida/${info.data}`;
+          }
+        };
 
-    //clean up function when we close page
-    return () => ws.close();
-  }, []);
+        //clean up function when we close page
+        return () => ws.close();
+      }, []);
 
-  return(
+      return(
     <>
       <div className={styles.container}>
         <div className={styles.jugadores}>

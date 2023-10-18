@@ -15,6 +15,8 @@ export default function BotonAbandonar({idJugador,idLobby}) {
                   method: 'POST',
                   service: `lobbys/${idLobby}/${idJugador}`
               });
+                window.localStorage.setItem("new_host_id", data.new_host_id);
+                window.sessionStorage.setItem('Host', false);
                 window.location="/home"
               } catch (error) {
                 swal({

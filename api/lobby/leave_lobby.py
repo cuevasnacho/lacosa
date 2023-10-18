@@ -3,7 +3,7 @@ from fastapi import  APIRouter
 from fastapi.responses import JSONResponse
 from pony.orm import db_session, ObjectNotFound, commit
 from db.database import Lobby, Player, Match
-
+# import json
 
 #en este modulo debo implementar el endpoint y la logica correspondiente para que un jugador tenga la posibilidad
 #de abandonar un lobby. Si el jugador es el host, y no hay otro jugador en el lobby, se elimina el lobby, y el match asociado.
@@ -96,7 +96,7 @@ async def abandonar_lobby(lobby_id : int, player_id : int):
         lobby_update(lobby_id)
         player_update(player_id)
         message = f"Jugador {player_id} ha abandonado el lobby"
-
+        # return JSONResponse(content=f"Jugador {player_id} ha abandonado el lobby", status_code=200)
     #si es host y no hay otro jugador, se elimina el lobby y el match asociado.
     elif player.player_isHost and lobby.lobby_pcount == 1:
         #actualizamos al jugador
@@ -105,10 +105,13 @@ async def abandonar_lobby(lobby_id : int, player_id : int):
         #borramos match y lobby
         delete_entry(lobby,match)
         message = f"Jugador {player_id} ha abandonado el lobby y se ha eliminado el lobby"
+        # return JSONResponse(content=f"Jugador {player_id} ha abandonado el lobby y se ha eliminado el lobby",
+        # status_code=200)
     #si es host y hay otro jugador, se actualiza el lobby y se elige un nuevo host
     else:
         player_update(player_id)
         lobby_update(lobby_id)
         new_host_id = get_new_host_players_id(lobby_id)
         set_new_host(new_host_id)
-        message = f"El jugador host {player_id} ha abandonado el lobby y el nuevo host es {new_host_id}"
+        # message = f"El jugador host {player_id} ha abandonado el lobby y el nuevo host es {new_host_id}"
+        return JSONResponse(content={"player_id": player_id, "new_host_id": new_host_id}, status_code=200)
