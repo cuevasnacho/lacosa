@@ -4,6 +4,7 @@ import { useState } from "react";
 import {Dropdown, DropdownItem, DropdownMenu, DropdownToggle} from 'reactstrap';
 import { descartarCarta } from "./DescartarCarta";
 import styles from './JugarCarta.module.css'
+import MostrarCarta from '../MostrarCarta/MostrarCarta'
 
 function JugarCarta({carta, socket, jugadores}) {
   
@@ -24,6 +25,10 @@ function JugarCarta({carta, socket, jugadores}) {
     const mensaje = JSON.stringify({action: 'play_card', data: 
     {card: carta.cartaNombre ,player: username, target: target_username, tipo: carta.tipo}});
     socket.send(mensaje);
+    
+    return(
+      <MostrarCarta nombreCarta={carta.cartaNombre}/>
+    );
   }
   
   return(

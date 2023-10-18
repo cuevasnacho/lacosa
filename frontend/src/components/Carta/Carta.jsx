@@ -16,7 +16,7 @@ function Carta({ carta, esTurno , actualizar, mano, socket, jugadores}) {
             onMouseEnter={() => setIsHover(true)}
             onMouseLeave={() => setIsHover(false)}>
             <img alt={carta.cartaNombre} src={Diccionario[carta.cartaNombre]} width={130}/>
-            { isHover && esTurno && (
+            { isHover && esTurno && carta.cartaNombre != 'lacosa' &&(
                 <div className={styles.botones}>
                     <JugarCarta carta={carta} socket={socket} jugadores={jugadores}/>
                     <button className={styles.boton} onClick={() => descartarCarta(actualizar, mano, carta, socket)}>Descartar</button>

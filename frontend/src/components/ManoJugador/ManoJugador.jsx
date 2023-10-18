@@ -10,7 +10,7 @@ function ManoJugador({ cartas, esTurno , actualizar, socket, jugadores}) {
         <div
           key={index}
           style={{ position: 'relative' }}
-          data-testid={carta.nombre}
+          data-testid="carta"
         >
           <Carta  carta={carta} 
                   esTurno={esTurno} 
