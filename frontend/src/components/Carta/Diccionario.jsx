@@ -17,6 +17,7 @@ import puerta_atrancada from '../../media/designs/cartas/alejate/puerta_atrancad
 import seduccion from '../../media/designs/cartas/alejate/seduccion.png'
 import vigila_tus_espaldas from '../../media/designs/cartas/alejate/vigila_tus_espaldas.png'
 import whisky from '../../media/designs/cartas/alejate/whisky.png'
+import sospecha from '../../media/designs/cartas/alejate/sospecha.png'
 
 //Panico 
 import cita_a_ciegas from '../../media/designs/cartas/panico/cita_a_ciegas.png'
@@ -57,7 +58,7 @@ const Diccionario = {
     "seduccion":seduccion,
     "vigila_tus_espaldas":vigila_tus_espaldas,
     "whisky":whisky,
-
+    "sospecha":sospecha,
     "cita_a_ciegas":cita_a_ciegas,
     "es_aqui_la_fiesta":es_aqui_la_fiesta,
     "no_podemos_ser_amigos":no_podemos_ser_amigos,
