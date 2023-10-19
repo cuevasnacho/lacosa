@@ -8,10 +8,29 @@ import random
 from abc import ABC, abstractmethod
 
 #chequa que el jugador sea alguno del costado
-def adjacent_players(cause_position,player_counter,target_position):
-    left = (cause_position - 1) % player_counter == target_position 
-    right = (cause_position + 1) % player_counter == target_position
-    return left or right
+def adjacent_players(player_cause_id,target_id):
+    cause = Player.get(player_id = player_cause_id)
+    target = Player.get(player_id = target_id)
+    match_id = cause.player_current_match_id.match_id
+    if cause == None or target== None:
+        return False
+    player_counter = cause.player_lobby.lobby_pcount
+
+    cause_position = cause.player_position
+    target_position = target.player_position
+    if (target.player_dead == True):
+        return False
+    
+    left = (cause_position - 1) % player_counter 
+    right = (cause_position + 1) % player_counter
+    player_left = Player.select (lambda p: p.player_current_match_id.match_id == match_id and p.player_position == left).first()
+    player_right = Player.select (lambda p: p.player_current_match_id.match_id == match_id and p.player_position == right).first()
+    while player_left.player_dead == True:
+        left = (left - 1) % player_counter
+    while player_right.player_dead == True:
+        right = (right + 1) % player_counter
+
+    return left == target_position   or right == target_position  
 
 class card_template(ABC):
     def __init__(self,isPanic,alejate_type,effect,name) -> None:
@@ -80,16 +99,7 @@ class Sospecha(card_template):
     
     @db_session
     def valid_play(self,player_cause_id,target_id):
-        cause = Player.get(player_id = player_cause_id)
-        target = Player.get(player_id = target_id)
-        if cause == None or target== None:
-            return False
-        player_counter = cause.player_lobby.lobby_pcount
-
-        cause_position = cause.player_position
-        target_position = target.player_position
-
-        return adjacent_players(cause_position,player_counter,target_position)
+        return adjacent_players(player_cause_id,target_id)
     
     @db_session
     def aplicar_efecto(self,target_id,player_cause_id):
@@ -104,24 +114,15 @@ class Analisis(card_template):
         super().__init__(False,cards_subtypes.ACTION.value,sospecha_effect,"analisis")
     
     def valid_play(objective_id, player_cause_id):
-        pass
-    #MODIFICAR 
+        return adjacent_players(player_cause_id,target_id)
     @db_session
     def aplicar_efecto(self,target_id,player_cause_id):
-        pass
-        '''
-        target_hand = []
-        player_cause = Player.get(player_id = player_cause_id)
-        check_target = isValidTarget(player_cause_id, target_id)
-        if check_target == False:
-            mensaje= "El jugador no existe"
-            return JSONResponse(content=mensaje, status_code=404)
+        list_of_cards = []
+        player_target = Player.get(player_id = target_id)
+        deck_cards = Card.select(lambda c : c.card_player.player_id == target_id)
+        for cards in deck_cards:
+            list_of_cards.append(deck_cards.card_cardT.cardT_name)
+        return list_of_cards
 
-        target_player_cards = list(target_player.player_cards)
-        for cards in target_player_cards:
-            target_hand.append(cards.card_cardT.cardT_name)
-        mensaje = f"Las cartas que tiene {player_cause.player_name} son :{target_hand}"
-        return JSONResponse(content= mensaje, status_code=200)
-        '''
 
 
