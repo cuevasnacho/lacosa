@@ -1,8 +1,7 @@
-from importlib_metadata import entry_points
 from pydantic import *
 from fastapi import  APIRouter
 from fastapi.responses import JSONResponse
-from pony.orm import db_session, ObjectNotFound, commit, delete
+from pony.orm import db_session, ObjectNotFound, commit
 from db.database import Lobby, Player, Match
 import json
 
@@ -36,6 +35,14 @@ def get_lobby_players(lobby_id):
         players.append(player)
     return players
 
+#funcion para obtener el host del lobby
+@db_session()
+def get_host(lobby_id):
+    for player in get_lobby_players(lobby_id):
+        print(f'{player.player_id} get_host leave_lobby.py')
+        if player.player_isHost:
+            return player.player_id
+
 @db_session()
 def lobby_update(lobby_id):
     lobby = get_lobby(lobby_id)
@@ -51,8 +58,42 @@ def player_update(player_id):
     player.player_current_match_id = None
     commit()
 
+'''
+#funcion para hacer una lista con el id de los jugadores del lobby
+@db_session()
+def get_new_host_players_id(lobby_id):
+    lobby = get_lobby(lobby_id)
+    players = Player.select(lambda player : player.player_lobby.lobby_id == lobby_id)
+    players_id = []
+    for player in players:
+        players_id.append(player.player_id)
+        players_id.sort()
+    return players_id[0]
+'''
+
+@db_session()
+def get_new_host_players_id(lobby_id):
+    players = Player.select(lambda player: player.player_lobby.lobby_id == lobby_id)
+    if not players:
+        return None
+    new_host_id = min(players, key=lambda player: player.player_id).player_id
+    return new_host_id
+
+@db_session
+def delete_entry(entry1,entry2):
+    entry1.delete()
+    entry2.delete()
+    commit()
+
+@db_session
+def set_new_host(player_id):
+    player = Player[player_id]
+    player.player_isHost = True
+    commit()
+
 @router.post("/lobbys/{lobby_id}/{player_id}")
 async def abandonar_lobby(lobby_id : int, player_id : int):
+    print("adentro del post de abandonar lobby leave_lobby")
     try:
         lobby = get_lobby(lobby_id)
         player = get_player(player_id)
@@ -64,15 +105,14 @@ async def abandonar_lobby(lobby_id : int, player_id : int):
         players_in_lobby = get_lobby_players(lobby_id)
         for player in players_in_lobby:
             player_update(player.player_id)
-        # delete_entry(lobby, get_match_id(lobby_id))
         match_id = get_match_id(lobby_id).match_id
         with db_session:
             Lobby[lobby_id].delete()
             Match[match_id].delete()
             commit()
-            return JSONResponse(content="ok", status_code = 200)
+            return JSONResponse(content = "ok", status_code = 200)
     else:
         lobby_update(lobby_id)
         player_update(player_id)
         message = f"Jugador {player_id} ha abandonado el lobby"
-        return JSONResponse(content="ok", status_code = 200)
+        return JSONResponse(content = "ok", status_code = 200)

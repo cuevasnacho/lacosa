@@ -36,6 +36,11 @@ function Lobby() {
     }
   }
 
+  if (idPlayer === parseInt(window.localStorage.getItem('new_host_id'))) {
+    esHost = true;
+    window.localStorage.setItem('new_host_id',-1)
+  }
+
   useEffect (() => {
     const url = `ws://localhost:8000/ws/lobbys/${idLobby}/${idPlayer}`;
     const ws = new WebSocket(url);
