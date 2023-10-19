@@ -13,10 +13,10 @@ with db_session:
                            player_dead = False, player_position = 1, player_exchangeR = 0, player_exchangeL = 0,
                             player_role = 0, player_lobby = None, player_current_match_id = None )
         the_player3 =db_player(player_name= "Julian alvarez", player_ingame = False, player_isHost=False, 
-                           player_dead = False, player_position = 2, player_exchangeR = 0, player_exchangeL = 0,
+                           player_dead = True, player_position = 2, player_exchangeR = 0, player_exchangeL = 0,
                             player_role = 0, player_lobby = None, player_current_match_id = None )
         the_player4 =db_player(player_name="Angel Di Maria", player_ingame = False, player_isHost=False, 
-                           player_dead = False, player_position = 3, player_exchangeR = 0, player_exchangeL = 0,
+                           player_dead = True, player_position = 3, player_exchangeR = 0, player_exchangeL = 0,
                             player_role = 0, player_lobby = None, player_current_match_id = None )
         the_player5 =db_player(player_name= "Alexis Mac Allister", player_ingame = False, player_isHost=False, 
                            player_dead = False, player_position = 4, player_exchangeR = 0, player_exchangeL = 0,
