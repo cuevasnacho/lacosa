@@ -3,7 +3,7 @@ from fastapi import  APIRouter
 from fastapi.responses import JSONResponse
 from pony.orm import db_session, ObjectNotFound, commit
 from db.database import Lobby, Player, Match
-# import json
+import json
 
 #en este modulo debo implementar el endpoint y la logica correspondiente para que un jugador tenga la posibilidad
 #de abandonar un lobby. Si el jugador es el host, y no hay otro jugador en el lobby, se elimina el lobby, y el match asociado.
@@ -26,13 +26,22 @@ def get_match_id(lobby_id):
     match = Match.select(lambda match: match.match_id == lobby.lobby_match.match_id).first()
     return match
 
+#obtener los jugadores del lobby
+@db_session()
+def get_lobby_players(lobby_id):
+    lobby = get_lobby(lobby_id)
+    players = []
+    for player in lobby.lobby_player:
+        players.append(player)
+    return players
+
 #funcion para obtener el host del lobby
 @db_session()
 def get_host(lobby_id):
-    for player in Lobby.lobby_player:
+    for player in get_lobby_players(lobby_id):
+        print(f'{player.player_id} get_host leave_lobby.py')
         if player.player_isHost:
-            return player
-    return None
+            return player.player_id
 
 @db_session()
 def lobby_update(lobby_id):
@@ -84,6 +93,7 @@ def set_new_host(player_id):
 
 @router.post("/lobbys/{lobby_id}/{player_id}")
 async def abandonar_lobby(lobby_id : int, player_id : int):
+    print("adentro del post de abandonar lobby leave_lobby")
     try:
         lobby = get_lobby(lobby_id)
         player = get_player(player_id)
@@ -91,27 +101,13 @@ async def abandonar_lobby(lobby_id : int, player_id : int):
         message = "El objeto no existe"
         status_code = 404 # not found
         return JSONResponse(content = message, status_code = status_code)
-    #si no es host, se actualiza el lobby y el player
-    if not player.player_isHost:
+    if player.player_isHost:
+        players_in_lobby = get_lobby_players(lobby_id)
+        for player in players_in_lobby:
+            player_update(player.player_id)
+        delete_entry(lobby, get_match_id(lobby_id))
+    else:
         lobby_update(lobby_id)
         player_update(player_id)
         message = f"Jugador {player_id} ha abandonado el lobby"
         # return JSONResponse(content=f"Jugador {player_id} ha abandonado el lobby", status_code=200)
-    #si es host y no hay otro jugador, se elimina el lobby y el match asociado.
-    elif player.player_isHost and lobby.lobby_pcount == 1:
-        #actualizamos al jugador
-        player_update(player_id)
-        match = get_match_id(lobby_id)
-        #borramos match y lobby
-        delete_entry(lobby,match)
-        message = f"Jugador {player_id} ha abandonado el lobby y se ha eliminado el lobby"
-        # return JSONResponse(content=f"Jugador {player_id} ha abandonado el lobby y se ha eliminado el lobby",
-        # status_code=200)
-    #si es host y hay otro jugador, se actualiza el lobby y se elige un nuevo host
-    else:
-        player_update(player_id)
-        lobby_update(lobby_id)
-        new_host_id = get_new_host_players_id(lobby_id)
-        set_new_host(new_host_id)
-        # message = f"El jugador host {player_id} ha abandonado el lobby y el nuevo host es {new_host_id}"
-        return JSONResponse(content={"player_id": player_id, "new_host_id": new_host_id}, status_code=200)

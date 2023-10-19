@@ -38,8 +38,9 @@ function Lobby() {
 
   if (idPlayer === parseInt(window.localStorage.getItem('new_host_id'))) {
     esHost = true;
+    window.localStorage.setItem('new_host_id',-1)
   }
-  
+
   useEffect (() => {
     const url = `ws://localhost:8000/ws/lobbys/${idLobby}/${idPlayer}`;
     const ws = new WebSocket(url);
@@ -62,6 +63,17 @@ function Lobby() {
           case 'start_match':
             console.log(info.data);
             window.location = `/partida/${info.data}`;
+
+          case 'host_left':
+            window.location = '/home';
+            alert('El host ha abandonado la partida');
+            break;
+
+          case 'player_left':
+            setJugadores(info.data);
+            //window.location = '/home';
+            //alert('El jugador ha abandonado la partida');
+            break;
           }
         };
 
@@ -79,7 +91,7 @@ function Lobby() {
           { esHost && (
           <button className={styles.botonIniciar} type='button' onClick={iniciarPartida}>Iniciar Partida</button>
           )}
-          <BotonAbandonar idJugador={idPlayer} idLobby={idLobby}></BotonAbandonar>
+          <BotonAbandonar idJugador={idPlayer} idLobby={idLobby} websocket={websocket}></BotonAbandonar>
         </div>
       </div>
     </>

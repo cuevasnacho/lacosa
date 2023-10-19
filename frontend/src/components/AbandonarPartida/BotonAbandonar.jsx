@@ -7,22 +7,25 @@ import styles from "./BotonAbandonar.module.css"
 import swal from 'sweetalert'//paquete para estilos de alertas
 import { httpRequest } from '../../services/HttpService.js'
 
-export default function BotonAbandonar({idJugador,idLobby}) {
+export default function BotonAbandonar({idJugador,idLobby,websocket}) {
     const handleClick= ()=>{
         const AbandonarLobby= async () => {
             try {
+                const mensaje = JSON.stringify({action: 'abandonar_lobby', data: idJugador});
+                websocket.send(mensaje);
                 const data = await httpRequest({
                   method: 'POST',
                   service: `lobbys/${idLobby}/${idJugador}`
-              });
-                window.localStorage.setItem("new_host_id", data.new_host_id);
-                window.sessionStorage.setItem('Host', false);
+                });
+                //alert("Se envió el mensaje por socket");
+                //window.sessionStorage.setItem('Host', false);
                 window.location="/home"
               } catch (error) {
-                swal({
-                  title:"No se ha podido Abandonar el lobby",
-                  icon:"error",
-                })
+                  console.log(error);
+                // swal({
+                  //   title:"No se ha podido Abandonar el lobby",
+                  //   icon:"error",
+                  // })
                 }
             };
         swal({
