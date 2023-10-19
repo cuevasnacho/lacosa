@@ -39,6 +39,10 @@ async def match_websocket(websocket : WebSocket,match_id : int, player_id : int)
                         await manager.broadcast(content_personal,match_id)
                     else:
                         await manager.send_data_to(content_personal, match_id, player_id)
+
+            elif ws['action'] == 'message':
+                content = {'action': 'message', 'data': ws['data']}
+                await manager.broadcast(content,match_id)
         
     except WebSocketDisconnect:
         manager.disconnect(websocket,match_id,player_id)

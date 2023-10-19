@@ -1,12 +1,9 @@
 import React from 'react';
 import {useForm} from 'react-hook-form';
-import CustomButton from '../../Boton/CustomButton';
-import styles from './FormCrearPartida.css';
+import styles from './FormCrearPartida.module.css';
 import {httpRequest} from '../../../services/HttpService';
 
 function FormCrearPartida() {
-
-  const USERNAME = window.sessionStorage.getItem('username');
   const HOST_ID = parseInt(window.sessionStorage.getItem('user_id'));
 
   const {
@@ -22,8 +19,6 @@ function FormCrearPartida() {
       lobby_max: parseInt(data.lobby_max),
       player_id: HOST_ID
     }
-
-    console.log(algonuevo);
 
     try 
     {      
@@ -71,7 +66,7 @@ function FormCrearPartida() {
                   message: 'Nombre de la partida demasiado corto',
                 },
               })}
-              placeholder="Partida de Juancito"
+              placeholder="Nombre de partida"
             />
             {errors.lobby_name && <p>{errors.lobby_name.message}</p>}
           </div>
@@ -95,7 +90,7 @@ function FormCrearPartida() {
                   message: 'Mínimo de jugadores demasiado bajo',
                 },
               })}
-              placeholder="4"
+              placeholder="Ingrese un minimo"
             />
           </div>
 
@@ -118,7 +113,7 @@ function FormCrearPartida() {
                   message: 'Máximo de jugadores demasiado bajo',
                 },
               })}
-              placeholder="4"
+              placeholder="Ingrese un maximo"
             />
           </div>
 

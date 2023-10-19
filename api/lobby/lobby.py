@@ -91,6 +91,10 @@ async def players_in_lobby(lobby_id : int, player_id : int, websocket : WebSocke
                 content = {"action" : "start_match","data" : match_id }
                 await manager.broadcast(content,lobby_id)
 
+            elif ws['action'] == 'message':
+                content = {'action': 'message', 'data': ws['data']}
+                await manager.broadcast(content,lobby_id)
+
     except WebSocketDisconnect:
         print("algo")
         manager.disconnect(websocket,lobby_id,player_id)

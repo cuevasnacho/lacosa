@@ -2,11 +2,11 @@ import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { httpRequest } from '../../services/HttpService.js';
 import styles from './Lobby.module.css';
-import JugadoresLobby from '../Lobby/JugadoresLobby.jsx';
 import React, { useEffect } from 'react';
+import JugadoresLobby from '../Lobby/JugadoresLobby.jsx';
+import Chat from '../Chat/Chat.jsx';
 
 function Lobby() {
-  
   const esHost = JSON.parse(window.sessionStorage.getItem('Host'));
   const infoPartida = JSON.parse(window.sessionStorage.getItem('Partida'));
   const minJugadores = infoPartida.lobby_min;
@@ -15,6 +15,7 @@ function Lobby() {
   const { idLobby } = useParams();
   const idPlayer = parseInt(window.sessionStorage.getItem('user_id'));
 
+  const [messages, setMessages] = useState([]);
   const [jugadores, setJugadores] = useState([]);
   const [websocket, setWebsocket] = useState(null);
 
@@ -56,12 +57,17 @@ function Lobby() {
         case 'start_match':
           console.log(info.data);
           window.location = `/partida/${info.data}`;
+
+        case 'message':
+          const message = JSON.parse(e.data).data;
+          setMessages([...messages, message]);
+          break;
       }
     };
 
     //clean up function when we close page
     return () => ws.close();
-  }, []);
+  }, [messages]);
 
   return(
     <>
@@ -74,6 +80,7 @@ function Lobby() {
           <button className={styles.botonIniciar} type='button' onClick={iniciarPartida}>Iniciar Partida</button>
           )}
         </div>
+        <Chat ws={websocket} messages={messages} />
       </div>
     </>
   );
