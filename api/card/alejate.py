@@ -32,6 +32,7 @@ lanz_Effdect = "Eliminar el jugador objetivo"
 class lanzallamas_T(card_template):
     def __init__(self):
         super().__init__(False, cards_subtypes.ACTION.value,lanz_Effdect,"lanzallamas")
+    @db_session
     def valid_play(self, player_cause_id,target_id):
         cause = Player.get(player_id = player_cause_id)
         target = Player.get(player_id = target_id)
