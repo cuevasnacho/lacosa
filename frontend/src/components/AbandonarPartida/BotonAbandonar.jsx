@@ -17,8 +17,6 @@ export default function BotonAbandonar({idJugador,idLobby,websocket}) {
                   method: 'POST',
                   service: `lobbys/${idLobby}/${idJugador}`
                 });
-                //alert("Se envió el mensaje por socket");
-                //window.sessionStorage.setItem('Host', false);
                 window.location="/home"
               } catch (error) {
                   console.log(error);

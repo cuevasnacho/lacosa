@@ -1,7 +1,8 @@
+from importlib_metadata import entry_points
 from pydantic import *
 from fastapi import  APIRouter
 from fastapi.responses import JSONResponse
-from pony.orm import db_session, ObjectNotFound, commit
+from pony.orm import db_session, ObjectNotFound, commit, delete
 from db.database import Lobby, Player, Match
 import json
 
@@ -93,7 +94,6 @@ def set_new_host(player_id):
 
 @router.post("/lobbys/{lobby_id}/{player_id}")
 async def abandonar_lobby(lobby_id : int, player_id : int):
-    print("adentro del post de abandonar lobby leave_lobby")
     try:
         lobby = get_lobby(lobby_id)
         player = get_player(player_id)
@@ -105,7 +105,12 @@ async def abandonar_lobby(lobby_id : int, player_id : int):
         players_in_lobby = get_lobby_players(lobby_id)
         for player in players_in_lobby:
             player_update(player.player_id)
-        delete_entry(lobby, get_match_id(lobby_id))
+        # delete_entry(lobby, get_match_id(lobby_id))
+        match_id = get_match_id(lobby_id).match_id
+        with db_session:
+            Lobby[lobby_id].delete()
+            Match[match_id].delete()
+            commit()
     else:
         lobby_update(lobby_id)
         player_update(player_id)

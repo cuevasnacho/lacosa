@@ -104,7 +104,8 @@ async def players_in_lobby(lobby_id : int, player_id : int, websocket : WebSocke
                     with db_session:
                         jugadores = []
                         for player in players:
-                            jugadores.append(player.player_name)
+                            if player.player_id != player_id:
+                                jugadores.append(player.player_name)
                             if players:
                                 content = json.loads(json.dumps({"action" : "player_left","data" : jugadores, "status_code" : 200}))
                             else:

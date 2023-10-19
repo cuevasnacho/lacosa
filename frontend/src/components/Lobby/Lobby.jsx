@@ -36,11 +36,6 @@ function Lobby() {
     }
   }
 
-  if (idPlayer === parseInt(window.localStorage.getItem('new_host_id'))) {
-    esHost = true;
-    window.localStorage.setItem('new_host_id',-1)
-  }
-
   useEffect (() => {
     const url = `ws://localhost:8000/ws/lobbys/${idLobby}/${idPlayer}`;
     const ws = new WebSocket(url);
@@ -57,7 +52,6 @@ function Lobby() {
       switch (info.action) {
         case 'lobby_players':
           setJugadores(info.data);
-          //console.log(parseInt(window.localStorage.getItem('new_host_id')))
           break;
 
           case 'start_match':
@@ -66,13 +60,10 @@ function Lobby() {
 
           case 'host_left':
             window.location = '/home';
-            alert('El host ha abandonado la partida');
             break;
 
           case 'player_left':
             setJugadores(info.data);
-            //window.location = '/home';
-            //alert('El jugador ha abandonado la partida');
             break;
           }
         };
