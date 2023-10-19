@@ -41,7 +41,7 @@ class card_template(ABC):
         self.effect = effect
         self.name = name
     @abstractmethod
-    def valid_play(objective_id,player_cause_id): #si no hya condiciones necesarias para jugar la carta, devuelve false o true
+    def valid_play(player_cause_id,target_id): #si no hya condiciones necesarias para jugar la carta, devuelve false o true
         pass
 
     @abstractmethod
@@ -53,8 +53,11 @@ lanz_Effdect = "Eliminar el jugador objetivo"
 class lanzallamas_T(card_template):
     def __init__(self):
         super().__init__(False, cards_subtypes.ACTION.value,lanz_Effdect,"lanzallamas")
-    def valid_play(objective_id, player_cause_id):
-        pass
+    @db_session
+    def valid_play(self, player_cause_id,target_id):
+
+        return adjacent_players(player_cause_id, target_id)
+    
 
     @db_session
     def aplicar_efecto(self,objective_id,player_cause_id):
@@ -69,7 +72,7 @@ class laCosa_T(card_template):
 
     def __init__(self):
         super().__init__(False, cards_subtypes.INFECTION.value,cosa_Effect,"lacosa")
-    def valid_play(objective_id, player_cause_id):
+    def valid_play(self, player_cause_id,target_id):
         pass
 
     @db_session
@@ -83,7 +86,7 @@ class NadaDeBarbacoa(card_template):
     def __init__(self):
         super().__init__(False,cards_subtypes.DEFENSE.value,nada_de_barbacoas_effect,"nada_de_barbacoas")
 
-    def valid_play(objective_id, player_cause_id):
+    def valid_play(self, player_cause_id,target_id):
         pass
     
     @db_session
@@ -104,9 +107,9 @@ class Sospecha(card_template):
         return adjacent_players(player_cause_id,target_id)
     
     @db_session
-    def aplicar_efecto(self,target_id,player_cause_id):
-        player_target = Player.get(player_id = target_id)
-        deck_cards = Card.select(lambda c : c.card_player.player_id == target_id).random(1)[0]
+    def aplicar_efecto(self,objective_id,player_cause_id):
+        player_target = Player.get(player_id = objective_id)
+        deck_cards = Card.select(lambda c : c.card_player.player_id == objective_id).random(1)[0]
         return [deck_cards.card_cardT.cardT_name]
     
 analisis_effect = "Muestra todas las cartas del jugador adyacente"
@@ -115,13 +118,15 @@ class Analisis(card_template):
     def __init__(self):
         super().__init__(False,cards_subtypes.ACTION.value,sospecha_effect,"analisis")
     
-    def valid_play(objective_id, player_cause_id):
+    def valid_play(self, player_cause_id,target_id):
         return adjacent_players(player_cause_id,target_id)
+
+    #MODIFICAR 
     @db_session
-    def aplicar_efecto(self,target_id,player_cause_id):
+    def aplicar_efecto(self,objective_id,player_cause_id):
         list_of_cards = []
-        player_target = Player.get(player_id = target_id)
-        deck_cards = Card.select(lambda c : c.card_player.player_id == target_id)
+        player_target = Player.get(player_id = objective_id)
+        deck_cards = Card.select(lambda c : c.card_player.player_id == objective_id)
         for cards in deck_cards:
             list_of_cards.append(deck_cards.card_cardT.cardT_name)
         return list_of_cards

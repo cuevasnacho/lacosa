@@ -7,7 +7,7 @@ Mostrar la carta un poco mas grande que las demas carta a todos los jugadores y 
 import { useState } from "react";
 import Diccionario from "../Carta/Diccionario"
 import styles from "./MostrarCarta.module.css"
-export default function MostrarCarta(nombreCarta) {
+export default function MostrarCarta({nombreCarta}) {
     const [verf,setVerf] = useState(true)
     setInterval(() => {
         setVerf(false)
