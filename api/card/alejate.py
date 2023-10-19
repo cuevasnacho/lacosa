@@ -27,8 +27,10 @@ def adjacent_players(player_cause_id,target_id):
     player_right = Player.select (lambda p: p.player_current_match_id.match_id == match_id and p.player_position == right).first()
     while player_left.player_dead == True:
         left = (left - 1) % player_counter
+        player_left = Player.select (lambda p: p.player_current_match_id.match_id == match_id and p.player_position == left).first()
     while player_right.player_dead == True:
         right = (right + 1) % player_counter
+        player_right = Player.select (lambda p: p.player_current_match_id.match_id == match_id and p.player_position == right).first()
 
     return left == target_position   or right == target_position  
 
