@@ -1,6 +1,5 @@
 import { httpRequest } from '../../services/HttpService';
 import { nextTurn } from '../Partida/functions';
-import { useParams } from 'react-router-dom';
 /*
     actualizar: funcion que actualiza la mano del jugador
     mano: array de cartas que tiene el jugador

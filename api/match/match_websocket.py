@@ -27,7 +27,7 @@ async def match_websocket(websocket : WebSocket,match_id : int, player_id : int)
                 await manager.broadcast(content,match_id)
 
             elif ws['action'] == 'next_turn':
-                content = {'action': 'next_turn'}
+                content = {'action': 'next_turn', 'data': ws['data']}
                 await manager.broadcast(content,match_id)
 
         

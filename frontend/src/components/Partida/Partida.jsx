@@ -37,7 +37,7 @@ function Partida () {
     console.log(status.jugador);
   }
 
-  const initializeGame = async (ws) => {
+  async function initializeGame() {
     getStatus();
 
     window.sessionStorage.setItem('match_id', idPartida);
@@ -57,7 +57,7 @@ function Partida () {
     const ws = new WebSocket(url);
 
     ws.onopen = (event) => {
-      initializeGame(ws);
+      initializeGame();
     };
 
     setWebsocket(ws);
@@ -76,7 +76,7 @@ function Partida () {
 
         case 'next_turn':
           getStatus();
-          toast(`Finalizo el turno de ${info.data}`);
+          toast(`Finalizo el turno de ${info.data}`, {theme: 'dark'});
           break;
         
       }

@@ -18,8 +18,13 @@ function Carta({ carta, esTurno , actualizar, mano, socket, jugadores}) {
             <img alt={carta.cartaNombre} src={Diccionario[carta.cartaNombre]} width={130}/>
             { isHover && esTurno && carta.cartaNombre != 'lacosa' &&(
                 <div className={styles.botones}>
-                    <JugarCarta carta={carta} socket={socket} jugadores={jugadores}/>
-                    <button className={styles.boton} onClick={() => descartarCarta(actualizar, mano, carta, socket)}>Descartar</button>
+                    <JugarCarta carta={carta} 
+                        socket={socket} 
+                        jugadores={jugadores} 
+                        funcionDescartar={actualizar} 
+                        mano={mano}/>
+                    <button className={styles.boton} onClick={() => 
+                        descartarCarta(actualizar, mano, carta, socket)}>Descartar</button>
                 </div>
             )}
         </div>
