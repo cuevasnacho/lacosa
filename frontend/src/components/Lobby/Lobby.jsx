@@ -4,10 +4,11 @@ import { httpRequest } from '../../services/HttpService.js';
 import styles from './Lobby.module.css';
 import JugadoresLobby from '../Lobby/JugadoresLobby.jsx';
 import React, { useEffect } from 'react';
+import BotonAbandonar from '../AbandonarPartida/BotonAbandonar.jsx';
 
 function Lobby() {
-  
-  const esHost = JSON.parse(window.sessionStorage.getItem('Host'));
+
+  let esHost = JSON.parse(window.sessionStorage.getItem('Host'));
   const infoPartida = JSON.parse(window.sessionStorage.getItem('Partida'));
   const minJugadores = infoPartida.lobby_min;
   const maxJugadores = infoPartida.lobby_max;
@@ -53,30 +54,39 @@ function Lobby() {
           setJugadores(info.data);
           break;
 
-        case 'start_match':
-          console.log(info.data);
-          window.location = `/partida/${info.data}`;
-      }
-    };
+          case 'start_match':
+            console.log(info.data);
+            window.location = `/partida/${info.data}`;
 
-    //clean up function when we close page
-    return () => ws.close();
-  }, []);
+          case 'host_left':
+            window.location = '/home';
+            break;
 
-  return(
+          case 'player_left':
+            setJugadores(info.data);
+            break;
+          }
+        };
+
+        //clean up function when we close page
+        return () => ws.close();
+      }, []);
+
+      return(
     <>
       <div className={styles.container}>
         <div className={styles.jugadores}>
-          <h1>Jugadores</h1>   
-          <h3> {jugadores.length} </h3> 
+          <h1>Jugadores</h1>
+          <h3> {jugadores.length} </h3>
           <JugadoresLobby jugadores={jugadores}/>
           { esHost && (
           <button className={styles.botonIniciar} type='button' onClick={iniciarPartida}>Iniciar Partida</button>
           )}
+          <BotonAbandonar idJugador={idPlayer} idLobby={idLobby} websocket={websocket}></BotonAbandonar>
         </div>
       </div>
     </>
   );
-}    
-  
+}
+
 export default Lobby;

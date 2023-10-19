@@ -9,8 +9,9 @@ from db.database import Lobby as db_lobby
 from db.database import Match as db_match
 from db.database import Player as db_player
 from definitions import match_status
-import json 
+import json
 from api.websocket import ConnectionManager
+from api.lobby.leave_lobby import *
 
 router = APIRouter()
 
@@ -45,7 +46,7 @@ async def Crear_Lobby(new_lobby: CreateLobby):
         with db_session:
             new_match = db_match(match_status = match_status.NOT_INITIALIZED.value, match_direction = True,
                                 match_currentP = 0, match_cardsCount = 0)
-            password = new_lobby.lobby_password if new_lobby.lobby_password else None 
+            password = new_lobby.lobby_password if new_lobby.lobby_password else None
             commit()
             lobby_new = db_lobby(lobby_name = new_lobby.lobby_name, lobby_max = new_lobby.lobby_max, lobby_min = new_lobby.lobby_min,
                                 lobby_password = password, lobby_pcount = 1, lobby_match = new_match.match_id)
@@ -67,36 +68,57 @@ async def Crear_Lobby(new_lobby: CreateLobby):
 
 
 @router.websocket("/ws/lobbys/{lobby_id}/{player_id}")
-async def players_in_lobby(lobby_id : int, player_id : int, websocket : WebSocket):  
+async def players_in_lobby(lobby_id : int, player_id : int, websocket : WebSocket):
     await manager.connect(websocket,lobby_id,player_id)
     try:
         while True:
             ws = await websocket.receive_json()
-            if ws["action"] == "lobby_players": 
+            if ws["action"] == "lobby_players":
                 players_names = []
                 with db_session:
                     players = db_player.select(lambda player : player.player_lobby.lobby_id == lobby_id)
                     for player in players:
                         players_names.append(player.player_name)
-                    
+
                     if players:
                         content = json.loads(json.dumps({"action" : "lobby_players","data" : players_names, "status_code" : 200}))
                     else:
                         content = json.loads(json.dumps({"action" : "lobby_players","data" : [],"status_code" : 404}))
-                
+
                     await manager.broadcast(content,lobby_id)
-            
+
             elif ws["action"] == "start_match":
                 match_id = ws['match_id']
                 content = {"action" : "start_match","data" : match_id }
                 await manager.broadcast(content,lobby_id)
+            elif ws["action"] == "abandonar_lobby":
+                print("abandonar lobby")
+                idJugador = ws["data"]
+                print(idJugador)
+                print(f'El id del host es: {get_host(lobby_id)} lobby.py')
+                if idJugador == get_host(lobby_id):
+                    print("eshost")
+                    content = {"action" : "host_left"}
+                    await manager.broadcast(content,lobby_id)
+                else:
+                    with db_session:
+                        jugadores = []
+                        for player in players:
+                            if player.player_id != player_id:
+                                jugadores.append(player.player_name)
+                            if players:
+                                content = json.loads(json.dumps({"action" : "player_left","data" : jugadores, "status_code" : 200}))
+                            else:
+                                content = json.loads(json.dumps({"action" : "player_left","data" : [],"status_code" : 404}))
+
+                        await manager.broadcast(content,lobby_id)
 
     except WebSocketDisconnect:
         print("algo")
         manager.disconnect(websocket,lobby_id,player_id)
         content = "Websocket desconectado"
         print("algo2")
-        return JSONResponse(content = content, status_code = 200) 
+        return JSONResponse(content = content, status_code = 200)
 
 #para que sea consistene faltaria borrar match
 @router.delete("/lobbys/{lobby_id}")
