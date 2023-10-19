@@ -30,11 +30,6 @@ function Partida () {
     const jugadores = sortPlayers(status.jugadores);
     setMatchState(jugadores);
     setPlayerState(status.jugador);
-
-    
-
-    console.log("Jugadores: " + jugadores);
-    console.log(status.jugador);
   }
 
   async function initializeGame() {
@@ -79,6 +74,15 @@ function Partida () {
           toast(`Finalizo el turno de ${info.data}`, {theme: 'dark'});
           break;
         
+        case 'show_cards':
+          console.log(info.data);
+          const cartas = info.data;
+          let mensaje_cartas = "Cartas: ";
+          for (let i = 0; i < cartas.length; i++) {
+            mensaje_cartas = mensaje_cartas.concat(cartas[i] + ", ");
+          }
+          toast(`${mensaje_cartas}`);
+          break;
       }
     };
    

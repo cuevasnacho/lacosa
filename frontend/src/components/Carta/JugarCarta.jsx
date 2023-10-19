@@ -20,14 +20,30 @@ function JugarCarta({carta, socket, jugadores, funcionDescartar, mano}) {
   async function jugar(target_id, target_username, mano){
     if (mano.length > 4 ) 
     {
-      await httpRequest({
+      const response = await httpRequest({
         method: 'PUT',
         service: `carta/jugar/${player_id}/${carta.id}/${target_id}`,
       });
       
-      const mensaje = JSON.stringify({action: 'play_card', data: 
-      {card: carta.cartaNombre ,player: username, target: target_username, tipo: carta.tipo}});
+      const cartas_mostrar = response[0].card_name;
+      const mensaje = JSON.stringify({
+        action: 'play_card',
+        data: {
+          card: carta.cartaNombre,
+          player: username, 
+          target: target_username, 
+          tipo: carta.tipo,
+        }});
+  
+      const mensaje_cartas = JSON.stringify({
+        action: 'show_cards',
+        data: {
+          card: carta.cartaNombre,
+          mostrar: cartas_mostrar
+        }
+      })
       socket.send(mensaje);
+      socket.send(mensaje_cartas);
       
       descartarCarta(funcionDescartar, mano, carta, socket);
       
