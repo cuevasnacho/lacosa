@@ -66,18 +66,6 @@ function JugarCarta({carta, socket, jugadores, funcionDescartar, mano}) {
     </>
   );
 }
-/*
 
-  const datos ={
-    action:'jugar_carta',
-    data:
-    {
-      carta_id:carta.id,
-      target_id:target
-    } 
-    }  
-      const data = JSON.stringify(datos);
-      ws.send(data);
-  */
 
 export default JugarCarta;
