@@ -36,10 +36,6 @@ function Lobby() {
     }
   }
 
-  if (idPlayer === parseInt(window.localStorage.getItem('new_host_id'))) {
-    esHost = true;
-    window.localStorage.setItem('new_host_id',-1)
-  }
 
   useEffect (() => {
     const url = `ws://localhost:8000/ws/lobbys/${idLobby}/${idPlayer}`;
@@ -63,6 +59,7 @@ function Lobby() {
           case 'start_match':
             console.log(info.data);
             window.location = `/partida/${info.data}`;
+            break;
 
           case 'host_left':
             window.location = '/home';

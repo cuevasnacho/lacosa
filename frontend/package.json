@@ -16,7 +16,8 @@
     "react": "^18.2.0",
     "react-hook-form": "^7.46.2",
     "react-router-dom": "^6.16.0",
-    "sort-by": "^0.0.2"
+    "sort-by": "^0.0.2",
+    "sweetalert": "^2.1.2"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.1.3",
