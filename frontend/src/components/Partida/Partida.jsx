@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { httpRequest } from '../../services/HttpService.js';
-import { sortPlayers, nextTurn} from './functions.jsx';
+import { sortPlayers } from './functions.jsx';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import styles from './Partida.module.css';
@@ -9,12 +9,13 @@ import ManoJugador from '../ManoJugador/ManoJugador.jsx';
 import Jugadores from '../Jugador/Jugadores.jsx';
 import Mazo from '../Mazo/Mazo.jsx';
 import MazoDescarte from '../Mazo/MazoDescarte.jsx';
+import Chat from '../Chat/Chat.jsx';
 
 function Partida () {
-
   const idPlayer = JSON.parse(sessionStorage.getItem('user_id'));
   const { idPartida } = useParams();
   const [websocket, setWebsocket] = useState(null);
+  const [messages, setMessages] = useState([]);
 
   const [playerState, setPlayerState] = useState({});
   const [manoJugador, setManoJugador] = useState([]);   // Indica las cartas que tengo en la mano
@@ -83,12 +84,17 @@ function Partida () {
           }
           toast(`${mensaje_cartas}`);
           break;
+
+        case 'message':
+          const message = JSON.parse(e.data).data;
+          setMessages([...messages, message]);
+          break;
       }
     };
    
     //clean up function when we close page
     return () => ws.close();
-  }, []);
+  }, [messages]);
 
 
   return (
@@ -105,6 +111,7 @@ function Partida () {
         socket={websocket} 
         jugadores={matchState}/>
       <Jugadores jugadores={matchState}/>
+      <Chat ws={websocket} messages={messages}/>
     </div>
   );
 }
