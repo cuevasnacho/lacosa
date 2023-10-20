@@ -1,0 +1,23 @@
+{
+"jugadoresDB":{
+    "jugadores":[
+        {
+        "nombre_jugador":"messi",
+        "equipo":"Humanos"
+        },
+        {
+        "nombre_jugador":"messi",
+        "equipo":"Humanos"
+        },
+        {
+        "nombre_jugador":"messi",
+        "equipo":"Humanos"
+        },
+        {
+         "nombre_jugador":"messi",
+         "equipo":"Humanos"
+         }
+        ],
+    "ganador":"Humanos"
+    } 
+}
