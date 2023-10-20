@@ -20,7 +20,7 @@ def test_next_turn_ex1():
     )
 
     assert response.status_code == 200
-    assert response.json() == "el proximo jugador tiene id: 3"
+    assert response.json() == {"next_player" : 5} #hay 2 muertos al lado de el O_o
 
 @db_session
 def test_next_turn_ex2():
@@ -34,7 +34,7 @@ def test_next_turn_ex2():
     )
 
     assert response.status_code == 200
-    assert response.json() == "el proximo jugador tiene id: 1"
+    assert response.json() == {"next_player" : 1}
 
 @db_session
 def test_next_turn_ex3():
@@ -50,7 +50,7 @@ def test_next_turn_ex3():
     )
 
     assert response.status_code == 200
-    assert response.json() == "el proximo jugador tiene id: 1"
+    assert response.json() == {"next_player" : 1}
 
 @db_session
 def test_next_turn_ex4():
@@ -64,7 +64,7 @@ def test_next_turn_ex4():
     )
 
     assert response.status_code == 200
-    assert response.json() == "el proximo jugador tiene id: 6"
+    assert response.json() == {"next_player" : 6}
     
 
 

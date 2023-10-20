@@ -4,7 +4,7 @@ from db.database import Player, Match, Card,Lobby
 from pony.orm import db_session,commit, select,desc
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
-from definitions import card_position,cards_subtypes,results
+from definitions import card_position,cards_subtypes,results, player_roles
 
 router = APIRouter()
 
@@ -35,6 +35,8 @@ def deal_cards(id_match):
                 cards_list.remove(card)
                 card.card_player = player.player_id
                 card.card_location = card_position.PLAYER.value
+                if card.card_cardT.cardT_name == "lacosa":
+                    player.player_role = player_roles.THE_THING.value
 
         match.match_cardsCount -= players_amount * 4 
         commit()
