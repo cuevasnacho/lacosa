@@ -73,6 +73,18 @@ class data_item(BaseModel):
     card_name : List[str]
     end_game : bool
 
+def posible_response(card_name):
+    if(card_name == "lanzallamas"):
+        return ["nada_de_barbacoas"]
+    if(card_name == "mas_vale_que_corras" or card_name =="cambio_de_lugar"):
+        return ["aqui_estoy_bien"]
+
+    return []
+
+@db_session
+def fullfile_efect(target_id,id_card):
+    return True
+
 @db_session
 def players_status_after_play_card(id_player,oponent_id,defense,cards_names,is_end_game):
     response = []
@@ -117,6 +129,7 @@ async def play_card(player_id : int, card_id : int, oponent_id : int):
                     content = players_status_after_play_card(player_id,oponent_id,True,card_name,end_game)                
             else:
                 content = players_status_after_play_card(player_id,oponent_id,False,card_name,end_game)
+                fullfile_efect(oponent_id,card_id)
             return JSONResponse(content = content, status_code = 200)
         else:
             content = "Jugada invalida"
