@@ -34,7 +34,7 @@ export default function TablaFila(elem) {
     };     
   return (
     <tr>
-        {(is_private)?<><td><img src={publica}></img></td></>:<><td><img src={lock}></img></td></>}
+        {(is_private)?<><td><img className="public_image" src={lock}></img></td></>:<><td><img className="public_image" src={publica}></img></td></>}
         <td>{lobby_name}</td>
         <td>{host_name}</td>
         <td>{cantjug}</td>

@@ -2,6 +2,7 @@ import React from 'react';
 import {useForm} from 'react-hook-form';
 import styles from './FormCrearPartida.module.css';
 import {httpRequest} from '../../../services/HttpService';
+import videobg from '../../../media/videobg.mp4';
 
 function FormCrearPartida() {
   const HOST_ID = parseInt(window.sessionStorage.getItem('user_id'));
@@ -45,8 +46,8 @@ function FormCrearPartida() {
   return (
     <>
       <div className={styles.container}>
-      <h2>Formulario de Creación</h2>
-        <form onSubmit={handleSubmit(onSubmit)}>
+      <h2 className={styles.titulo}>Formulario de Creación</h2>
+        <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
           <div>
             <label>Nombre de la Partida</label>
             <input
@@ -67,6 +68,8 @@ function FormCrearPartida() {
                 },
               })}
               placeholder="Nombre de partida"
+              autoComplete='off'
+              className={styles.input}
             />
             {errors.lobby_name && <p>{errors.lobby_name.message}</p>}
           </div>
@@ -91,6 +94,7 @@ function FormCrearPartida() {
                 },
               })}
               placeholder="Ingrese un minimo"
+              className={styles.input}
             />
           </div>
 
@@ -114,6 +118,7 @@ function FormCrearPartida() {
                 },
               })}
               placeholder="Ingrese un maximo"
+              className={styles.input}
             />
           </div>
 
@@ -132,11 +137,13 @@ function FormCrearPartida() {
                   message: 'Contraseña demasiado corta',
                 },
               })}
+              className={styles.input}
             />
           </div>
 
-          <input type="submit" value="Ingresar" />
+          <input type="submit" value="Crear" className={styles.submit}/>
         </form>
+        <video src={videobg} type="video/mp4" autoPlay loop muted />
       </div>
     </>
   );

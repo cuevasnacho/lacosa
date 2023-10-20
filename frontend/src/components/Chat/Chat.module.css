@@ -18,6 +18,13 @@
     height: 25px;
     left: -45%;
     text-align: center;
+    background-color: transparent;
+    transition: color 0.2s;
+}
+.close_button:hover {
+    color: white;
+    background-color: transparent;
+    border: none;
 }
   
 .chat_container {
@@ -30,7 +37,7 @@
     padding: 10px;
     width: 300px;
     height: 250px;
-    background-color: #121212;
+    background-color: rgba(0,0,0,0.6);
     display: flex;
     flex-direction: column;
     overflow-y: auto;
@@ -50,7 +57,7 @@
     height: auto;
     display: flex;
     flex-direction: row;
-    background-color: #121212;
+    background-color: rgba(0,0,0,0.6);;
 }
   
 .input_chat {
@@ -127,15 +134,17 @@
     height: 30px;
     width: 300px;
     border-radius: 0;
-    background-color: #cadf14;
+    background-color: rgba(128,128,128,0.3);
     font-family: Helvetica, Arial, sans-serif;
-    font-size: 16px;
-    color: #121212;
+    font-size: 14px;
+    color: #8a8a8a;
     text-align: center;
     vertical-align: middle;
     padding: 0px;
     margin: 0;
+    transition: color 0.2s;
 }
 .chat_hidden:hover {
+    color: white;
     background-color: #cadf14;
 }

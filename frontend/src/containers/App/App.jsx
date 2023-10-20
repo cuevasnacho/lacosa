@@ -1,5 +1,4 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import './App.css';
 import Inicio from '../../components/Inicio/Inicio.jsx';
 import Lobby from '../../components/Lobby/Lobby.jsx';
 import FormCrearPartida from '../../components/Formularios/CrearPartida/FormCrearPartida.jsx';
