@@ -1,12 +1,10 @@
 import React from 'react';
 import {useForm} from 'react-hook-form';
-import CustomButton from '../../Boton/CustomButton';
-import styles from './FormCrearPartida.css';
+import styles from './FormCrearPartida.module.css';
 import {httpRequest} from '../../../services/HttpService';
+import videobg from '../../../media/videobg.mp4';
 
 function FormCrearPartida() {
-
-  const USERNAME = window.sessionStorage.getItem('username');
   const HOST_ID = parseInt(window.sessionStorage.getItem('user_id'));
 
   const {
@@ -22,8 +20,6 @@ function FormCrearPartida() {
       lobby_max: parseInt(data.lobby_max),
       player_id: HOST_ID
     }
-
-    console.log(algonuevo);
 
     try 
     {      
@@ -50,8 +46,8 @@ function FormCrearPartida() {
   return (
     <>
       <div className={styles.container}>
-      <h2>Formulario de Creación</h2>
-        <form onSubmit={handleSubmit(onSubmit)}>
+      <h2 className={styles.titulo}>Formulario de Creación</h2>
+        <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
           <div>
             <label>Nombre de la Partida</label>
             <input
@@ -71,7 +67,9 @@ function FormCrearPartida() {
                   message: 'Nombre de la partida demasiado corto',
                 },
               })}
-              placeholder="Partida de Juancito"
+              placeholder="Nombre de partida"
+              autoComplete='off'
+              className={styles.input}
             />
             {errors.lobby_name && <p>{errors.lobby_name.message}</p>}
           </div>
@@ -95,7 +93,8 @@ function FormCrearPartida() {
                   message: 'Mínimo de jugadores demasiado bajo',
                 },
               })}
-              placeholder="4"
+              placeholder="Ingrese un minimo"
+              className={styles.input}
             />
           </div>
 
@@ -118,7 +117,8 @@ function FormCrearPartida() {
                   message: 'Máximo de jugadores demasiado bajo',
                 },
               })}
-              placeholder="4"
+              placeholder="Ingrese un maximo"
+              className={styles.input}
             />
           </div>
 
@@ -137,11 +137,13 @@ function FormCrearPartida() {
                   message: 'Contraseña demasiado corta',
                 },
               })}
+              className={styles.input}
             />
           </div>
 
-          <input type="submit" value="Ingresar" />
+          <input type="submit" value="Crear" className={styles.submit}/>
         </form>
+        <video src={videobg} type="video/mp4" autoPlay loop muted />
       </div>
     </>
   );

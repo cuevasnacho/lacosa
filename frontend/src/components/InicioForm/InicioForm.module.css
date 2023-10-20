@@ -2,24 +2,36 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: space-between;
+  height: 60%;
 }
 
 .userinput {
+  font-size: 12px;;
   border: none;
   border-bottom: 1px solid gray;
   background-color: transparent;
   padding-bottom: 10px;
+  width: inherit;
+  margin-bottom: 15px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .userinput:focus {
   outline: none;
 }
 
-.Buttons {
+.buttons {
   color: #1a1a1a;
   border-radius: 8px;
   border: 1px solid transparent;
   margin-top: 15px;
+  margin-bottom: 0;
   width: 120px;
   height: 35px;
   font-size: 0.8em;
@@ -29,18 +41,15 @@
   cursor: pointer;
   transition: border-color 0.25s, background-color 0.25s;
 }
-.Buttons:hover {
+.buttons:hover {
   border-color: #ffffff;
   background-color: #f9f9f9;
 }
 
-h3 {
+.InicioForm h3 {
   font-size: 30px;
+  font-weight: 600;
   color: #cadf14;
   width: 200px;
   text-align: center;
-}
-
-.textdanger {
-  font-size: 0.8em;
 }

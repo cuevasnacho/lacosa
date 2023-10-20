@@ -2,13 +2,13 @@ import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { httpRequest } from '../../services/HttpService.js';
 import styles from './Lobby.module.css';
-import JugadoresLobby from '../Lobby/JugadoresLobby.jsx';
 import React, { useEffect } from 'react';
+import JugadoresLobby from '../Lobby/JugadoresLobby.jsx';
+import Chat from '../Chat/Chat.jsx';
 import BotonAbandonar from '../AbandonarPartida/BotonAbandonar.jsx';
 
 function Lobby() {
-
-  let esHost = JSON.parse(window.sessionStorage.getItem('Host'));
+  const esHost = JSON.parse(window.sessionStorage.getItem('Host'));
   const infoPartida = JSON.parse(window.sessionStorage.getItem('Partida'));
   const minJugadores = infoPartida.lobby_min;
   const maxJugadores = infoPartida.lobby_max;
@@ -16,6 +16,7 @@ function Lobby() {
   const { idLobby } = useParams();
   const idPlayer = parseInt(window.sessionStorage.getItem('user_id'));
 
+  const [messages, setMessages] = useState([]);
   const [jugadores, setJugadores] = useState([]);
   const [websocket, setWebsocket] = useState(null);
 
@@ -71,25 +72,31 @@ function Lobby() {
             //window.location = '/home';
             //alert('El jugador ha abandonado la partida');
             break;
-          }
+    
+        case 'message':
+          const message = JSON.parse(e.data).data;
+          setMessages([...messages, message]);
+          break;
+      }
         };
 
-        //clean up function when we close page
-        return () => ws.close();
-      }, []);
+    //clean up function when we close page
+    return () => ws.close();
+  }, [messages]);
 
       return(
     <>
       <div className={styles.container}>
         <div className={styles.jugadores}>
-          <h1>Jugadores</h1>
-          <h3> {jugadores.length} </h3>
+          <h1>La partida comenzara pronto</h1>   
+          <h4>Hay {jugadores.length} jugadores en el lobby</h4> 
           <JugadoresLobby jugadores={jugadores}/>
           { esHost && (
           <button className={styles.botonIniciar} type='button' onClick={iniciarPartida}>Iniciar Partida</button>
           )}
           <BotonAbandonar idJugador={idPlayer} idLobby={idLobby} websocket={websocket}></BotonAbandonar>
         </div>
+        <Chat ws={websocket} messages={messages} />
       </div>
     </>
   );

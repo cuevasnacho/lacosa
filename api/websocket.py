@@ -13,8 +13,12 @@ class ConnectionManager:
     def disconnect(self, websocket : WebSocket,id,player_id):
         self.active_connections[id].remove((player_id,websocket))
 
-    async def send_data(self, data, websocket : WebSocket):
-        await websocket.send_json(data)
+    async def send_data_to(self, data, id, player_id):
+        if self.active_connections[id]:
+            for connection in self.active_connections[id]:
+                if connection[0] == player_id:
+                    await connection[1].send_json(data)
+                    break
 
     async def broadcast(self, data, id):
         if id in self.active_connections:

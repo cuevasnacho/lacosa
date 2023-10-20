@@ -98,6 +98,10 @@ async def players_in_lobby(lobby_id : int, player_id : int, websocket : WebSocke
                     content = {"action" : "player_left","data" : get_players_in_lobby(lobby_id)}
                 await manager.broadcast(content,lobby_id)
 
+            elif ws['action'] == 'message':
+                content = {'action': 'message', 'data': ws['data']}
+                await manager.broadcast(content,lobby_id)
+
     except WebSocketDisconnect:
         manager.disconnect(websocket,lobby_id,player_id)
         content = "Websocket desconectado"
