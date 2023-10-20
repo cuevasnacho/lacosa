@@ -59,10 +59,10 @@ function Lobby() {
             console.log(info.data);
             window.location = `/partida/${info.data}`;
 
-        case 'message':
-          const message = JSON.parse(e.data).data;
-          setMessages([...messages, message]);
-          break;
+          case 'message':
+            const message = JSON.parse(e.data).data;
+            setMessages([...messages, message]);
+            break;
 
           case 'host_left':
             window.location = '/home';
@@ -88,7 +88,6 @@ function Lobby() {
           { esHost && (
           <button className={styles.botonIniciar} type='button' onClick={iniciarPartida}>Iniciar Partida</button>
           )}
-          <BotonAbandonar idJugador={idPlayer} idLobby={idLobby} websocket={websocket}></BotonAbandonar>
         </div>
         <Chat ws={websocket} messages={messages} />
       </div>
