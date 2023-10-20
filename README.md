@@ -32,7 +32,6 @@ SCRUM Master: Ignacio Ramirez
   - `sudo apt-get install nodejs -y`
   - `npm init vite` (en la carpeta anterior al proyecto)
 
-
 #### Levantar servidor backend
 `uvicorn main:app --reload`
 
