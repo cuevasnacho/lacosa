@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom"
 import  "./Finalizar.css"
 import { useEffect,useState } from "react"
+import { httpRequest } from '../../services/HttpService.js'
+
 export default function Finalizar() {
     const [jugadores,setJugadores]=useState([])
     const [ganador,setGanador]=useState("")
@@ -11,17 +13,16 @@ export default function Finalizar() {
             }
             try 
             {
-              const data = await fetch("http://localhost:3000/jugadoresDB"),
-                res=await data.json()
-              console.log(res)
-              setJugadores(res.jugadores);
-              setGanador(res.ganador)
+              const data = await httpRequest({ method: 'GET',headers:headers, service: 'jugadoresDB' });
+              console.log(data)
+              setJugadores(data.jugadores);
+              setGanador(data.ganador)
             } 
             catch (error) {
               console.log(error);
             }
-          }
-          getJugadores()
+          }      
+        getJugadores()
      }, [])
     
   return (
