@@ -29,10 +29,7 @@ body {
   margin: 0;
   display: flex;
   place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-  background-color: #191919;
-  background-image: linear-gradient(62deg, #000000 0%, #111111 100%);
+  width: 100vw;
 }
 
 h1 {
