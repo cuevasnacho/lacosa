@@ -2,8 +2,7 @@
     display: flex;
     justify-content: center;
     position: fixed;
-    top: 50px;
-    height: 550px;
+    height: 85vh;
     width: 600px;
 }
 
@@ -11,12 +10,19 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: grey;
+    background-color: #121212;
+    color: #cacaca;
     height: 100%;
     width: 80%;
 }
 
+.popupbody h1 {
+    padding-top: 30px;
+    padding-bottom: 15px;
+}
+
 .popupbody p {
+    text-align: left;
     width: 90%;
     font-size: 0.9em;
     overflow: scroll;

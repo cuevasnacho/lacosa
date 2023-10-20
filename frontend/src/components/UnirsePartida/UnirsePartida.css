@@ -1,4 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Creepster&display=swap');
+
+.page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  padding: 50px;
+  font-family: Helvetica, Arial, sans-serif;
+}
+
 .videobg {
     display: flex;
     justify-content: center;
@@ -11,7 +23,7 @@
     height: 100vh;
     
     object-fit: cover;
-    z-index: -1;
+    z-index: 0;
     left: 0;
     top: 0;
   }
@@ -33,7 +45,7 @@
   }
 
   .titulo-tabla{
-    color: rgb(225, 253, 63);
+    color: #cadf14;
     font-family: 'Creepster', cursive;
     font-size:40px;
     text-align: left;
@@ -46,15 +58,35 @@
     font-family: 'Creepster', cursive;
     font-size:17px;
     width: 130px;
+    text-align: center;
   }
 
   .contenedor-tabla{
+    display: flex;
+    flex-direction: column;
+    width: 70%;
     backdrop-filter: blur(15px);
-    border-radius: 10%;
-    padding:1vh;
+    border-radius: 20px;
+    border: 1px solid rgba(90,90,90,0.2);
+    padding:4vh;
   }
 
 h4{
   text-align: right;
-  color:gray;
+  color:#fafafa;
+}
+
+.boton-crear {
+  font-size: 14px;
+  color: #121212;
+  padding: 10px;
+  max-width: 9vw;
+}
+
+td {
+  text-align: center;
+}
+
+table {
+  width: 100%;
 }
