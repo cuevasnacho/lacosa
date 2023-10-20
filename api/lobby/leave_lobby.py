@@ -21,7 +21,7 @@ def get_player(player_id):
 
 #funcion para obtener el match del lobby
 @db_session()
-def get_match_id(lobby_id):
+def get_match(lobby_id):
     lobby = get_lobby(lobby_id)
     match = Match.select(lambda match: match.match_id == lobby.lobby_match.match_id).first()
     return match
@@ -58,19 +58,6 @@ def player_update(player_id):
     player.player_current_match_id = None
     commit()
 
-'''
-#funcion para hacer una lista con el id de los jugadores del lobby
-@db_session()
-def get_new_host_players_id(lobby_id):
-    lobby = get_lobby(lobby_id)
-    players = Player.select(lambda player : player.player_lobby.lobby_id == lobby_id)
-    players_id = []
-    for player in players:
-        players_id.append(player.player_id)
-        players_id.sort()
-    return players_id[0]
-'''
-
 @db_session()
 def get_new_host_players_id(lobby_id):
     players = Player.select(lambda player: player.player_lobby.lobby_id == lobby_id)
@@ -79,7 +66,6 @@ def get_new_host_players_id(lobby_id):
     new_host_id = min(players, key=lambda player: player.player_id).player_id
     return new_host_id
 
-@db_session
 def delete_entry(entry1,entry2):
     entry1.delete()
     entry2.delete()
@@ -93,7 +79,6 @@ def set_new_host(player_id):
 
 @router.post("/lobbys/{lobby_id}/{player_id}")
 async def abandonar_lobby(lobby_id : int, player_id : int):
-    print("adentro del post de abandonar lobby leave_lobby")
     try:
         lobby = get_lobby(lobby_id)
         player = get_player(player_id)
@@ -101,13 +86,13 @@ async def abandonar_lobby(lobby_id : int, player_id : int):
         message = "El objeto no existe"
         status_code = 404 # not found
         return JSONResponse(content = message, status_code = status_code)
+    
     if player.player_isHost:
         players_in_lobby = get_lobby_players(lobby_id)
         for player in players_in_lobby:
             player_update(player.player_id)
-        delete_entry(lobby, get_match_id(lobby_id))
+        delete_entry(lobby, get_match(lobby_id))
     else:
         lobby_update(lobby_id)
         player_update(player_id)
-        message = f"Jugador {player_id} ha abandonado el lobby"
-        # return JSONResponse(content=f"Jugador {player_id} ha abandonado el lobby", status_code=200)
+        return JSONResponse(content = f"Jugador {player_id} salio del lobby", status_code=200)
