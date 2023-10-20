@@ -110,16 +110,8 @@ class Sospecha(card_template):
     
     @db_session
     def valid_play(self,player_cause_id,target_id):
-        cause = Player.get(player_id = player_cause_id)
-        target = Player.get(player_id = target_id)
-        if cause == None or target== None:
-            return False
-        player_counter = cause.player_lobby.lobby_pcount
-
-        cause_position = cause.player_position
-        target_position = target.player_position
-
-        return adjacent_players(cause_position,player_counter,target_position)
+        
+        return adjacent_players(player_cause_id, target_id)
     
     @db_session
     def aplicar_efecto(self,target_id,player_cause_id):
@@ -209,7 +201,7 @@ class VigilaTusEspaldas(card_template):
 
         target_match = target.player_current_match_id
         match = Match.get(match_id = target_match.match_id)
-        match.match_direcion = not(match.match_direcion)
+        match.match_direction = not(match.match_direction)
 
         commit()
 
