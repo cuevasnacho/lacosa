@@ -1,6 +1,6 @@
 
 from pony.orm import db_session, commit
-from db.database import Player,Card
+from db.database import Player,Card,Match
 from definitions import cards_subtypes
 from fastapi.responses import JSONResponse
 import random
@@ -8,10 +8,32 @@ import random
 from abc import ABC, abstractmethod
 
 #chequa que el jugador sea alguno del costado
-def adjacent_players(cause_position,player_counter,target_position):
-    left = (cause_position - 1) % player_counter == target_position 
-    right = (cause_position + 1) % player_counter == target_position
-    return left or right
+@db_session
+def adjacent_players(player_cause_id,target_id):
+    cause = Player.get(player_id = player_cause_id)
+    target = Player.get(player_id = target_id)
+    match_id = cause.player_current_match_id.match_id
+    if cause == None or target== None:
+        return False
+    player_counter = cause.player_lobby.lobby_pcount
+
+    cause_position = cause.player_position
+    target_position = target.player_position
+    if (target.player_dead == True):
+        return False
+
+    left = (cause_position - 1) % player_counter 
+    right = (cause_position + 1) % player_counter
+    player_left = Player.select (lambda p: p.player_current_match_id.match_id == match_id and p.player_position == left).first()
+    player_right = Player.select (lambda p: p.player_current_match_id.match_id == match_id and p.player_position == right).first()
+    while player_left.player_dead == True:
+        left = (left - 1) % player_counter
+        player_left = Player.select (lambda p: p.player_current_match_id.match_id == match_id and p.player_position == left).first()
+    while player_right.player_dead == True:
+        right = (right + 1) % player_counter
+        player_right = Player.select (lambda p: p.player_current_match_id.match_id == match_id and p.player_position == right).first()
+
+    return left == target_position   or right == target_position
 
 class card_template(ABC):
     def __init__(self,isPanic,alejate_type,effect,name) -> None:
@@ -34,16 +56,13 @@ class lanzallamas_T(card_template):
         super().__init__(False, cards_subtypes.ACTION.value,lanz_Effdect,"lanzallamas")
     @db_session
     def valid_play(self, player_cause_id,target_id):
-        cause = Player.get(player_id = player_cause_id)
-        target = Player.get(player_id = target_id)
-        if cause == None or target== None:
-            return False
-        player_counter = cause.player_lobby.lobby_pcount
 
-        cause_position = cause.player_position
-        target_position = target.player_position
+        is_adjacent = adjacent_players(player_cause_id, target_id)
 
-        return adjacent_players(cause_position,player_counter,target_position)
+        # cuando se implemente cuarentena remplazar que revice si el player_cause esta en cuarentena
+        in_quarantine = False 
+
+        return is_adjacent and (not in_quarantine)
     
 
     @db_session
@@ -136,3 +155,92 @@ class Analisis(card_template):
         '''
 
 
+cambioDeLugar_effect = "Cámbiate de sitio físicamente con un jugador que tengas al lado,salvo que te lo impida un obstáculo como Cuarentena o “Puerta atrancada"
+
+class CambioDeLugar(card_template):
+
+    def __init__(self):
+        super().__init__(False,cards_subtypes.ACTION.value,cambioDeLugar_effect,"cambio_de_lugar")
+    
+    #si no hya condiciones necesarias para jugar la carta, devuelve false o true
+    @db_session
+    def valid_play(self,player_cause_id,target_id): 
+        
+        is_adjacent = adjacent_players(player_cause_id, target_id)
+
+        someone_in_quarantine = False # cuando este implementada cuarentena modificar por un metodo
+                                        # que detecte si algun jugador esta en cuarentena    
+
+        locked_door = False # cuando este implementada puerta atrancada modificar por un metodo que detecte 
+                            # si hay una puerta atrancada en medio    
+        return is_adjacent and (not someone_in_quarantine) and (not locked_door) 
+
+    #se añade pĺayer_id para indicar el jugador que causo la jugada
+    @db_session
+    def aplicar_efecto(self,objective_id,player_cause_id): 
+        target = Player.get(player_id = objective_id)        
+        cause = Player.get(player_id = player_cause_id)
+
+        target_old_pos = target.player_position
+        target.player_position = cause.player_position
+        cause.player_position = target_old_pos
+        commit()
+
+        return []
+    
+vigila_tus_espaldas_effect = "Invierte el orden de juego"
+
+class VigilaTusEspaldas(card_template):
+
+    def __init__(self):
+        super().__init__(False,cards_subtypes.ACTION.value,vigila_tus_espaldas_effect,"vigila_tus_espaldas")
+    
+    #si no hya condiciones necesarias para jugar la carta, devuelve false o true
+    @db_session
+    def valid_play(self,player_cause_id,target_id): 
+        
+        return True 
+        #player_cause_id == target_id
+
+    #se añade pĺayer_id para indicar el jugador que causo la jugada
+    @db_session
+    def aplicar_efecto(self,objective_id,player_cause_id): 
+        target = Player.get(player_id = objective_id)        
+
+        target_match = target.player_current_match_id
+        match = Match.get(match_id = target_match.match_id)
+        match.match_direcion = not(match.match_direcion)
+
+        commit()
+
+        return []
+
+masValeQueCorras_effect = "Cámbiate de sitio físicamente con cualquier jugador que no esté bajo los efectos de “Cuarentena”"
+
+class MasValeQueCorras(card_template):
+
+    def __init__(self):
+        super().__init__(False,cards_subtypes.ACTION.value,masValeQueCorras_effect,"mas_vale_que_corras")
+    
+    #si no hya condiciones necesarias para jugar la carta, devuelve false o true
+    @db_session
+    def valid_play(self,player_cause_id,target_id): 
+        
+
+        someone_in_quarantine = False # cuando este implementada cuarentena modificar por un metodo
+                                        # que detecte si algun jugador esta en cuarentena    
+
+        return not someone_in_quarantine 
+
+    #se añade pĺayer_id para indicar el jugador que causo la jugada
+    @db_session
+    def aplicar_efecto(self,objective_id,player_cause_id): 
+        target = Player.get(player_id = objective_id)        
+        cause = Player.get(player_id = player_cause_id)
+
+        target_old_pos = target.player_position
+        target.player_position = cause.player_position
+        cause.player_position = target_old_pos
+        commit()
+
+        return []
