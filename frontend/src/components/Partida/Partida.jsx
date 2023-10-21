@@ -22,7 +22,7 @@ function Partida () {
   const [manoJugador, setManoJugador] = useState([]);   // Indica las cartas que tengo en la mano
   const [matchState, setMatchState] = useState([]); // username: string, id: int, esTurno: bool, posicion: int, eliminado: bool	
   const [mazoDescarteState, setMazoDescarteState] = useState(2);  // Dice que carta se va a mostrar en el mazo de descarte
-  let isOver;
+  const [isOver, setIsOver] = useState(false);
 
   async function getStatus() {
     const responseStatus = await httpRequest({
@@ -33,9 +33,6 @@ function Partida () {
     const jugadores = sortPlayers(status.jugadores);
     setMatchState(jugadores);
     setPlayerState(status.jugador);
-
-    isOver = true//window.localStorage.getItem("finalizar");
-    console.log(isOver);
   }
 
   async function initializeGame() {
@@ -66,7 +63,6 @@ function Partida () {
     // recieve message every start page
     ws.onmessage = (e) => {
       const info = JSON.parse(e.data);
-      console.log(info);
       switch (info.action) {
         case 'play_card':
           getStatus();
@@ -81,7 +77,6 @@ function Partida () {
           break;
         
         case 'show_cards':
-          console.log(info.data);
           const cartas = info.data;
           let mensaje_cartas = "Cartas: ";
           for (let i = 0; i < cartas.length; i++) {
@@ -94,6 +89,12 @@ function Partida () {
           const message = JSON.parse(e.data).data;
           setMessages([...messages, message]);
           break;
+
+        case 'end_game':
+          const respuesta = info.data;
+          console.log(respuesta);
+          setIsOver(respuesta);
+          break;
       }
     };
    
@@ -101,11 +102,9 @@ function Partida () {
     return () => ws.close();
   }, [messages]);
 
-  console.log(isOver);
-
   return (
     <div className={styles.container}>
-      {true && <Finalizar idpartida = {idPartida}/>}
+      {isOver && <Finalizar idpartida = {idPartida}/>}
       <ToastContainer />
       {playerState.esTurno && (<div className={styles.tuTurno}/>)}
       <div className={styles.detalleMesa}/>

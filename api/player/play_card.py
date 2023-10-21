@@ -92,18 +92,20 @@ def players_status_after_play_card(id_player,oponent_id,defense,cards_names,is_e
 
 @db_session
 def is_end_game(id_card):
-    match_id = (Card.get(card_id = id_card)).card_match.match_id
+    response = True
     humans_alive = True
+    match_id = (Card.get(card_id = id_card)).card_match.match_id
     players = Player.select(lambda player : player.player_current_match_id.match_id == match_id)
-    lacosa_dead = False
-    for player in players:
-        if player.player_role == player_roles.THE_THING.value:
-            lacosa_dead = True if player.player_dead else False #mataron a la cosa
-        else: 
+    lacosa = Player.select(lambda player : player.player_current_match_id.match_id == match_id 
+                           and player.player_role == player_roles.THE_THING.value).first()
+    
+    if not lacosa.player_dead:
+        for player in players:
             infected = player.player_role == player_roles.INFECTED.value
             dead = player.player_dead  
             humans_alive = humans_alive and (infected or dead) #todos los humanos estan infectados o elimindados
-    return lacosa_dead or humans_alive
+        response = humans_alive
+    return response
 
 
 @router.put("/carta/jugar/{player_id}/{card_id}/{oponent_id}")
@@ -118,12 +120,15 @@ async def play_card(player_id : int, card_id : int, oponent_id : int):
                     content = players_status_after_play_card(player_id,oponent_id,True,card_name,end_game)                
             else:
                 content = players_status_after_play_card(player_id,oponent_id,False,card_name,end_game)
+            wait = False
             return JSONResponse(content = content, status_code = 200)
         else:
             content = "Jugada invalida"
+            wait = False
             return JSONResponse(content = content, status_code = 401)
     else: 
         content = "No se cumplen las precondiciones"
+        wait = False
         return JSONResponse(content = content, status_code = 401)
    
 
