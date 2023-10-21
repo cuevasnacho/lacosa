@@ -69,8 +69,6 @@ function Lobby() {
 
           case 'player_left':
             setJugadores(info.data);
-            //window.location = '/home';
-            //alert('El jugador ha abandonado la partida');
             break;
     
         case 'message':

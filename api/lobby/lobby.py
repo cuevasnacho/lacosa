@@ -73,6 +73,7 @@ def get_players_in_lobby(id_lobby):
 
     for player in players:
         players_in_lobby.append(player.player_name)
+    return players_in_lobby
 
 @router.websocket("/ws/lobbys/{lobby_id}/{player_id}")
 async def players_in_lobby(lobby_id : int, player_id : int, websocket : WebSocket):
@@ -94,7 +95,6 @@ async def players_in_lobby(lobby_id : int, player_id : int, websocket : WebSocke
                 if player_id == get_host(lobby_id):
                     content = {"action" : "host_left"}
                 else:
-                    #player = db_player.select(lambda player : player.player_lobby.lobby_id == lobby_id).first()
                     content = {"action" : "player_left","data" : get_players_in_lobby(lobby_id)}
                 await manager.broadcast(content,lobby_id)
 
