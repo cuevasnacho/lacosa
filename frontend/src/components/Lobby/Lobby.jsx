@@ -7,7 +7,8 @@ import JugadoresLobby from '../Lobby/JugadoresLobby.jsx';
 import Chat from '../Chat/Chat.jsx';
 
 function Lobby() {
-  const esHost = JSON.parse(window.sessionStorage.getItem('Host'));
+
+  let esHost = JSON.parse(window.sessionStorage.getItem('Host'));
   const infoPartida = JSON.parse(window.sessionStorage.getItem('Partida'));
   const minJugadores = infoPartida.lobby_min;
   const maxJugadores = infoPartida.lobby_max;
@@ -54,24 +55,28 @@ function Lobby() {
           setJugadores(info.data);
           break;
 
-        case 'start_match':
-          console.log(info.data);
-          window.location = `/partida/${info.data}`;
+          case 'start_match':
+            console.log(info.data);
+            window.location = `/partida/${info.data}`;
 
-        case 'message':
-          const message = JSON.parse(e.data).data;
-          setMessages([...messages, message]);
-          break;
-      }
-    };
+          case 'message':
+            const message = JSON.parse(e.data).data;
+            setMessages([...messages, message]);
+            break;
+
+          case 'host_left':
+            window.location = '/home';
+            break;
+
+          case 'player_left':
+            setJugadores(info.data);
+            break;
+          }
+        };
 
     //clean up function when we close page
     return () => ws.close();
   }, [messages]);
-
-        //clean up function when we close page
-        return () => ws.close();
-      }, []);
 
       return(
     <>
@@ -83,7 +88,6 @@ function Lobby() {
           { esHost && (
           <button className={styles.botonIniciar} type='button' onClick={iniciarPartida}>Iniciar Partida</button>
           )}
-          <BotonAbandonar idJugador={idPlayer} idLobby={idLobby} websocket={websocket}></BotonAbandonar>
         </div>
         <Chat ws={websocket} messages={messages} />
       </div>
@@ -92,3 +96,4 @@ function Lobby() {
 }
 
 export default Lobby;
+
