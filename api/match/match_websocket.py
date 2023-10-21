@@ -41,7 +41,7 @@ async def match_websocket(websocket : WebSocket,match_id : int, player_id : int)
                     else:
                         await manager.send_data_to(content_personal, match_id, player_id)
             elif ws['action'] == 'notify_defense':
-                #ws['data'] = {defensor_id,  card_used_name,  atacante_id, card_defense_name}
+                #ws['data'] = {defensor_id,  card_used_name, atacante_id,username_atacante, card_defense_name}
                 player_id = ws['data']['defensor_id']
                 
                 content = {'action': 'notify_defense', 'data': ws['data']}
