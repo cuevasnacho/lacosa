@@ -109,9 +109,7 @@ class NadaDeBarbacoa(card_template):
     
     @db_session
     def aplicar_efecto(self,objective_id,player_cause_id):
-        objective_player = Player.get(player_id = objective_id)
-        objective_player.player_dead = False
-        commit()
+        
         return []
 
     @db_session
