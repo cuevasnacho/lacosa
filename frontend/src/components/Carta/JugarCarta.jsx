@@ -45,11 +45,6 @@ function JugarCarta({carta, socket, jugadores, funcionDescartar, mano}) {
           card: carta.cartaNombre,
           mostrar: cartas_mostrar
         }
-      const isover = response[0].end_game;
-      console.log(isover);
-      const mensaje_isover = JSON.stringify({
-        action : 'end_game',
-        data : isover
       });
 
       socket.send(mensaje);
@@ -77,6 +72,17 @@ function JugarCarta({carta, socket, jugadores, funcionDescartar, mano}) {
                                                   attack_card_name: carta.cartaNombre}});
       socket.send(mensaje_no_defense);
       
+
+
+      const isover = response[0].end_game;
+      console.log(isover);
+      const mensaje_isover = JSON.stringify({
+        action : 'end_game',
+        data : isover
+      });
+
+     
+
       descartarCarta(funcionDescartar, mano, carta, socket);
       socket.send(mensaje_isover);
       
@@ -89,7 +95,6 @@ function JugarCarta({carta, socket, jugadores, funcionDescartar, mano}) {
     else
     {
       toast.error("Primero tenes que robar una carta", {theme: "colored"})
-    
     }
   }
   

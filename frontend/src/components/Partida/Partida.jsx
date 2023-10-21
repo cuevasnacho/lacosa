@@ -93,6 +93,7 @@ function Partida () {
         case 'notify_defense':
           toast(`Podes defenderte de ${info.data.atacante_username} con ${info.data.card_defense_name}`);
           break;
+          
         case 'end_game':
           const respuesta = info.data;
           console.log(respuesta);
