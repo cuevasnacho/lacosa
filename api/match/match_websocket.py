@@ -18,7 +18,6 @@ async def match_websocket(websocket : WebSocket,match_id : int, player_id : int)
     try:
         while True:
             ws = await websocket.receive_json()
-            print(ws)
             if ws['action'] == 'discard_card': 
                 card_type = ws['data']
                 content = {'action' : 'discard_card','data' : card_type} #forma de return para las cartas
@@ -39,6 +38,10 @@ async def match_websocket(websocket : WebSocket,match_id : int, player_id : int)
                         await manager.broadcast(content_personal,match_id)
                     else:
                         await manager.send_data_to(content_personal, match_id, player_id)
+            
+            elif ws['action'] == 'end_game':
+                content = {'action' : 'end_game', 'data' : ws['data']}
+                await manager.broadcast(content,match_id)
 
             elif ws['action'] == 'message':
                 content = {'action': 'message', 'data': ws['data']}
