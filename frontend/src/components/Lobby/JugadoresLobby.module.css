@@ -1,13 +1,17 @@
 .jugadoresContainer {
     display: flex;
-    justify-content: center; /* Cambiado a 'flex-start' */
+    justify-content: center;
     align-items: center;
     padding: 10px;
     position: absolute;
-    top: 0;
+    bottom: 0;
+    right: 0;
   }
 
 .jugador {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 80px;
     height: 80px;
     margin: 10px;
