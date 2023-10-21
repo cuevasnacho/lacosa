@@ -23,8 +23,7 @@ from api.player.steal_card import router as steal_card_router
 from api.player.get_hand import router as get_hand_router
 from api.player.get_status import router as get_status_router
 from api.match.match_websocket import router as match_websocket
-from api.lobby.leave_lobby import router as leave_lobby_router
-from api.match.end_match import router as end_match_router
+from api.match.end_match import router as end_math_router
 app = FastAPI()
 
 origins = ["*"]
@@ -60,5 +59,4 @@ app.include_router(steal_card_router)
 app.include_router(get_hand_router)
 app.include_router(get_status_router)
 app.include_router(match_websocket)
-app.include_router(leave_lobby_router)
-app.include_router(end_match_router)
+app.include_router(end_math_router)

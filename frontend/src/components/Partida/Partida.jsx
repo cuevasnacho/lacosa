@@ -10,6 +10,7 @@ import Jugadores from '../Jugador/Jugadores.jsx';
 import Mazo from '../Mazo/Mazo.jsx';
 import MazoDescarte from '../Mazo/MazoDescarte.jsx';
 import Chat from '../Chat/Chat.jsx';
+import Finalizar from '../FinalizarPartida/Finalizar.jsx';
 
 function Partida () {
   const idPlayer = JSON.parse(sessionStorage.getItem('user_id'));
@@ -21,6 +22,7 @@ function Partida () {
   const [manoJugador, setManoJugador] = useState([]);   // Indica las cartas que tengo en la mano
   const [matchState, setMatchState] = useState([]); // username: string, id: int, esTurno: bool, posicion: int, eliminado: bool	
   const [mazoDescarteState, setMazoDescarteState] = useState(2);  // Dice que carta se va a mostrar en el mazo de descarte
+  const [isOver, setIsOver] = useState(false);
 
   async function getStatus() {
     const responseStatus = await httpRequest({
@@ -61,7 +63,6 @@ function Partida () {
     // recieve message every start page
     ws.onmessage = (e) => {
       const info = JSON.parse(e.data);
-      console.log(info);
       switch (info.action) {
         case 'play_card':
           getStatus();
@@ -76,7 +77,6 @@ function Partida () {
           break;
         
         case 'show_cards':
-          console.log(info.data);
           const cartas = info.data;
           let mensaje_cartas = "Cartas: ";
           for (let i = 0; i < cartas.length; i++) {
@@ -93,6 +93,11 @@ function Partida () {
         case 'notify_defense':
           toast(`Podes defenderte de ${info.data.atacante_username} con ${info.data.card_defense_name}`);
           break;
+        case 'end_game':
+          const respuesta = info.data;
+          console.log(respuesta);
+          setIsOver(respuesta);
+          break;
       }
     };
    
@@ -100,9 +105,9 @@ function Partida () {
     return () => ws.close();
   }, [messages]);
 
-
   return (
     <div className={styles.container}>
+      {isOver && <Finalizar idpartida = {idPartida}/>}
       <ToastContainer />
       {playerState.esTurno && (<div className={styles.tuTurno}/>)}
       <div className={styles.detalleMesa}/>

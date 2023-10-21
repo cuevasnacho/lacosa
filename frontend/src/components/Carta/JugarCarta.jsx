@@ -18,9 +18,11 @@ function JugarCarta({carta, socket, jugadores, funcionDescartar, mano}) {
   }
 
   async function jugar(target_id, target_username, mano){
+    let headers = { Accept: '*/*' }
     if (mano.length > 4 ) 
     {
       const response = await httpRequest({
+        headers : headers,
         method: 'PUT',
         service: `carta/jugar/${player_id}/${carta.id}/${target_id}`,
       });
@@ -43,7 +45,12 @@ function JugarCarta({carta, socket, jugadores, funcionDescartar, mano}) {
           card: carta.cartaNombre,
           mostrar: cartas_mostrar
         }
-      })
+      const isover = response[0].end_game;
+      console.log(isover);
+      const mensaje_isover = JSON.stringify({
+        action : 'end_game',
+        data : isover
+      });
 
       socket.send(mensaje);
       socket.send(mensaje_cartas);
@@ -71,6 +78,7 @@ function JugarCarta({carta, socket, jugadores, funcionDescartar, mano}) {
       socket.send(mensaje_no_defense);
       
       descartarCarta(funcionDescartar, mano, carta, socket);
+      socket.send(mensaje_isover);
       
       return(
         <>

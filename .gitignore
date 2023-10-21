@@ -1,7 +1,7 @@
 
 *.pyc
 *.sqlite
-
+*.json
 
 *.sqlite
 # Ignore Python pycache directory

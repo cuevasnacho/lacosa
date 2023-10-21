@@ -39,12 +39,12 @@ def match_result(match_id : int):
     for player in players:
         if lacosa.player_dead:
             #si la cosa esta muerta -> ganan los humanos y devuevlo a los vivos
-            if player.player_role == player_roles.HUMAN.value:
+            if player.player_role == player_roles.HUMAN.value and not player.player_dead:
                 winners.append(player.player_name)
                 winner_team = "Humanos"
         else:
             #si la cosa esta viva -> gana la cosa y los infectados
-            if player.player_role == player_roles.INFECTED.value:
+            if player.player_role == player_roles.INFECTED.value and not player.player_dead:
                 winners.append(player.player_name)
                 winner_team = "La cosa e infectados"
     

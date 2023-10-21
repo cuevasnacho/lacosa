@@ -50,7 +50,7 @@ def test_end_match_case2():
             assert json.loads(response.content) == response2
 
 #gano los humanos
-response3 = {'jugadores' : ["tomas","luca"], 'ganadores' : "Humanos"}
+response3 = {'jugadores' : ["luca"], 'ganadores' : "Humanos"}
 def test_end_match_case3():
         set_env("db/test_end_match_case3.txt")
         with patch('api.match.end_match.match_result'):     
