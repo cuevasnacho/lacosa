@@ -73,6 +73,7 @@ class data_item(BaseModel):
     card_name : List[str]
     end_game : bool
 
+@db_session
 def posible_response(card_id):
     card_name = (Card.get(card_id = card_id)).card_cardT.cardT_name 
     if(card_name == "lanzallamas"):
@@ -109,10 +110,10 @@ def is_end_game(id_card):
     humans_alive = True
     players = Player.select(lambda player : player.player_current_match_id.match_id == match_id)
     for player in players:
-        if player.player_role == player_roles.player_roles.THE_THING.value:
+        if player.player_role == player_roles.THE_THING.value:
             lacosa_dead = True if player.player_dead else False #mataron a la cosa
         else: 
-            infected = player.player_role == player_roles.player_roles.INFECTED.value
+            infected = player.player_role == player_roles.INFECTED.value
             dead = player.player_dead  
             humans_alive = humans_alive and (infected or dead) #todos los humanos estan infectados o elimindados
     return lacosa_dead or humans_alive
