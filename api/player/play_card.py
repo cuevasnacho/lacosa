@@ -120,15 +120,12 @@ async def play_card(player_id : int, card_id : int, oponent_id : int):
                     content = players_status_after_play_card(player_id,oponent_id,True,card_name,end_game)                
             else:
                 content = players_status_after_play_card(player_id,oponent_id,False,card_name,end_game)
-            wait = False
             return JSONResponse(content = content, status_code = 200)
         else:
             content = "Jugada invalida"
-            wait = False
             return JSONResponse(content = content, status_code = 401)
     else: 
         content = "No se cumplen las precondiciones"
-        wait = False
         return JSONResponse(content = content, status_code = 401)
    
 
