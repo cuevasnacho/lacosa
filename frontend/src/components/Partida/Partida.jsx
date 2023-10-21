@@ -89,6 +89,10 @@ function Partida () {
           const message = JSON.parse(e.data).data;
           setMessages([...messages, message]);
           break;
+
+        case 'notify_defense':
+          toast(`Podes defenderte de ${info.data.atacante_username} con ${info.data.card_defense_name}`);
+          break;
       }
     };
    
