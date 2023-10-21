@@ -52,8 +52,8 @@ async def match_websocket(websocket : WebSocket,match_id : int, player_id : int)
                 content_broadcast = {'action': 'play_defense', 'data': ws['data']}
                 await manager.broadcast(content_broadcast,match_id)
             elif ws['action'] == 'no_defense':
-                #data ={defesor_id, attack_card_name}
-                fullfile_action(ws['data']['defesor_id'], ws['data']['attack_card_name'])
+                #data ={defensor_id, attack_card_name}
+                fullfile_action(ws['data']['defensor_id'], ws['data']['attack_card_name'])
                 # ver si es nescesario enviar un mensaje
 
             elif ws['action'] == 'message':
