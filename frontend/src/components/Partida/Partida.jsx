@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { httpRequest } from '../../services/HttpService.js';
-import { sortPlayers } from './functions.jsx';
+import { arrangePlayers } from './functions.jsx';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import styles from './Partida.module.css';
@@ -30,7 +30,7 @@ function Partida () {
       service: `partida/status/${idPartida}/${idPlayer}`,
     });
     const status = responseStatus;
-    const jugadores = sortPlayers(status.jugadores);
+    const jugadores = arrangePlayers(status.jugadores);
     setMatchState(jugadores);
     setPlayerState(status.jugador);
   }
@@ -65,10 +65,9 @@ function Partida () {
       const info = JSON.parse(e.data);
       switch (info.action) {
         case 'play_card':
-          getStatus();
           const tipo_carta_descartada = info.data.tipo ? 1 : 0;
           setMazoDescarteState(tipo_carta_descartada);
-          toast(`${info.data.player} jugó la carta ${info.data.card} sobre ${info.data.target}`);
+          toast(`${info.data.player} jugó la carta ${info.data.card} sobre ${info.data.target}`, {theme: 'dark'});
           break;
 
         case 'next_turn':
@@ -82,7 +81,7 @@ function Partida () {
           for (let i = 0; i < cartas.length; i++) {
             mensaje_cartas = mensaje_cartas.concat(cartas[i] + ", ");
           }
-          toast(`${mensaje_cartas}`);
+          toast(`${mensaje_cartas}`, {theme: 'dark'});
           break;
 
         case 'message':
