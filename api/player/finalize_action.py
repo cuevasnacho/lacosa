@@ -12,5 +12,6 @@ import json
 from typing import List
 from definitions import player_roles
 
-def fullfile_action(defensor_id, card_used):
-    return True
+def fullfile_action(defensor_id, attack_card_name):
+    card_used = Template_Diccionary[attack_card_name]
+    card_used.fullfile_efect(defensor_id)
