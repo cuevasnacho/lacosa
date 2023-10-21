@@ -65,7 +65,10 @@ function JugarCarta({carta, socket, jugadores, funcionDescartar, mano}) {
         socket.send(notify_defense);
       }
 
-      
+      const mensaje_no_defense = JSON.stringify({action: 'no_defense', 
+                                                data: {defensor_id: defensor_id, 
+                                                  attack_card_name: carta.cartaNombre}});
+      socket.send(mensaje_no_defense);
       
       descartarCarta(funcionDescartar, mano, carta, socket);
       
