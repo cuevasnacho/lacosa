@@ -5,6 +5,7 @@ from fastapi.responses import JSONResponse
 from pony.orm import db_session
 from db.database import Lobby
 from api.websocket import ConnectionManager
+from api.player.finalize_action import fullfile_action
 
 router = APIRouter()
 
@@ -39,6 +40,21 @@ async def match_websocket(websocket : WebSocket,match_id : int, player_id : int)
                         await manager.broadcast(content_personal,match_id)
                     else:
                         await manager.send_data_to(content_personal, match_id, player_id)
+            elif ws['action'] == 'notify_defense':
+                #ws['data'] = {defensor_id,  card_used_name, atacante_id,username_atacante, card_defense_name}
+                player_id = ws['data']['defensor_id']
+                
+                content = {'action': 'notify_defense', 'data': ws['data']}
+                
+                await manager.send_data_to(content, match_id, player_id)
+            elif ws['action'] == 'play_defense':
+                #data ={username_defensor, nombre_carta, username_atacante}
+                content_broadcast = {'action': 'play_defense', 'data': ws['data']}
+                await manager.broadcast(content_broadcast,match_id)
+            elif ws['action'] == 'no_defense':
+                #data ={defesor_id,card_used_id o name}
+                fullfile_action(ws['data']['defesor_id'], ws['data']['card_used'])
+                # ver si es nescesario enviar un mensaje
 
             elif ws['action'] == 'message':
                 content = {'action': 'message', 'data': ws['data']}
