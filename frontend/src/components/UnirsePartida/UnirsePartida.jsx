@@ -2,7 +2,7 @@ import {v4 as uuid} from 'uuid';
 import TablaFila from './TablaFila';
 import { useState,useEffect } from 'react'
 import { httpRequest } from '../../services/HttpService.js'
-import videobg from "../../media/background-video.mp4"
+import videobg from "../../media/videobg.mp4"
 import "./UnirsePartida.css"
 import "./EstiloBoton.css"
 import { Link } from 'react-router-dom'
@@ -32,7 +32,7 @@ function UnirsePartida() {
      }, [])
   return (
  
-    <div>
+    <div className='page'>
         <video className='videobg' src={videobg} autoPlay loop muted />
         <h4>{username}</h4>
         <div className='contenedor-tabla'>
@@ -58,7 +58,7 @@ function UnirsePartida() {
                         </tbody>
                     </table> 
                 </div>
-            <Link to={"/crear"} className='boton-crear'>Crear Partida</Link>
+            <Link to={"/crear"} className='boton-crear'>Nueva Partida</Link>
         </div>             
     </div>
   )

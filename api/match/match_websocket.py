@@ -41,11 +41,9 @@ async def match_websocket(websocket : WebSocket,match_id : int, player_id : int)
                     else:
                         await manager.send_data_to(content_personal, match_id, player_id)
             elif ws['action'] == 'notify_defense':
-                #ws['data'] = {who_can_defend_id, card_name_played,who_play_card,card_to_defend_id}
-                #revisar nombre de los campos
-                player_id = ws['data']['who_can_defend_id']
+                #ws['data'] = {defensor_id,  card_used_name,  atacante_id, card_defense_name}
+                player_id = ws['data']['defensor_id']
                 
-                #consultar formato de data para que en vez de enviar todo sacar el id
                 content = {'action': 'notify_defense', 'data': ws['data']}
                 
                 await manager.send_data_to(content, match_id, player_id)
@@ -58,6 +56,10 @@ async def match_websocket(websocket : WebSocket,match_id : int, player_id : int)
                 fullfile_action(ws['data']['defesor_id'], ws['data']['card_used'])
                 # ver si es nescesario enviar un mensaje
 
+            elif ws['action'] == 'message':
+                content = {'action': 'message', 'data': ws['data']}
+                await manager.broadcast(content,match_id)
+        
     except WebSocketDisconnect:
         manager.disconnect(websocket,match_id,player_id)
         content = "Websocket desconectado"
