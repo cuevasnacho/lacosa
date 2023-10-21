@@ -10,6 +10,7 @@ import Jugadores from '../Jugador/Jugadores.jsx';
 import Mazo from '../Mazo/Mazo.jsx';
 import MazoDescarte from '../Mazo/MazoDescarte.jsx';
 import Chat from '../Chat/Chat.jsx';
+import Finalizar from '../FinalizarPartida/Finalizar.jsx';
 
 function Partida () {
   const idPlayer = JSON.parse(sessionStorage.getItem('user_id'));
@@ -21,6 +22,7 @@ function Partida () {
   const [manoJugador, setManoJugador] = useState([]);   // Indica las cartas que tengo en la mano
   const [matchState, setMatchState] = useState([]); // username: string, id: int, esTurno: bool, posicion: int, eliminado: bool	
   const [mazoDescarteState, setMazoDescarteState] = useState(2);  // Dice que carta se va a mostrar en el mazo de descarte
+  let isOver;
 
   async function getStatus() {
     const responseStatus = await httpRequest({
@@ -31,6 +33,9 @@ function Partida () {
     const jugadores = sortPlayers(status.jugadores);
     setMatchState(jugadores);
     setPlayerState(status.jugador);
+
+    isOver = true//window.localStorage.getItem("finalizar");
+    console.log(isOver);
   }
 
   async function initializeGame() {
@@ -96,9 +101,11 @@ function Partida () {
     return () => ws.close();
   }, [messages]);
 
+  console.log(isOver);
 
   return (
     <div className={styles.container}>
+      {true && <Finalizar idpartida = {idPartida}/>}
       <ToastContainer />
       {playerState.esTurno && (<div className={styles.tuTurno}/>)}
       <div className={styles.detalleMesa}/>

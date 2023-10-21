@@ -24,8 +24,13 @@ function JugarCarta({carta, socket, jugadores, funcionDescartar, mano}) {
         method: 'PUT',
         service: `carta/jugar/${player_id}/${carta.id}/${target_id}`,
       });
+
+      if (response.end_game)
+        window.localStorage.setItem("finalizar", true);
+      else 
+        window.localStorage.setItem("finalizar", false);
       
-      const cartas_mostrar = response[0].card_name;
+        const cartas_mostrar = response[0].card_name;
       const mensaje = JSON.stringify({
         action: 'play_card',
         data: {

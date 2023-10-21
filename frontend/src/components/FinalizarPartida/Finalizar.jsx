@@ -3,7 +3,7 @@ import  "./Finalizar.css"
 import { useEffect,useState } from "react"
 import { httpRequest } from '../../services/HttpService.js'
 
-export default function Finalizar({idPartida}) {
+export default function Finalizar({idpartida}) {
     const [jugadores,setJugadores]=useState([])
     const [ganador,setGanador]=useState("")
     useEffect(() => {
@@ -13,10 +13,12 @@ export default function Finalizar({idPartida}) {
             }
             try 
             {
-              const data = await httpRequest({ method: 'GET',headers:headers, service: `partida/resultado/${idPartida}`});
-              console.log(data)
+              const data = await httpRequest({ method: 'GET',headers:headers, service: `partida/resultado/${idpartida}`});
+              console.log(data);
               setJugadores(data.jugadores);
-              setGanador(data.ganadores)
+              setGanador(data.ganadores);
+              console.log(jugadores);
+              console.log(ganador);
             } 
             catch (error) {
               console.log(error);
@@ -35,16 +37,14 @@ export default function Finalizar({idPartida}) {
                         <thead>
                             <tr>
                                 <th>Nombre del Jugador</th>
-                                <th>Equipo</th>
                             </tr>
                         </thead>
                         <tbody> 
                             {jugadores.length > 0 ?(
-                                jugadores.map((jugadores,index=uuid()) => (
+                                jugadores.map((jugador,index=uuid()) => (
                                 <tr key={index}>
-                                    <td>{jugadores.nombre_jugador}</td>
-                                    <td>{jugadores.equipo}</td>  
-                                </tr>
+                                    <td>{jugador}</td>
+                                </tr>   
                                 )))
                                 : (
                                 <tr>
