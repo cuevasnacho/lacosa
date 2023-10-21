@@ -57,7 +57,7 @@ function JugarCarta({carta, socket, jugadores, funcionDescartar, mano}) {
         const notify_defense = JSON.stringify({action: 'notify_defense', 
                                               data: 
                                               {defensor_id: defensor_id,
-                                              card_used_name: card_used_name,
+                                              attack_card_name: card_used_name,
                                               atacante_id: player_id,
                                               atacante_username: username,
                                               card_defense_name: card_defense_name}});
