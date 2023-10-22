@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom"
-import  "./Finalizar.css"
+import style from "./Finalizar.module.css"
 import { useEffect,useState } from "react"
 import { httpRequest } from '../../services/HttpService.js'
 
@@ -28,11 +28,11 @@ export default function Finalizar({idpartida}) {
      }, [])
     
   return (
-    <article className="modal">
-        <div className='modal-container'>
-        <h1 className="titulo-tabla">Victoria para los {ganador}</h1>
-            <div className="container-tabla">      
-                <div className='tabla-unirsePartida'>
+    <article className={style.modal}>
+        <div className={style.modalcontainer}>
+        <h1 className={style.titulotabla}>Victoria para los {ganador}</h1>
+            <div className={style.containertabla}>      
+                <div className={style.tablaunirsePartida}>
                     <table>
                         <thead>
                             <tr>
@@ -55,7 +55,7 @@ export default function Finalizar({idpartida}) {
                     </table>
                 </div> 
             </div>
-            <Link className="boton-terror" to="/home">Volver Inicio</Link>
+            <Link className={style.botonterror} to="/home">Volver Inicio</Link>
         </div>
     </article>
   )
