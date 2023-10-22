@@ -50,3 +50,7 @@
 .public_image {
     filter: invert();
 }
+
+tr {
+    width: 100%;
+}

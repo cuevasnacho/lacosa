@@ -93,7 +93,7 @@ async def players_in_lobby(lobby_id : int, player_id : int, websocket : WebSocke
         while True:
             ws = await websocket.receive_json()
             if ws["action"] == "lobby_players":
-                players_names = players_names = get_players_in_lobby(lobby_id)
+                players_names = get_players_in_lobby(lobby_id)
                 content = {"action" : "lobby_players", "data" : players_names}
                 await manager.broadcast(content,lobby_id)
 

@@ -82,17 +82,19 @@ async def abandonar_lobby(lobby_id : int, player_id : int):
     try:
         lobby = get_lobby(lobby_id)
         player = get_player(player_id)
+        
+        if player.player_isHost:
+            players_in_lobby = get_lobby_players(lobby_id)
+            for player in players_in_lobby:
+                player_update(player.player_id)
+            delete_entry(lobby, get_match(lobby_id))
+        else:
+            lobby_update(lobby_id)
+            player_update(player_id)
+            return JSONResponse(content = f"Jugador {player_id} salio del lobby", status_code=200)
+    
     except ObjectNotFound:
         message = "El objeto no existe"
         status_code = 404 # not found
         return JSONResponse(content = message, status_code = status_code)
     
-    if player.player_isHost:
-        players_in_lobby = get_lobby_players(lobby_id)
-        for player in players_in_lobby:
-            player_update(player.player_id)
-        delete_entry(lobby, get_match(lobby_id))
-    else:
-        lobby_update(lobby_id)
-        player_update(player_id)
-        return JSONResponse(content = f"Jugador {player_id} salio del lobby", status_code=200)
