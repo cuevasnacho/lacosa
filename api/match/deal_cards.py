@@ -28,6 +28,7 @@ def deal_cards(id_match):
         cards_list.append(la_cosa)
 
         players_in_match = list(match.match_players)
+        lacosa_player_id = -1
 
         for player in players_in_match:
             for i in range(0,4):
@@ -37,6 +38,10 @@ def deal_cards(id_match):
                 card.card_location = card_position.PLAYER.value
                 if card.card_cardT.cardT_name == "lacosa":
                     player.player_role = player_roles.THE_THING.value
+                    lacosa_player_id = player.player_id
+                else:
+                    if player.player_id != lacosa_player_id:
+                        player.player_role = player_roles.HUMAN.value
 
         match.match_cardsCount -= players_amount * 4 
         commit()

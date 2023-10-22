@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { httpRequest } from '../../services/HttpService.js';
-import { sortPlayers } from './functions.jsx';
+import { arrangePlayers } from './functions.jsx';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import styles from './Partida.module.css';
@@ -10,6 +10,7 @@ import Jugadores from '../Jugador/Jugadores.jsx';
 import Mazo from '../Mazo/Mazo.jsx';
 import MazoDescarte from '../Mazo/MazoDescarte.jsx';
 import Chat from '../Chat/Chat.jsx';
+import Finalizar from '../FinalizarPartida/Finalizar.jsx';
 
 function Partida () {
   const idPlayer = JSON.parse(sessionStorage.getItem('user_id'));
@@ -21,6 +22,7 @@ function Partida () {
   const [manoJugador, setManoJugador] = useState([]);   // Indica las cartas que tengo en la mano
   const [matchState, setMatchState] = useState([]); // username: string, id: int, esTurno: bool, posicion: int, eliminado: bool	
   const [mazoDescarteState, setMazoDescarteState] = useState(2);  // Dice que carta se va a mostrar en el mazo de descarte
+  const [isOver, setIsOver] = useState(false);
 
   async function getStatus() {
     const responseStatus = await httpRequest({
@@ -28,7 +30,7 @@ function Partida () {
       service: `partida/status/${idPartida}/${idPlayer}`,
     });
     const status = responseStatus;
-    const jugadores = sortPlayers(status.jugadores);
+    const jugadores = arrangePlayers(status.jugadores);
     setMatchState(jugadores);
     setPlayerState(status.jugador);
   }
@@ -61,13 +63,11 @@ function Partida () {
     // recieve message every start page
     ws.onmessage = (e) => {
       const info = JSON.parse(e.data);
-      console.log(info);
       switch (info.action) {
         case 'play_card':
-          getStatus();
           const tipo_carta_descartada = info.data.tipo ? 1 : 0;
           setMazoDescarteState(tipo_carta_descartada);
-          toast(`${info.data.player} jugó la carta ${info.data.card} sobre ${info.data.target}`);
+          toast(`${info.data.player} jugó la carta ${info.data.card} sobre ${info.data.target}`, {theme: 'dark'});
           break;
 
         case 'next_turn':
@@ -76,18 +76,27 @@ function Partida () {
           break;
         
         case 'show_cards':
-          console.log(info.data);
           const cartas = info.data;
           let mensaje_cartas = "Cartas: ";
           for (let i = 0; i < cartas.length; i++) {
             mensaje_cartas = mensaje_cartas.concat(cartas[i] + ", ");
           }
-          toast(`${mensaje_cartas}`);
+          toast(`${mensaje_cartas}`, {theme: 'dark'});
           break;
 
         case 'message':
           const message = JSON.parse(e.data).data;
           setMessages([...messages, message]);
+          break;
+
+        case 'notify_defense':
+          toast(`Podes defenderte de ${info.data.atacante_username} con ${info.data.card_defense_name}`);
+          break;
+          
+        case 'end_game':
+          const respuesta = info.data;
+          console.log(respuesta);
+          setIsOver(respuesta);
           break;
       }
     };
@@ -96,9 +105,9 @@ function Partida () {
     return () => ws.close();
   }, [messages]);
 
-
   return (
     <div className={styles.container}>
+      {isOver && <Finalizar idpartida = {idPartida}/>}
       <ToastContainer />
       {playerState.esTurno && (<div className={styles.tuTurno}/>)}
       <div className={styles.detalleMesa}/>
