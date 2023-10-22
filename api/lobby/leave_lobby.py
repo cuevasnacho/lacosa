@@ -21,7 +21,7 @@ def get_player(player_id):
 
 #funcion para obtener el match del lobby
 @db_session()
-def get_match(lobby_id):
+def get_match_id(lobby_id):
     lobby = get_lobby(lobby_id)
     match = Match.select(lambda match: match.match_id == lobby.lobby_match.match_id).first()
     return match
@@ -82,19 +82,23 @@ async def abandonar_lobby(lobby_id : int, player_id : int):
     try:
         lobby = get_lobby(lobby_id)
         player = get_player(player_id)
-        
+
         if player.player_isHost:
             players_in_lobby = get_lobby_players(lobby_id)
             for player in players_in_lobby:
                 player_update(player.player_id)
-            delete_entry(lobby, get_match(lobby_id))
+            match_id = get_match_id(lobby_id).match_id
+            with db_session:
+                Lobby[lobby_id].delete()
+                Match[match_id].delete()
+                commit()
         else:
             lobby_update(lobby_id)
             player_update(player_id)
             return JSONResponse(content = f"Jugador {player_id} salio del lobby", status_code=200)
-    
+
     except ObjectNotFound:
         message = "El objeto no existe"
         status_code = 404 # not found
         return JSONResponse(content = message, status_code = status_code)
-    
+
