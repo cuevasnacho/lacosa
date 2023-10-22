@@ -5,11 +5,6 @@ from pony.orm import db_session, ObjectNotFound, commit,delete
 from db.database import Lobby, Player, Match
 import json
 
-#en este modulo debo implementar el endpoint y la logica correspondiente para que un jugador tenga la posibilidad
-#de abandonar un lobby. Si el jugador es el host, y no hay otro jugador en el lobby, se elimina el lobby, y el match asociado.
-
-router = APIRouter()
-
 #obtener el lobby
 @db_session()
 def get_lobby(lobby_id):
@@ -39,7 +34,6 @@ def get_lobby_players(lobby_id):
 @db_session()
 def get_host(lobby_id):
     for player in get_lobby_players(lobby_id):
-        print(f'{player.player_id} get_host leave_lobby.py')
         if player.player_isHost:
             return player.player_id
 
@@ -51,7 +45,7 @@ def lobby_update(lobby_id):
 
 @db_session()
 def player_update(player_id):
-    player = Player[player_id]
+    player = Player.select(lambda player : player.player_id == player_id)
     player.player_ingame = False
     player.player_isHost = False
     player.player_lobby = None
@@ -77,11 +71,8 @@ def set_new_host(player_id):
     player.player_isHost = True
     commit()
 
-@router.post("/lobbys/{lobby_id}/{player_id}")
-async def abandonar_lobby(lobby_id : int, player_id : int):
-    host = False
+def abandonar_lobby(lobby_id : int, player_id : int):
     try:
-        lobby = get_lobby(lobby_id)
         player = get_player(player_id)
         match = get_match(lobby_id)
     except ObjectNotFound:
@@ -90,7 +81,6 @@ async def abandonar_lobby(lobby_id : int, player_id : int):
         return JSONResponse(content = message, status_code = status_code)
     
     if player.player_isHost:
-        host = True
         players_in_lobby = get_lobby_players(lobby_id)
         for player in players_in_lobby:
             player_update(player.player_id)
@@ -98,4 +88,3 @@ async def abandonar_lobby(lobby_id : int, player_id : int):
     else:
         lobby_update(lobby_id)
         player_update(player_id)
-        return JSONResponse(content = {'host' : host}, status_code=200)

@@ -67,14 +67,21 @@ async def Crear_Lobby(new_lobby: CreateLobby):
         return JSONResponse(content= content, status_code=404)
 
 @db_session
-def get_players_in_lobby(id_lobby):
+def get_players_in_lobby(id_lobby,id_player_left):
     players_in_lobby = []
     players = db_player.select(lambda player : player.player_lobby.lobby_id == id_lobby)
-
     for player in players:
-        players_in_lobby.append(player.player_name)
+        if player.player_id != id_player_left:
+            players_in_lobby.append(player.player_name)
     return players_in_lobby
 
+@db_session()
+def get_host(lobby_id):
+    for player in get_lobby_players(lobby_id):
+        print(f'{player.player_id} get_host leave_lobby.py')
+        if player.player_isHost:
+            return player.player_id
+        
 @router.websocket("/ws/lobbys/{lobby_id}/{player_id}")
 async def players_in_lobby(lobby_id : int, player_id : int, websocket : WebSocket):
     await manager.connect(websocket,lobby_id,player_id)
@@ -82,7 +89,7 @@ async def players_in_lobby(lobby_id : int, player_id : int, websocket : WebSocke
         while True:
             ws = await websocket.receive_json()
             if ws["action"] == "lobby_players":
-                players_names = players_names = get_players_in_lobby(lobby_id)
+                players_names =  get_players_in_lobby(lobby_id,-1)
                 content = {"action" : "lobby_players", "data" : players_names}
                 await manager.broadcast(content,lobby_id)
 
@@ -92,10 +99,11 @@ async def players_in_lobby(lobby_id : int, player_id : int, websocket : WebSocke
                 await manager.broadcast(content,lobby_id)
 
             elif ws["action"] == "abandonar_lobby":
-                if ws['data']:
+                if player_id == get_host(lobby_id):
                     content = {"action" : "host_left"}
                 else:
-                    content = {"action" : "player_left","data" : get_players_in_lobby(lobby_id)}
+                    content = {"action" : "player_left", "data" : get_players_in_lobby(lobby_id,player_id)}
+                abandonar_lobby(lobby_id,player_id)
                 await manager.broadcast(content,lobby_id)
 
             elif ws['action'] == 'message':
