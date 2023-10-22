@@ -66,6 +66,7 @@ async def Crear_Lobby(new_lobby: CreateLobby):
         content = "Error creacion del lobby"
         return JSONResponse(content= content, status_code=404)
 
+#para el que es hots
 @db_session
 def get_players_in_lobby(id_lobby):
     players_in_lobby = []
@@ -73,6 +74,16 @@ def get_players_in_lobby(id_lobby):
 
     for player in players:
         players_in_lobby.append(player.player_name)
+    return players_in_lobby
+#para el que no es host
+@db_session
+def get_players_lobby(id_lobby,id_player_self):
+    players_in_lobby = []
+    players = db_player.select(lambda player : player.player_lobby.lobby_id == id_lobby)
+
+    for player in players:
+        if player.player_id != id_player_self:
+            players_in_lobby.append(player.player_name)
     return players_in_lobby
 
 @router.websocket("/ws/lobbys/{lobby_id}/{player_id}")
@@ -95,7 +106,7 @@ async def players_in_lobby(lobby_id : int, player_id : int, websocket : WebSocke
                 if player_id == get_host(lobby_id):
                     content = {"action" : "host_left"}
                 else:
-                    content = {"action" : "player_left","data" : get_players_in_lobby(lobby_id)}
+                    content = {"action" : "player_left","data" : get_players_lobby(lobby_id,player_id)}
                 await manager.broadcast(content,lobby_id)
 
             elif ws['action'] == 'message':
