@@ -43,7 +43,7 @@ async def unirse_lobby(lobby_id : int, player_id : int):
         message = "El lobby esta lleno"
         status_code = 406
         return JSONResponse(content=message, status_code=status_code)
-    
+
     with db_session:
         #cambiar esto del jugador
         match_id = get_match_id(lobby_id)

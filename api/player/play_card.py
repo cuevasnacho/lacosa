@@ -78,7 +78,21 @@ class data_item(BaseModel):
     end_game : bool
 
 @db_session
-def players_status_after_play_card(id_player,oponent_id,defense,cards_names,is_end_game):
+def posible_response(card_id):
+    card_name = (Card.get(card_id = card_id)).card_cardT.cardT_name 
+    if(card_name == "lanzallamas"):
+        return ["nada_de_barbacoas"]
+    if(card_name == "mas_vale_que_corras" or card_name =="cambio_de_lugar"):
+        return ["aqui_estoy_bien"]
+
+    return []
+
+@db_session
+def fullfile_efect(target_id,id_card):
+    return True
+
+@db_session
+def players_status_after_play_card(id_player,oponent_id,defense,cards_names,is_end_game,defense_with):
     response = []
 
     player_status = orm.select((player.player_id,player.player_ingame,player.player_position,player.player_exchangeR,player.player_exchangeL,player.player_role,player.player_dead,False)
@@ -90,7 +104,7 @@ def players_status_after_play_card(id_player,oponent_id,defense,cards_names,is_e
             player_exchangeL = player_status[4],player_role = player_status[5],player_dead = player_status[6],player_defense=player_status[7], card_name = cards_names,end_game=is_end_game))
     
     response.append(data_item(player_id = oponent_status[0],player_ingame=oponent_status[1],player_position=oponent_status[2],player_exchangeR=oponent_status[3],
-            player_exchangeL = oponent_status[4],player_role = oponent_status[5],player_dead = oponent_status[6],player_defense=oponent_status[7],card_name = [],end_game=is_end_game))
+            player_exchangeL = oponent_status[4],player_role = oponent_status[5],player_dead = oponent_status[6],player_defense=oponent_status[7],card_name = defense_with,end_game=is_end_game))
 
     return json.loads(json.dumps([obj.dict() for obj in response]))
 
@@ -121,9 +135,11 @@ async def play_card(player_id : int, card_id : int, oponent_id : int):
         end_game = is_end_game(card_id)
         if valid_play:
             if can_player_defend_himself(oponent_id,card_id) and oponent_id != player_id:
-                    content = players_status_after_play_card(player_id,oponent_id,True,card_name,end_game)                
+                defend_with = posible_response(card_id)
+                content = players_status_after_play_card(player_id,oponent_id,True,card_name,end_game,defend_with)                
             else:
-                content = players_status_after_play_card(player_id,oponent_id,False,card_name,end_game)
+                content = players_status_after_play_card(player_id,oponent_id,False,card_name,end_game,[])
+                fullfile_efect(oponent_id,card_id)
             return JSONResponse(content = content, status_code = 200)
         else:
             content = "Jugada invalida"
