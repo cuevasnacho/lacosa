@@ -63,8 +63,8 @@ function Lobby() {
             break;
 
           case 'host_left':
-            window.location = '/home';
             alert('El host ha abandonado la partida');
+            window.location = '/home';
             break;
 
           case 'player_left':
