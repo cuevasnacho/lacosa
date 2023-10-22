@@ -193,6 +193,12 @@ class Analisis(card_template):
         return JSONResponse(content= mensaje, status_code=200)
         '''
 
+    def aplay_defense_effect(self,defensor_id, attacker_id):
+        return True
+    
+    def fullfile_efect(self,target_id):
+        return True
+    
 
 cambioDeLugar_effect = "Cámbiate de sitio físicamente con un jugador que tengas al lado,salvo que te lo impida un obstáculo como Cuarentena o “Puerta atrancada"
 
@@ -226,6 +232,12 @@ class CambioDeLugar(card_template):
         commit()
 
         return []
+
+    def aplay_defense_effect(self,defensor_id, attacker_id):
+        return True
+    
+    def fullfile_efect(self,target_id):
+        return True
     
 vigila_tus_espaldas_effect = "Invierte el orden de juego"
 
@@ -254,6 +266,12 @@ class VigilaTusEspaldas(card_template):
 
         return []
 
+    def aplay_defense_effect(self,defensor_id, attacker_id):
+        return True
+    
+    def fullfile_efect(self,target_id):
+        return True
+    
 masValeQueCorras_effect = "Cámbiate de sitio físicamente con cualquier jugador que no esté bajo los efectos de “Cuarentena”"
 
 class MasValeQueCorras(card_template):
@@ -283,3 +301,10 @@ class MasValeQueCorras(card_template):
         commit()
 
         return []
+    
+    def aplay_defense_effect(self,defensor_id, attacker_id):
+        return True
+    
+    def fullfile_efect(self,target_id):
+        return True
+    
