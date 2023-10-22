@@ -92,7 +92,7 @@ async def players_in_lobby(lobby_id : int, player_id : int, websocket : WebSocke
                 await manager.broadcast(content,lobby_id)
 
             elif ws["action"] == "abandonar_lobby":
-                if player_id == get_host(lobby_id):
+                if ws['data']:
                     content = {"action" : "host_left"}
                 else:
                     content = {"action" : "player_left","data" : get_players_in_lobby(lobby_id)}

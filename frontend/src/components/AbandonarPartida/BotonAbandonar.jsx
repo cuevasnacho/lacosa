@@ -11,12 +11,12 @@ export default function BotonAbandonar({idJugador,idLobby,websocket}) {
     const handleClick= ()=>{
         const AbandonarLobby= async () => {
             try {
-                const mensaje = JSON.stringify({action: 'abandonar_lobby', data: idJugador});
+              const data = await httpRequest({
+                method: 'POST',
+                service: `lobbys/${idLobby}/${idJugador}`
+              });
+                const mensaje = JSON.stringify({action: 'abandonar_lobby', data: data.host});
                 websocket.send(mensaje);
-                const data = await httpRequest({
-                  method: 'POST',
-                  service: `lobbys/${idLobby}/${idJugador}`
-                });
                 //alert("Se envió el mensaje por socket");
                 //window.sessionStorage.setItem('Host', false);
                 window.location="/home"

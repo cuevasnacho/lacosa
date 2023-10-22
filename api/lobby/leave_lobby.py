@@ -1,7 +1,7 @@
 from pydantic import *
 from fastapi import  APIRouter
 from fastapi.responses import JSONResponse
-from pony.orm import db_session, ObjectNotFound, commit
+from pony.orm import db_session, ObjectNotFound, commit,delete
 from db.database import Lobby, Player, Match
 import json
 
@@ -66,10 +66,10 @@ def get_new_host_players_id(lobby_id):
     new_host_id = min(players, key=lambda player: player.player_id).player_id
     return new_host_id
 
-def delete_entry(entry1,entry2):
-    entry1.delete()
-    entry2.delete()
-    commit()
+@db_session
+def delete_entry(lobby_id,match_id):
+    delete(l for l in Lobby if l.lobby_id == lobby_id)
+    delete(l for l in Match if l.match_id == match_id)
 
 @db_session
 def set_new_host(player_id):
@@ -79,20 +79,23 @@ def set_new_host(player_id):
 
 @router.post("/lobbys/{lobby_id}/{player_id}")
 async def abandonar_lobby(lobby_id : int, player_id : int):
+    host = False
     try:
         lobby = get_lobby(lobby_id)
         player = get_player(player_id)
+        match = get_match(lobby_id)
     except ObjectNotFound:
         message = "El objeto no existe"
         status_code = 404 # not found
         return JSONResponse(content = message, status_code = status_code)
     
     if player.player_isHost:
+        host = True
         players_in_lobby = get_lobby_players(lobby_id)
         for player in players_in_lobby:
             player_update(player.player_id)
-        delete_entry(lobby, get_match(lobby_id))
+        delete_entry(lobby_id, match.match_id)
     else:
         lobby_update(lobby_id)
         player_update(player_id)
-        return JSONResponse(content = f"Jugador {player_id} salio del lobby", status_code=200)
+        return JSONResponse(content = {'host' : host}, status_code=200)
