@@ -5,10 +5,10 @@ import styles from './Lobby.module.css';
 import React, { useEffect } from 'react';
 import JugadoresLobby from '../Lobby/JugadoresLobby.jsx';
 import Chat from '../Chat/Chat.jsx';
+import BotonAbandonar from '../AbandonarPartida/BotonAbandonar.jsx';
 
 function Lobby() {
-
-  let esHost = JSON.parse(window.sessionStorage.getItem('Host'));
+  const esHost = JSON.parse(window.sessionStorage.getItem('Host'));
   const infoPartida = JSON.parse(window.sessionStorage.getItem('Partida'));
   const minJugadores = infoPartida.lobby_min;
   const maxJugadores = infoPartida.lobby_max;
@@ -37,6 +37,7 @@ function Lobby() {
     }
   }
 
+
   useEffect (() => {
     const url = `ws://localhost:8000/ws/lobbys/${idLobby}/${idPlayer}`;
     const ws = new WebSocket(url);
@@ -53,25 +54,28 @@ function Lobby() {
       switch (info.action) {
         case 'lobby_players':
           setJugadores(info.data);
+          //console.log(parseInt(window.localStorage.getItem('new_host_id')))
           break;
 
           case 'start_match':
             console.log(info.data);
             window.location = `/partida/${info.data}`;
-
-          case 'message':
-            const message = JSON.parse(e.data).data;
-            setMessages([...messages, message]);
             break;
 
           case 'host_left':
+            alert('El host ha abandonado la partida');
             window.location = '/home';
             break;
 
           case 'player_left':
             setJugadores(info.data);
             break;
-          }
+    
+        case 'message':
+          const message = JSON.parse(e.data).data;
+          setMessages([...messages, message]);
+          break;
+      }
         };
 
     //clean up function when we close page
@@ -88,6 +92,7 @@ function Lobby() {
           { esHost && (
           <button className={styles.botonIniciar} type='button' onClick={iniciarPartida}>Iniciar Partida</button>
           )}
+          <BotonAbandonar idJugador={idPlayer} idLobby={idLobby} websocket={websocket}></BotonAbandonar>
         </div>
         <Chat ws={websocket} messages={messages} />
       </div>
@@ -96,4 +101,3 @@ function Lobby() {
 }
 
 export default Lobby;
-

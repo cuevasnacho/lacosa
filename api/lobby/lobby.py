@@ -66,6 +66,25 @@ async def Crear_Lobby(new_lobby: CreateLobby):
         content = "Error creacion del lobby"
         return JSONResponse(content= content, status_code=404)
 
+#para el que es hots
+@db_session
+def get_players_in_lobby(id_lobby):
+    players_in_lobby = []
+    players = db_player.select(lambda player : player.player_lobby.lobby_id == id_lobby)
+
+    for player in players:
+        players_in_lobby.append(player.player_name)
+    return players_in_lobby
+#para el que no es host
+@db_session
+def get_players_lobby(id_lobby,id_player_self):
+    players_in_lobby = []
+    players = db_player.select(lambda player : player.player_lobby.lobby_id == id_lobby)
+
+    for player in players:
+        if player.player_id != id_player_self:
+            players_in_lobby.append(player.player_name)
+    return players_in_lobby
 
 @router.websocket("/ws/lobbys/{lobby_id}/{player_id}")
 async def players_in_lobby(lobby_id : int, player_id : int, websocket : WebSocket):
@@ -74,54 +93,29 @@ async def players_in_lobby(lobby_id : int, player_id : int, websocket : WebSocke
         while True:
             ws = await websocket.receive_json()
             if ws["action"] == "lobby_players":
-                players_names = []
-                with db_session:
-                    players = db_player.select(lambda player : player.player_lobby.lobby_id == lobby_id)
-                    for player in players:
-                        players_names.append(player.player_name)
-
-                    if players:
-                        content = json.loads(json.dumps({"action" : "lobby_players","data" : players_names, "status_code" : 200}))
-                    else:
-                        content = json.loads(json.dumps({"action" : "lobby_players","data" : [],"status_code" : 404}))
-
-                    await manager.broadcast(content,lobby_id)
+                players_names = get_players_in_lobby(lobby_id)
+                content = {"action" : "lobby_players", "data" : players_names}
+                await manager.broadcast(content,lobby_id)
 
             elif ws["action"] == "start_match":
                 match_id = ws['match_id']
                 content = {"action" : "start_match","data" : match_id }
                 await manager.broadcast(content,lobby_id)
-            elif ws["action"] == "abandonar_lobby":
-                print("abandonar lobby")
-                idJugador = ws["data"]
-                print(idJugador)
-                print(f'El id del host es: {get_host(lobby_id)} lobby.py')
-                if idJugador == get_host(lobby_id):
-                    print("eshost")
-                    content = {"action" : "host_left"}
-                    await manager.broadcast(content,lobby_id)
-                else:
-                    with db_session:
-                        jugadores = []
-                        for player in players:
-                            if player.player_id != player_id:
-                                jugadores.append(player.player_name)
-                            if players:
-                                content = json.loads(json.dumps({"action" : "player_left","data" : jugadores, "status_code" : 200}))
-                            else:
-                                content = json.loads(json.dumps({"action" : "player_left","data" : [],"status_code" : 404}))
 
-                        await manager.broadcast(content,lobby_id)
+            elif ws["action"] == "abandonar_lobby":
+                if player_id == get_host(lobby_id):
+                    content = {"action" : "host_left"}
+                else:
+                    content = {"action" : "player_left","data" : get_players_lobby(lobby_id,player_id)}
+                await manager.broadcast(content,lobby_id)
 
             elif ws['action'] == 'message':
                 content = {'action': 'message', 'data': ws['data']}
                 await manager.broadcast(content,lobby_id)
 
     except WebSocketDisconnect:
-        print("algo")
         manager.disconnect(websocket,lobby_id,player_id)
         content = "Websocket desconectado"
-        print("algo2")
         return JSONResponse(content = content, status_code = 200)
 
 #para que sea consistene faltaria borrar match
