@@ -7,15 +7,15 @@ function Jugadores({ jugadores }) {
   console.log(jugadores);
   let left, middle, right;
   const length = jugadores.length;
-  if (length < 2) {
+  if (length < 4) {
     left = {username: 'null', esTurno: false, eliminado: false};
     middle = [{username: 'null', esTurno: false, eliminado: false}];
     right = {username: 'null', esTurno: false, eliminado: false};
   }
   else {
     left = jugadores[0];
-    middle = jugadores.slice(1,-1);
-    right = jugadores[length-1];
+    middle = jugadores.slice(1,-2);
+    right = jugadores[length-2];
   }
 
   return (

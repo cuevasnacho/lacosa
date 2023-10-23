@@ -22,7 +22,7 @@ function mod(i, n) {  // positive modulo
 function arrangePlayers(jugadoresDesordenados) {
   const jugadores = sortPlayers(jugadoresDesordenados);
   console.log(jugadores);
-  let left,right,middle;
+  let left,right,middle,player;
   const length = jugadores.length;
 
   if (length >= 3) {  // if players available
@@ -49,15 +49,17 @@ function arrangePlayers(jugadoresDesordenados) {
     left = [jugadores[mod(user_pos-1, length)]];
     right = [jugadores[mod(user_pos+1, length)]];
     middle = middleLeft.concat(middleRight);
+    player = [jugadores[user_pos]];
   }
   else {  // if no players in game
     const arrangedPlayers = [
       {username: 'null', esTurno: false, eliminado: false},
       {username: 'null', esTurno: false, eliminado: false},
+      {username: 'null', esTurno: false, eliminado: false},
       {username: 'null', esTurno: false, eliminado: false}];
     return arrangedPlayers;
   }
-  return left.concat(middle, right);
+  return left.concat(middle, right, player);
 }
 
 export { nextTurn, arrangePlayers };
