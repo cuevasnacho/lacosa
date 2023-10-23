@@ -113,7 +113,9 @@ def is_end_game(id_card):
     response = True
     humans_alive = True
     match_id = (Card.get(card_id = id_card)).card_match.match_id
-    players = Player.select(lambda player : player.player_current_match_id.match_id == match_id)
+    players = Player.select(lambda player : player.player_current_match_id.match_id == match_id
+                            and player.player_role != player_roles.THE_THING.value)
+                            
     lacosa = Player.select(lambda player : player.player_current_match_id.match_id == match_id 
                            and player.player_role == player_roles.THE_THING.value).first()
     
