@@ -11,7 +11,7 @@ router = APIRouter()
 
 manager = ConnectionManager()
 
-show_cards_to_all = ['whiskey']
+show_cards_to_all = ['whisky']
 
 @router.websocket("/ws/match/{match_id}/{player_id}")
 async def match_websocket(websocket : WebSocket,match_id : int, player_id : int):  

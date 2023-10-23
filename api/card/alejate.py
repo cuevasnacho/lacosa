@@ -172,32 +172,26 @@ class Analisis(card_template):
     def __init__(self):
         super().__init__(False,cards_subtypes.ACTION.value,sospecha_effect,"analisis")
     
+    @db_session
     def valid_play(self, player_cause_id,target_id):
-        pass
-    #MODIFICAR 
+        is_adjacent = adjacent_players(player_cause_id, target_id)
+        return is_adjacent
+
     @db_session
     def aplicar_efecto(self,target_id,player_cause_id):
-        pass
-        '''
         target_hand = []
-        player_cause = Player.get(player_id = player_cause_id)
-        check_target = isValidTarget(player_cause_id, target_id)
-        if check_target == False:
-            mensaje= "El jugador no existe"
-            return JSONResponse(content=mensaje, status_code=404)
-
+        target_player = Player.get(player_id = target_id)
         target_player_cards = list(target_player.player_cards)
         for cards in target_player_cards:
             target_hand.append(cards.card_cardT.cardT_name)
-        mensaje = f"Las cartas que tiene {player_cause.player_name} son :{target_hand}"
-        return JSONResponse(content= mensaje, status_code=200)
-        '''
-
+        return target_hand
+        
     def aplay_defense_effect(self,defensor_id, attacker_id):
         return True
     
     def fullfile_efect(self,target_id):
         return True
+
     
 
 cambioDeLugar_effect = "Cámbiate de sitio físicamente con un jugador que tengas al lado,salvo que te lo impida un obstáculo como Cuarentena o “Puerta atrancada"
@@ -308,3 +302,30 @@ class MasValeQueCorras(card_template):
     def fullfile_efect(self,target_id):
         return True
     
+whisky_effect = "Enseño mis cartas a todos los jugadores" # Ésta carta solo la puedo jugar sobre mí mismo
+
+class Whisky(card_template):
+
+      def __init__(self):
+          super().__init__(False, cards_subtypes.ACTION.value, whisky_effect, "whisky")
+
+      #si no hay condiciones necesarias para jugar la carta, devuelve false o true
+      @db_session
+      def valid_play(self,player_cause_id,target_id):
+          return player_cause_id == target_id
+
+      #se añade pĺayer_id para indicar el jugador que causo la jugada
+      @db_session
+      def aplicar_efecto(self, objective_id, player_cause_id):
+          player_cause = Player.get(player_id=player_cause_id)
+          player_hand = list(player_cause.player_cards)
+
+          revealed_cards = [card.card_cardT.cardT_name for card in player_hand]
+
+          return revealed_cards
+
+      def aplay_defense_effect(self,defensor_id, attacker_id):
+          return True
+
+      def fullfile_efect(self,target_id):
+          return True
