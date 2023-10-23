@@ -9,24 +9,26 @@ router = APIRouter()
 
 manager = ConnectionManager()
 
+@router.delete("/partida/clear/{match_id}/{player_id}")
 @db_session
-def discard_cards_from_players(match_id):
+async def discard_cards_from_players(match_id : int, player_id : int):
     
-    players = Player.select(lambda player : player.player_current_match_id.match_id == match_id)
+    player = Player.select(lambda player : player.player_current_match_id.match_id == match_id and 
+                                player.player_id == player_id).first()
     
-    for player in players:
-        cards = player.player_cards 
+    cards = list(player.player_cards) 
+    if len(cards) > 0:
         for card in cards:
             card.delete()
-        player.player_current_match_id = None
-        player.player_lobby = None
-        player.player_isHost = False
-        player.player_dead = False
-        player.player_role = 0
-        player.player_ingame = False
-        player.player_cards = None
-        commit()
-
+    player.player_current_match_id = None
+    player.player_lobby = None
+    player.player_isHost = False
+    player.player_dead = False
+    player.player_role = 0
+    player.player_ingame = False
+    commit()
+    
+    return JSONResponse(content = "Base de datos limpia", status_code = 200)
 
 @db_session
 def get_players(match_id):
@@ -73,7 +75,7 @@ def match_result(match_id : int):
         winner_team = "La cosa"
         
     if lacosa.player_dead:
-        winner_team = "Humanos"
+        winner_team = "Los humanos"
     elif(len(winners) != number_players):
         if len(winners) == 1: 
             winner_team ="La cosa"
@@ -82,6 +84,4 @@ def match_result(match_id : int):
 
     response = {'jugadores' : winners, 'ganadores' : winner_team}
     
-    discard_cards_from_players(match_id)
-
     return JSONResponse(content = response, status_code = 200)

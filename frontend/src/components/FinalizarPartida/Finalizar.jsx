@@ -3,7 +3,7 @@ import  "./Finalizar.css"
 import { useEffect,useState } from "react"
 import { httpRequest } from '../../services/HttpService.js'
 
-export default function Finalizar({idpartida}) {
+export default function Finalizar({idpartida,idjugador}) {
     const [jugadores,setJugadores]=useState([])
     const [ganador,setGanador]=useState("")
     useEffect(() => {
@@ -14,11 +14,8 @@ export default function Finalizar({idpartida}) {
             try 
             {
               const data = await httpRequest({ method: 'GET',headers:headers, service: `partida/resultado/${idpartida}`});
-              console.log(data);
               setJugadores(data.jugadores);
               setGanador(data.ganadores);
-              console.log(jugadores);
-              console.log(ganador);
             } 
             catch (error) {
               console.log(error);
@@ -27,16 +24,31 @@ export default function Finalizar({idpartida}) {
         getJugadores()
      }, [])
     
+     const handleClear = async () => {
+        let headers = {
+            Accept: '*/*', 
+        }
+        try 
+        {
+          const data = await httpRequest({ method: 'DELETE',headers:headers, service: `partida/clear/${idpartida}/${idjugador}`});
+          console.log(data);
+        } 
+        catch (error) {
+          console.log(error);
+        }
+      }      
+
+    
   return (
     <article className="modal">
         <div className='modal-container'>
-        <h1 className="titulo-tabla">Victoria para los {ganador}</h1>
+        <h1 className="titulo-tabla">Victoria para {ganador}</h1>
             <div className="container-tabla">      
                 <div className='tabla-unirsePartida'>
                     <table>
                         <thead>
                             <tr>
-                                <th>Nombre del Jugador</th>
+                                <th>Nombres de los jugadores</th>
                             </tr>
                         </thead>
                         <tbody> 
@@ -55,7 +67,7 @@ export default function Finalizar({idpartida}) {
                     </table>
                 </div> 
             </div>
-            <Link className="boton-terror" to="/home">Volver Inicio</Link>
+            <Link className="boton-terror" to="/home" onClick={handleClear}>Volver Inicio</Link>
         </div>
     </article>
   )
