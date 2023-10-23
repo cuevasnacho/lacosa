@@ -28,9 +28,11 @@ def check_pre_conditions(id_player,id_card):
 def can_player_defend_himself(id_player,id_card):
     #chequear que {id_player} tenga una carta de defensa que contrareste a {id_card} 
     card = Card.get(card_id = id_card)
+    player = Player.get(player_id = id_player)
     #obtengo cartas tipo defensa del jugador
     cards_player = Card.select(lambda card : card.card_player.player_id == id_player 
-                               and card.card_cardT.cardT_subtype == cards_subtypes.DEFENSE.value)
+                               and card.card_cardT.cardT_subtype == cards_subtypes.DEFENSE.value
+                               and player.player_current_match_id == card.card_match)
     #tiene o no cartas de defensa     
     if (cards_player):
         #alguna de las cartas de defensa puede anular efecto de {id_card}
@@ -46,7 +48,7 @@ def can_player_defend_himself(id_player,id_card):
             #elif (....) 
         return defense
     else:
-        return True #CAMBIAR POR FALSE
+        return False #CAMBIAR POR FALSE
 
 @db_session
 def get_card_name(id_card):
@@ -113,7 +115,9 @@ def is_end_game(id_card):
     response = True
     humans_alive = True
     match_id = (Card.get(card_id = id_card)).card_match.match_id
-    players = Player.select(lambda player : player.player_current_match_id.match_id == match_id)
+    players = Player.select(lambda player : player.player_current_match_id.match_id == match_id
+                            and player.player_role != player_roles.THE_THING.value)
+                            
     lacosa = Player.select(lambda player : player.player_current_match_id.match_id == match_id 
                            and player.player_role == player_roles.THE_THING.value).first()
     

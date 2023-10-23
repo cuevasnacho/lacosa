@@ -26,7 +26,7 @@ def get_Hand(player):
     cards_related = list(orm.select(
             (card)
             for card in Card
-            if card.card_player.player_id == player.player_id))
+            if card.card_player.player_id == player.player_id and card.card_match == player.player_current_match_id))
     
     for card in cards_related:
         hand.append(card_response(cartaNombre = (card.card_cardT.cardT_name).lower(),

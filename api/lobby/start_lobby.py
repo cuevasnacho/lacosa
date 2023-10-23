@@ -63,6 +63,7 @@ def sort_players(lobby_id):
             first_player = False 
         player.player_ingame = True
         player.player_position = position
+        player.player_dead = False
         position += 1
     commit()
 

@@ -107,7 +107,7 @@ function Partida () {
 
   return (
     <div className={styles.container}>
-      {isOver && <Finalizar idpartida = {idPartida}/>}
+      {isOver && <Finalizar idpartida = {idPartida} idjugador={idPlayer}/>}
       <ToastContainer />
       {playerState.esTurno && (<div className={styles.tuTurno}/>)}
       <div className={styles.detalleMesa}/>

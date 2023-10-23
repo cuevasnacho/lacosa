@@ -24,6 +24,8 @@ from api.player.get_hand import router as get_hand_router
 from api.player.get_status import router as get_status_router
 from api.match.match_websocket import router as match_websocket
 from api.lobby.leave_lobby import router as leave_lobby_router
+from api.match.end_match import router as match_result_router
+
 
 app = FastAPI()
 
@@ -61,3 +63,5 @@ app.include_router(get_hand_router)
 app.include_router(get_status_router)
 app.include_router(match_websocket)
 app.include_router(leave_lobby_router)
+app.include_router(match_result_router)
+
