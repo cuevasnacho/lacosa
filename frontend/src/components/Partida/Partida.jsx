@@ -80,6 +80,7 @@ function Partida () {
           let mensaje_cartas = "Cartas: ";
           for (let i = 0; i < cartas.length; i++) {
             mensaje_cartas = mensaje_cartas.concat(cartas[i] + ", ");
+            console.log(cartas[i]);
           }
           toast(`${mensaje_cartas}`, {theme: 'dark'});
           break;

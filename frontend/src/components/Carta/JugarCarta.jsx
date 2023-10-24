@@ -111,7 +111,7 @@ function JugarCarta({carta, socket, jugadores, funcionDescartar, mano}) {
             <DropdownItem
               key={index}
               onClick={() => jugar(jugador.id, jugador.username, mano)}>
-              {jugador.username} {jugador.id}
+              {jugador.username}
             </DropdownItem>
           ))}
         </DropdownMenu>
