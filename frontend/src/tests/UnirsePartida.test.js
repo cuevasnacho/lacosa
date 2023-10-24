@@ -1,5 +1,5 @@
 import { render } from '@testing-library/react';
-import UnirsePartida from './UnirsePartida';
+import UnirsePartida from '../components/UnirsePartida/UnirsePartida';
 import { rest } from 'msw';
 import {setupServer} from 'msw/node'
 import { BrowserRouter as Router } from 'react-router-dom';
