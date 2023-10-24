@@ -1,0 +1,26 @@
+.container {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: linear-gradient(45deg,#000000,#121212);
+}
+
+.tuTurno {
+    display: flex;
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    bottom: 0;
+    background: radial-gradient(circle at center, transparent 70%, green 300%);
+}
+
+.detalleMesa {
+    display: flex;
+    position: absolute;
+    border-radius: 20px;
+    width: 70%;
+    height: 60%;
+    outline: 2px solid rgba(50, 50, 50, .2);
+}

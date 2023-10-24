@@ -1,21 +1,28 @@
 /* Jugador.module.css */
 .jugador {
-    background: lightblue;
+    background: #3a3a3a;
     border-radius: 50%;
-    width: 100px;
-    height: 100px;
+    width: 70px;
+    height: 70px;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
     margin: 10px;
+    transition: box-shadow 0.25s;
 }
 
-.jugador h3 {
+.jugador p {
     margin: 0;
-    color:black;
+    font-size: 12px;
+    color: #c1c1c1;
 }
 
 .turno {
-    background: red; /* Cambia el color de fondo a rojo si es el turno */
+    background: #008000; /* Cambia el color de fondo a verde si es el turno */
+    box-shadow: 0px 0px 15px #008000;
+}
+
+.eliminado {
+    background: #7a0505; /* Cambia el color de fondo a rojo si esta eliminado */
 }

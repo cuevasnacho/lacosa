@@ -1,9 +1,6 @@
 import styles from './InicioForm.module.css';
 import { httpRequest } from '../../services/HttpService.js';
-
 import { useForm } from 'react-hook-form';
-//import { useNavigate } from 'react-router-dom';
-
 
 const InicioForm = () => {
   const {
@@ -13,23 +10,27 @@ const InicioForm = () => {
   } = useForm();
   
   const onSubmit = async (data) => {
-    try {
-      // Log the data before sending the POST request
-      console.log('Data to be sent:', data);
-      
-      const response = await httpRequest({
-        method: 'POST',
-        service: 'players/',
-        payload: data
-      });
-      
-      window.localStorage.setItem('user_id', response.player_id);
-      window.localStorage.setItem('username', response.player_name);
-      
-      window.location = '/home';
+    if (data.player_name.length <= 20) {
+      try {
+        // Log the data before sending the POST request
+        console.log('Data to be sent:', data);
+        
+        const response = await httpRequest({
+          method: 'POST',
+          service: 'players/',
+          payload: data
+        });
+        
+        window.sessionStorage.setItem('user_id', response.player_id);
+        window.sessionStorage.setItem('username', response.player_name);
+        
+        window.location = '/home';
 
-    } catch (error) {
-      console.log(error);
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      alert('Tu nombre no debe exceder los 20 caracteres!');
     }
   };
 
@@ -52,12 +53,14 @@ const InicioForm = () => {
             },
             maxLength: { value: 20, message: '20 caracteres máximo' },
           })}
+          autoComplete='off'
+          placeholder='Usuario'
           data-testid="player_name"
         />
         <div>
           {errors.player_name && <p className={styles.textdanger}>{errors.player_name.message}</p>}
         </div>
-        <input type="submit" value="Ingresar" className={styles.Buttons}/>
+        <input type="submit" value="Ingresar" className={styles.buttons}/>
       </form>
   </div>
   )

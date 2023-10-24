@@ -12,7 +12,7 @@ export default function TablaFila(elem) {
   let cantjug=" "+ number_of_players + "/" + max_players ;
 
   const unirPartida = async () => {
-    const user_id = window.localStorage.getItem('user_id');
+    const user_id = window.sessionStorage.getItem('user_id');
     console.log(user_id);
     try {
         const data = await httpRequest({
@@ -20,15 +20,21 @@ export default function TablaFila(elem) {
           service: `lobbys/${lobby_id}/${user_id}`
       });
         setPartidas([...partidas, data]);
-        window.location=`/lobby/${lobby_id}`
-      } catch (error) {
-        console.log(error);
         
-        }
+        window.sessionStorage.setItem('Host',false);
+        window.sessionStorage.setItem('Partida', JSON.stringify({
+          lobby_min: 0,
+          lobby_max: max_players,
+        }));
+        
+        window.location=`/lobby/${lobby_id}`
+    } catch (error) {
+      console.log(error);
+      }
     };     
   return (
     <tr>
-        {(is_private)?<><td><img src={publica}></img></td></>:<><td><img src={lock}></img></td></>}
+        {(is_private)?<><td><img className="public_image" src={lock}></img></td></>:<><td><img className="public_image" src={publica}></img></td></>}
         <td>{lobby_name}</td>
         <td>{host_name}</td>
         <td>{cantjug}</td>

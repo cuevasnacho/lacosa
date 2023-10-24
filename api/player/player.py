@@ -27,7 +27,7 @@ def get_jugador(player_id):
 @router.post("/players")
 async def Crear_Jugador(new_player: PlayerIn) -> PlayerOut:
     if len(new_player.player_name) > 20: 
-        message = "Nombe demasiado largo"
+        message = "Nombre demasiado largo"
         status_code = 406 # no acceptable
         return JSONResponse(content=message, status_code=status_code)
     with db_session:

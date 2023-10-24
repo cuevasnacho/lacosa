@@ -15,4 +15,4 @@ VALUES (99,"descarte",0,0,0,0,0,0,0,0,7);
 
 
 insert into Match (match_id, match_status, match_direction, match_currentP, match_cardsCount, match_lobby)
-VALUES (7,0,0,2,0,0);
+VALUES (7,0,0,2,0,0);   

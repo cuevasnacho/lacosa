@@ -8,7 +8,7 @@ from definitions import card_position, results
 from enum import Enum
 
 
-AMOUNT_PER_NUMBER = 20
+AMOUNT_PER_NUMBER = 10
 
 @db_session
 def generate_cards(number,id_match,template):
@@ -36,7 +36,7 @@ def create_desk(players_amount,id_match):
 
         for template in List_of_templates:
                 
-                if(template.cardT_name =="La_Cosa"):
+                if(template.cardT_name =="lacosa"):
                     #el card number es 0 porque es la carta la cosa
                     new_Card = db_card(card_location =card_position.DECK.value,
                                         card_number = 0,

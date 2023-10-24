@@ -46,17 +46,24 @@ def get_player_number(id_lobby):
 def change_match_status(lobby_id):
     match_id = get_match_id(lobby_id)
     get_match = Match.get(match_id = match_id)
-    get_match.match_status = match_status.INITIALIZED.value                
+    get_match.match_status = match_status.INITIALIZED.value   
     commit()
 
 @db_session
 def sort_players(lobby_id):
+    match_id = get_match_id(lobby_id)
+    get_match = Match.get(match_id = match_id)
+    first_player = True
     #dar un orden a los jugadores y cambiar estado a en juego
     players = Player.select(lambda player : player.player_lobby.lobby_id == lobby_id)
     position = 0
     for player in players:
+        if first_player:
+            get_match.match_currentP = player.player_id
+            first_player = False 
         player.player_ingame = True
         player.player_position = position
+        player.player_dead = False
         position += 1
     commit()
 
@@ -69,10 +76,10 @@ async def start_match(lobby_id : int):
         #asociar un mazo
         number_players = get_player_number(lobby_id)
         match_id = get_match_id(lobby_id)
-        create_desk.create_desk(number_players, match_id)
+        create_desk(number_players, match_id)
 
         #repartir cartas
-        deal_cards.deal_cards(match_id)
+        deal_cards(match_id)
 
         #asignar orden a los jugadores
         sort_players(lobby_id)

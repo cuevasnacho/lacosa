@@ -24,7 +24,7 @@
 .boton-crear {
     display: flex;
     color: #ffffff;
-    background-color: #a2d31c;
+    background-color: #cadf14;
     border-radius: 8px;
     border: 1px solid transparent;
     margin: 1.5rem;
@@ -37,12 +37,20 @@
     transition: border-color 0.25s, background-color 0.25s, color 0.25s;
   }
 .boton-crear:hover {
-    border-color: #d40707 ;
-    background-color: #b6e72f;
+    border-color: #fafafa;
+    background-color: rgb(191, 235, 72);
     color: #121212;
    
 }
 .boton-crear:focus,
 .boton-crear:focus-visible {
     outline: 4px auto -webkit-focus-ring-color;
+}
+
+.public_image {
+    filter: invert();
+}
+
+tr {
+    width: 100%;
 }

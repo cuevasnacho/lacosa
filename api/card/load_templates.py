@@ -4,13 +4,26 @@ from api.card.alejate import *
 from pony.orm import db_session, commit
 from db.database import CardTemplate as db_cardT
 
-
 lanzallamas = lanzallamas_T()
 la_cosa = laCosa_T()
+nada_de_barbacoas = NadaDeBarbacoa()
+sospecha = Sospecha()
+analisis = Analisis()
+vigila_tus_espaldas = VigilaTusEspaldas()
+cambio_de_lugar = CambioDeLugar()
+mas_vale_que_corras = MasValeQueCorras()
+whisky = Whisky()
 
 Template_Diccionary = {
-    "Lanzallamas" : lanzallamas,
-    "La_Cosa"     : la_cosa
+    "lanzallamas" : lanzallamas,
+    "lacosa"     : la_cosa,
+    "nada_de_barbacoas" : nada_de_barbacoas,
+    "sospecha" : sospecha,
+    "analisis" : analisis,
+    "cambio_de_lugar" : cambio_de_lugar,
+    "vigila_tus_espaldas" : vigila_tus_espaldas,
+    "mas_vale_que_corras" : mas_vale_que_corras,
+    "whisky" : whisky
 }
 
 def already_load(name):
