@@ -11,12 +11,14 @@ import Mazo from '../Mazo/Mazo.jsx';
 import MazoDescarte from '../Mazo/MazoDescarte.jsx';
 import Chat from '../Chat/Chat.jsx';
 import Finalizar from '../FinalizarPartida/Finalizar.jsx';
+import LogPartida from '../LogPartida/LogPartida.jsx';
 
 function Partida () {
   const idPlayer = JSON.parse(sessionStorage.getItem('user_id'));
   const { idPartida } = useParams();
   const [websocket, setWebsocket] = useState(null);
   const [messages, setMessages] = useState([]);
+  const [jugadas,setJugadas]=useState([])
 
   const [playerState, setPlayerState] = useState({});
   const [manoJugador, setManoJugador] = useState([]);   // Indica las cartas que tengo en la mano
@@ -59,7 +61,9 @@ function Partida () {
     };
 
     setWebsocket(ws);
-  
+    //funcion nueva
+    const receiveJugada=(jugada)=>setJugadas((state)=>[...state,jugada])
+    let jugada="";
     // recieve message every start page
     ws.onmessage = (e) => {
       const info = JSON.parse(e.data);
@@ -68,11 +72,13 @@ function Partida () {
           const tipo_carta_descartada = info.data.tipo ? 1 : 0;
           setMazoDescarteState(tipo_carta_descartada);
           toast(`${info.data.player} jugó la carta ${info.data.card} sobre ${info.data.target}`, {theme: 'dark'});
+          jugada = {msj:`${info.data.player} jugó la carta ${info.data.card} sobre ${info.data.target}`}
+          receiveJugada(jugada)
           break;
 
         case 'next_turn':
           getStatus();
-          toast(`Finalizo el turno de ${info.data}`, {theme: 'dark'});
+          toast(`Finalizo  el turno de ${info.data}`, {theme: 'dark'});
           break;
         
         case 'show_cards':
@@ -87,6 +93,7 @@ function Partida () {
 
         case 'message':
           const message = JSON.parse(e.data).data;
+          console.log(message)
           setMessages([...messages, message]);
           break;
 
@@ -121,9 +128,10 @@ function Partida () {
         socket={websocket} 
         jugadores={matchState}/>
       <Jugadores jugadores={matchState}/>
-      <Chat ws={websocket} messages={messages}/>
+      
+      <LogPartida messages={jugadas}></LogPartida>
     </div>
   );
 }
-
+//<Chat ws={websocket} messages={messages}/>
 export default Partida;
