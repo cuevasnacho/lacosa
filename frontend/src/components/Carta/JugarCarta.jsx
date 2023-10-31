@@ -6,12 +6,19 @@ import {Dropdown, DropdownItem, DropdownMenu, DropdownToggle} from 'reactstrap';
 import { descartarCarta } from "./DescartarCarta";
 import styles from './JugarCarta.module.css'
 import MostrarCarta from '../MostrarCarta/MostrarCarta'
+import { useSelector } from "react-redux";
+import { getMano } from "../../slices/manoJugadorSlice";
+import { getJugadores } from "../../slices/jugadoresSlice";
 
-function JugarCarta({carta, socket, jugadores, funcionDescartar, mano}) {
+function JugarCarta({carta, socket}) {
   
   const player_id = JSON.parse(sessionStorage.getItem('user_id'));
   const username = window.sessionStorage.getItem('username');
   const [dropdownm, setDropdown] = useState(false);
+
+  /* Redux */
+  const manoJugador = useSelector(getMano);
+  const jugadoresRedux = useSelector(getJugadores);
 
   function abrirCerrarMenu() {
     setDropdown(!dropdownm);
@@ -19,7 +26,7 @@ function JugarCarta({carta, socket, jugadores, funcionDescartar, mano}) {
 
   async function jugar(target_id, target_username, mano){
     let headers = { Accept: '*/*' }
-    if (mano.length > 4 ) 
+    if (manoJugador.length > 4 ) 
     {
       const response = await httpRequest({
         headers : headers,
@@ -83,7 +90,7 @@ function JugarCarta({carta, socket, jugadores, funcionDescartar, mano}) {
 
      
 
-      descartarCarta(funcionDescartar, mano, carta, socket);
+      descartarCarta(carta, socket);
       socket.send(mensaje_isover);
       
       return(
@@ -107,10 +114,10 @@ function JugarCarta({carta, socket, jugadores, funcionDescartar, mano}) {
           Jugar Carta
         </DropdownToggle>
         <DropdownMenu dark>
-          {jugadores.map((jugador, index) => (
+          {jugadoresRedux.map((jugador, index) => (
             <DropdownItem
               key={index}
-              onClick={() => jugar(jugador.id, jugador.username, mano)}>
+              onClick={() => jugar(jugador.id, jugador.username, manoJugador)}>
               {jugador.username}
             </DropdownItem>
           ))}

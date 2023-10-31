@@ -12,7 +12,7 @@ function UnirsePartida() {
     
     /* No usar JSON.parse */
     let username = window.sessionStorage.getItem('username');
-    console.log(username)
+    //console.log(username)
      useEffect(() => {
         const fetchpPartidas = async () => {
             let headers = {
@@ -21,7 +21,7 @@ function UnirsePartida() {
             try 
             {
               const data = await httpRequest({ method: 'GET',headers:headers, service: 'partidas/listar' });
-              console.log(data);
+              //console.log(data);
               setPartidas(data);
             } 
             catch (error) {

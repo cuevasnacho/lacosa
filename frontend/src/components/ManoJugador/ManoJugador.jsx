@@ -1,10 +1,13 @@
 import Carta from '../Carta/Carta.jsx';
 import style from './ManoJugador.module.css';
+import { getMano } from '../../slices/manoJugadorSlice.js';
+import { useSelector } from 'react-redux';
 
 function ManoJugador({ cartas, esTurno , actualizar, socket, jugadores}) {
+  let mano = useSelector(getMano);
   return (
     <div className={style.ManoJugador}>
-      {cartas.map((carta, index) => (
+      {mano.map((carta, index) => (
         <div
           key={index}
           style={{ position: 'relative' }}
@@ -13,7 +16,7 @@ function ManoJugador({ cartas, esTurno , actualizar, socket, jugadores}) {
           <Carta  carta={carta} 
                   esTurno={esTurno} 
                   actualizar={actualizar} 
-                  mano={cartas} 
+                  mano={mano} 
                   socket={socket} 
                   jugadores={jugadores}/>
         </div>

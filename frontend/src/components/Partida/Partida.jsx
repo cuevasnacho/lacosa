@@ -11,15 +11,26 @@ import Mazo from '../Mazo/Mazo.jsx';
 import MazoDescarte from '../Mazo/MazoDescarte.jsx';
 import Chat from '../Chat/Chat.jsx';
 import Finalizar from '../FinalizarPartida/Finalizar.jsx';
+import {useDispatch} from 'react-redux';
+import { setMano } from '../../slices/manoJugadorSlice.js';
+import { setTurno} from '../../slices/turnoSlice.js';
+import { setJugadores } from '../../slices/jugadoresSlice.js';
 
 function Partida () {
   const idPlayer = JSON.parse(sessionStorage.getItem('user_id'));
   const { idPartida } = useParams();
+  
+  const dispatch = useDispatch();
+
   const [websocket, setWebsocket] = useState(null);
+
   const [messages, setMessages] = useState([]);
 
   const [playerState, setPlayerState] = useState({});
+
   const [manoJugador, setManoJugador] = useState([]);   // Indica las cartas que tengo en la mano
+  dispatch(setMano(manoJugador))
+  
   const [matchState, setMatchState] = useState([]); // username: string, id: int, esTurno: bool, posicion: int, eliminado: bool	
   const [mazoDescarteState, setMazoDescarteState] = useState(2);  // Dice que carta se va a mostrar en el mazo de descarte
   const [isOver, setIsOver] = useState(false);
@@ -32,7 +43,11 @@ function Partida () {
     const status = responseStatus;
     const jugadores = arrangePlayers(status.jugadores);
     setMatchState(jugadores);
+
+    dispatch(setJugadores(jugadores));
+    
     setPlayerState(status.jugador);
+    dispatch(setTurno(status.jugador.esTurno));
   }
 
   async function initializeGame() {
@@ -47,6 +62,7 @@ function Partida () {
     
     const cards = responseCards.cartas;
     setManoJugador(cards);
+    dispatch(setMano(cards));
   }
 
   
