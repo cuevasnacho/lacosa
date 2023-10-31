@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { httpRequest } from '../../services/HttpService.js';
-import { arrangePlayers, playCard } from './functions.jsx';
+import { arrangePlayers } from './functions.jsx';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import styles from './Partida.module.css';
@@ -75,13 +75,15 @@ function Partida () {
           break;
 
         case 'elegir_jugada':
-          setStage(Stages[jugar_carta])
+          setStage(Stages[jugar_carta]);
           break;
 
         case 'iniciar_defensa':
+          setStage(Stages[defensa]);
           break;
 
         case 'iniciar_intercambio':
+          setStage(Stages[intercambio]);
           break;
 
         case 'sol_intercambio':
@@ -112,6 +114,31 @@ function Partida () {
           console.log(respuesta);
           setIsOver(respuesta);
           break;
+
+        case 'play_card':
+          const tipo_carta_descartada = info.data.tipo ? 1 : 0;
+          setMazoDescarteState(tipo_carta_descartada);
+          toast(`${info.data.player} jugó la carta ${info.data.card} sobre ${info.data.target}`, {theme: 'dark'});
+          break;
+
+        case 'next_turn':
+          getStatus();
+          toast(`Finalizo el turno de ${info.data}`, {theme: 'dark'});
+          break;
+        
+        case 'show_cards':
+          const cartas = info.data;
+          let mensaje_cartas = "Cartas: ";
+          for (let i = 0; i < cartas.length; i++) {
+            mensaje_cartas = mensaje_cartas.concat(cartas[i] + ", ");
+            console.log(cartas[i]);
+          }
+          toast(`${mensaje_cartas}`, {theme: 'dark'});
+          break;
+
+        case 'notify_defense':
+          toast(`Podes defenderte de ${info.data.atacante_username} con ${info.data.card_defense_name}`);
+          break;
       }
     };
    
@@ -140,41 +167,3 @@ function Partida () {
 }
 
 export default Partida;
-
-/*
-case 'play_card':
-          const tipo_carta_descartada = info.data.tipo ? 1 : 0;
-          setMazoDescarteState(tipo_carta_descartada);
-          toast(`${info.data.player} jugó la carta ${info.data.card} sobre ${info.data.target}`, {theme: 'dark'});
-          break;
-
-        case 'next_turn':
-          getStatus();
-          toast(`Finalizo el turno de ${info.data}`, {theme: 'dark'});
-          break;
-        
-        case 'show_cards':
-          const cartas = info.data;
-          let mensaje_cartas = "Cartas: ";
-          for (let i = 0; i < cartas.length; i++) {
-            mensaje_cartas = mensaje_cartas.concat(cartas[i] + ", ");
-            console.log(cartas[i]);
-          }
-          toast(`${mensaje_cartas}`, {theme: 'dark'});
-          break;
-
-        case 'message':
-          const message = JSON.parse(e.data).data;
-          setMessages([...messages, message]);
-          break;
-
-        case 'notify_defense':
-          toast(`Podes defenderte de ${info.data.atacante_username} con ${info.data.card_defense_name}`);
-          break;
-          
-        case 'end_game':
-          const respuesta = info.data;
-          console.log(respuesta);
-          setIsOver(respuesta);
-          break;
-*/
