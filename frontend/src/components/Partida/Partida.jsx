@@ -75,7 +75,10 @@ function Partida () {
           jugada = {msj:`${info.data.player} jugó la carta ${info.data.card} sobre ${info.data.target}`}
           receiveJugada(jugada)
           break;
-
+      /*case 'dead_player'://caso muertes
+          jugada = {msj:`${info.data}`}
+          receiveJugada(jugada)
+      */
         case 'next_turn':
           getStatus();
           toast(`Finalizo  el turno de ${info.data}`, {theme: 'dark'});
