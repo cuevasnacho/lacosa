@@ -13,13 +13,13 @@ class Player(db.Entity):
     player_role = Optional(int)
     player_dead= Optional(bool)
     player_isHost = Required(bool)
-    player_status = Optional(int) # esta es la fase del player
-    player_quarentine_count = Optional(int)
 
 
     player_cards = Set("Card", nullable =True)
     player_lobby = Optional("Lobby")
     player_current_match_id = Optional("Match")
+    player_status = Optional(int, default=0) # esta es la fase del player
+    player_quarentine_count = Optional(int, default=0)
 
 class Lobby (db.Entity):
     lobby_id = PrimaryKey(int, auto=True)
