@@ -4,11 +4,12 @@ import styles from "./Carta.module.css";
 import Diccionario from './Diccionario.jsx';
 import { descartarCarta } from './DescartarCarta.jsx';
 import  JugarCarta  from './JugarCarta.jsx';
+import Stages from "../Partida/Stages.jsx";
 
-function Carta({ carta, esTurno , actualizar, mano, socket, jugadores}) {
+function Carta({ carta, stage, actualizar, mano, socket, jugadores}) {
     const [isHover, setIsHover] = useState(false);
     
-    const cartaState = esTurno ? `${styles.carta} ${styles.cartaTurno}` : styles.carta;
+    const cartaState = (stage == Stages[jugar_carta]) ? `${styles.carta} ${styles.cartaTurno}` : styles.carta;
 
     return (
         <div 
@@ -16,7 +17,8 @@ function Carta({ carta, esTurno , actualizar, mano, socket, jugadores}) {
             onMouseEnter={() => setIsHover(true)}
             onMouseLeave={() => setIsHover(false)}>
             <img alt={carta.cartaNombre} src={Diccionario[carta.cartaNombre]} width={130}/>
-            { isHover && esTurno && carta.cartaNombre != 'lacosa' &&(
+            { isHover && 
+            (stage == Stages[jugar_carta] && carta.cartaNombre != 'lacosa') && (
                 <div className={styles.botones}>
                     <JugarCarta carta={carta} 
                         socket={socket} 
@@ -25,6 +27,16 @@ function Carta({ carta, esTurno , actualizar, mano, socket, jugadores}) {
                         mano={mano}/>
                     <button className={styles.boton} onClick={() => 
                         descartarCarta(actualizar, mano, carta, socket)}>Descartar</button>
+                </div>
+            )}
+            { isHover && 
+            (stage == Stages[forzar] && carta.tipo) && (
+                <div className={styles.botones}>
+                    <JugarCarta carta={carta} 
+                        socket={socket} 
+                        jugadores={jugadores} 
+                        funcionDescartar={actualizar} 
+                        mano={mano}/>
                 </div>
             )}
         </div>

@@ -1,13 +1,14 @@
 import styles from './Mazo.module.css';
 import {robarCarta} from './RobarCarta'
+import Stages from '../Partida/Stages.jsx';
 
-function Mazo ({esTurno, mano, actualizarMano}) {
+function Mazo ({stage, mano, actualizarMano}) {
   
-  const mazoState = esTurno ? `${styles.mazo} ${styles.mazoTurno}` : styles.mazo;
+  const mazoState = (stage == Stages[robar_carta]) ? `${styles.mazo} ${styles.mazoTurno}` : styles.mazo;
 
   // No sacar del componente, deja de funcionar
   function handleRobarCarta () {
-    if (mano.length <= 4 && esTurno) {
+    if (mano.length <= 4 && stage == Stages[robar_carta]) {
       robarCarta(mano, actualizarMano);
     }
     else {

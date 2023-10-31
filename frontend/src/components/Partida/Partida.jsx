@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { httpRequest } from '../../services/HttpService.js';
-import { arrangePlayers } from './functions.jsx';
+import { arrangePlayers, playCard } from './functions.jsx';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import styles from './Partida.module.css';
@@ -11,6 +11,7 @@ import Mazo from '../Mazo/Mazo.jsx';
 import MazoDescarte from '../Mazo/MazoDescarte.jsx';
 import Chat from '../Chat/Chat.jsx';
 import Finalizar from '../FinalizarPartida/Finalizar.jsx';
+import Stages from './Stages.jsx';
 
 function Partida () {
   const idPlayer = JSON.parse(sessionStorage.getItem('user_id'));
@@ -18,6 +19,7 @@ function Partida () {
   const [websocket, setWebsocket] = useState(null);
   const [messages, setMessages] = useState([]);
 
+  const [stage, setStage] = useState(Stages[inactivo]);
   const [playerState, setPlayerState] = useState({});
   const [manoJugador, setManoJugador] = useState([]);   // Indica las cartas que tengo en la mano
   const [matchState, setMatchState] = useState([]); // username: string, id: int, esTurno: bool, posicion: int, eliminado: bool	
@@ -64,7 +66,83 @@ function Partida () {
     ws.onmessage = (e) => {
       const info = JSON.parse(e.data);
       switch (info.action) {
-        case 'play_card':
+        case 'iniciar_turno':
+          setStage(Stages[robar_carta]);
+          break;
+
+        case 'forzar_jugada':
+          setStage(Stages[forzar_carta]);
+          break;
+
+        case 'elegir_jugada':
+          setStage(Stages[jugar_carta])
+          break;
+
+        case 'iniciar_defensa':
+          break;
+
+        case 'iniciar_intercambio':
+          break;
+
+        case 'sol_intercambio':
+          break;
+        
+        case 'fin_turno':
+          setStage(Stages[inactivo]);
+          break;
+
+        /*
+        action:
+        iniciar_turno
+        forzar_jugada
+        elegir_jugada
+        iniciar_defensa --> play_defense - no_defense
+        iniciar_intercambio
+        sol_intercambio (solicitar, al que le intercambian)
+        fin_turno
+        */
+        
+        case 'message':
+          const message = JSON.parse(e.data).data;
+          setMessages([...messages, message]);
+          break;
+          
+        case 'end_game':
+          const respuesta = info.data;
+          console.log(respuesta);
+          setIsOver(respuesta);
+          break;
+      }
+    };
+   
+    //clean up function when we close page
+    return () => ws.close();
+  }, [messages]);
+
+  return (
+    <div className={styles.container}>
+      {isOver && <Finalizar idpartida = {idPartida} idjugador={idPlayer}/>}
+      <ToastContainer />
+      {playerState.esTurno && (<div className={styles.tuTurno}/>)}
+      <div className={styles.detalleMesa}/>
+      <Mazo stage={stage} mano={manoJugador} actualizarMano={setManoJugador}/>
+      <MazoDescarte mazoDescarteState={mazoDescarteState}/>
+      <ManoJugador 
+        cartas={manoJugador} 
+        stage={stage} 
+        actualizar={setManoJugador} 
+        socket={websocket} 
+        jugadores={matchState}/>
+      <Jugadores jugadores={matchState}/>
+      <Chat ws={websocket} messages={messages}/>
+    </div>
+  );
+}
+
+export default Partida;
+
+/*
+case 'play_card':
           const tipo_carta_descartada = info.data.tipo ? 1 : 0;
           setMazoDescarteState(tipo_carta_descartada);
           toast(`${info.data.player} jugó la carta ${info.data.card} sobre ${info.data.target}`, {theme: 'dark'});
@@ -99,31 +177,4 @@ function Partida () {
           console.log(respuesta);
           setIsOver(respuesta);
           break;
-      }
-    };
-   
-    //clean up function when we close page
-    return () => ws.close();
-  }, [messages]);
-
-  return (
-    <div className={styles.container}>
-      {isOver && <Finalizar idpartida = {idPartida} idjugador={idPlayer}/>}
-      <ToastContainer />
-      {playerState.esTurno && (<div className={styles.tuTurno}/>)}
-      <div className={styles.detalleMesa}/>
-      <Mazo esTurno={playerState.esTurno} mano={manoJugador} actualizarMano={setManoJugador}/>
-      <MazoDescarte mazoDescarteState={mazoDescarteState}/>
-      <ManoJugador 
-        cartas={manoJugador} 
-        esTurno={playerState.esTurno} 
-        actualizar={setManoJugador} 
-        socket={websocket} 
-        jugadores={matchState}/>
-      <Jugadores jugadores={matchState}/>
-      <Chat ws={websocket} messages={messages}/>
-    </div>
-  );
-}
-
-export default Partida;
+*/

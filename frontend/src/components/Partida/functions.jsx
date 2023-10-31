@@ -19,6 +19,43 @@ function mod(i, n) {  // positive modulo
   return ((i % n) + n) % n;
 }
 
+async function playCard(carta, target, socket) {
+  const player_id = JSON.parse(sessionStorage.getItem('user_id'));
+  const username = window.sessionStorage.getItem('username');
+  
+  let headers = { Accept: '*/*' };
+  const response = await httpRequest({
+    headers : headers,
+    method: 'PUT',
+    service: `carta/jugar/${player_id}/${carta.id}/${target.target_id}`,
+  });
+  
+  // response[0] es el jugador que jugo la carta
+  // response[1] es el jugador al que le juegan la carta
+  const cartas_mostrar = response[0].card_name;
+  const mensaje = JSON.stringify({
+    action: 'play_card',
+    data: {
+      card: carta.cartaNombre,
+      player: username, 
+      target: target.target_username,
+      tipo: carta.tipo,
+    }});
+
+  const mensaje_cartas = JSON.stringify({
+    action: 'show_cards',
+    data: {
+      card: carta.cartaNombre,
+      mostrar: cartas_mostrar
+    }
+  });
+
+  socket.send(mensaje);
+  socket.send(mensaje_cartas);
+  
+  return;
+}
+
 function arrangePlayers(jugadoresDesordenados) {
   const jugadores = sortPlayers(jugadoresDesordenados);
   console.log(jugadores);
@@ -62,4 +99,4 @@ function arrangePlayers(jugadoresDesordenados) {
   return left.concat(middle, right, player);
 }
 
-export { nextTurn, arrangePlayers };
+export { nextTurn, arrangePlayers, playCard };

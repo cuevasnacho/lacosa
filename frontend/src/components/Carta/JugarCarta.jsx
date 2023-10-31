@@ -1,15 +1,12 @@
-import { httpRequest } from "../../services/HttpService";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import {Dropdown, DropdownItem, DropdownMenu, DropdownToggle} from 'reactstrap';
 import { descartarCarta } from "./DescartarCarta";
-import styles from './JugarCarta.module.css'
-import MostrarCarta from '../MostrarCarta/MostrarCarta'
+import { playCard } from '../Partida/functions.jsx';
+import styles from './JugarCarta.module.css';
 
 function JugarCarta({carta, socket, jugadores, funcionDescartar, mano}) {
-  
-  const player_id = JSON.parse(sessionStorage.getItem('user_id'));
   const username = window.sessionStorage.getItem('username');
   const [dropdownm, setDropdown] = useState(false);
 
@@ -18,38 +15,14 @@ function JugarCarta({carta, socket, jugadores, funcionDescartar, mano}) {
   }
 
   async function jugar(target_id, target_username, mano){
-    let headers = { Accept: '*/*' }
     if (mano.length > 4 ) 
     {
-      const response = await httpRequest({
-        headers : headers,
-        method: 'PUT',
-        service: `carta/jugar/${player_id}/${carta.id}/${target_id}`,
-      });
+      const target = {
+        target_id: target_id,
+        target_username: target_username,
+      }
+      playCard(carta, target, socket);
       
-      // response[0] es el jugador que jugo la carta
-      // response[1] es el jugador al que le juegan la carta
-      const cartas_mostrar = response[0].card_name;
-      const mensaje = JSON.stringify({
-        action: 'play_card',
-        data: {
-          card: carta.cartaNombre,
-          player: username, 
-          target: target_username, 
-          tipo: carta.tipo,
-        }});
-  
-      const mensaje_cartas = JSON.stringify({
-        action: 'show_cards',
-        data: {
-          card: carta.cartaNombre,
-          mostrar: cartas_mostrar
-        }
-      });
-
-      socket.send(mensaje);
-      socket.send(mensaje_cartas);
-
       const se_puede_defender = response[1].player_defense;
       const defensor_id = response[1].player_id;
       const card_used_name = carta.cartaNombre;
@@ -72,8 +45,6 @@ function JugarCarta({carta, socket, jugadores, funcionDescartar, mano}) {
                                                   attack_card_name: carta.cartaNombre}});
       socket.send(mensaje_no_defense);
       
-
-
       const isover = response[0].end_game;
       console.log(isover);
       const mensaje_isover = JSON.stringify({
@@ -81,16 +52,8 @@ function JugarCarta({carta, socket, jugadores, funcionDescartar, mano}) {
         data : isover
       });
 
-     
-
       descartarCarta(funcionDescartar, mano, carta, socket);
       socket.send(mensaje_isover);
-      
-      return(
-        <>
-        <MostrarCarta nombreCarta={carta.cartaNombre} />
-        </>
-      );
     }
     else
     {
