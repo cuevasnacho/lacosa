@@ -376,6 +376,68 @@ class PuertaAtrancada(card_template):
 
       def aplay_defense_effect(self,defensor_id, attacker_id):
           return True
+ 
+      def fullfile_efect(self,target_id):
+          return True
 
+
+hacha_effect = "Se elimina la puerta atrancada"
+
+
+class Hacha(card_template):
+
+      def __init__(self):
+          super().__init__(False, cards_subtypes.ACTION.value, hacha_effect, "hacha")
+
+      #si no hay condiciones necesarias para jugar la carta, devuelve false o true
+      @db_session
+      def valid_play(self,player_cause_id,target_id):
+            is_adjacent = adjacent_players(player_cause_id, target_id)
+            valid = is_adjacent[0] or is_adjacent[1]
+            return valid or target_id == player_cause_id
+
+      #se añade pĺayer_id para indicar el jugador que causo la jugada
+      @db_session
+      def aplicar_efecto(self, objective_id, player_cause_id):
+          player_cause = Player.get(player_id=player_cause_id)
+          player_objective = Player.get(player_id = objective_id)
+
+          cause_pos = player_cause.player_position
+          objective_pos = player_objective.player_position
+
+          left_or_rigth = adjacent_players(player_cause_id, objective_id) 
+
+
+          if objective_id == player_cause_id 
+            if player_cause.player_quarentine_count > 0: #se elimina la cuarentena primero
+                player_cause.player_quarentine_count = 0
+                commit()
+                #lo siguiente se podria modularizar
+            else : 
+                if left_or_rigth[0]: #esta a la izquierda
+                player_cause.player_exchangeL = True
+                player_objective.player_exchangeR = True
+                commit()
+
+            if left_or_rigth[1]: #esta a la derecha
+                player_cause.player_exchangeR = True
+                player_objective.player_exchangeL = True
+                commit()
+          else :
+            if left_or_rigth[0]: #esta a la izquierda
+                player_cause.player_exchangeL = True
+                player_objective.player_exchangeR = True
+                commit()
+
+            if left_or_rigth[1]: #esta a la derecha
+                player_cause.player_exchangeR = True
+                player_objective.player_exchangeL = True
+                commit()
+
+          return []
+
+      def aplay_defense_effect(self,defensor_id, attacker_id):
+          return True
+ 
       def fullfile_efect(self,target_id):
           return True
