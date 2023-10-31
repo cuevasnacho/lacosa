@@ -61,7 +61,7 @@ function Partida () {
     };
 
     setWebsocket(ws);
-    //funcion nueva
+    //funcion agregada (va guardando el historial completo de jugadas)
     const receiveJugada=(jugada)=>setJugadas((state)=>[...state,jugada])
     let jugada="";
     // recieve message every start page
@@ -75,10 +75,7 @@ function Partida () {
           jugada = {msj:`${info.data.player} jugó la carta ${info.data.card} sobre ${info.data.target}`}
           receiveJugada(jugada)
           break;
-      /*case 'dead_player'://caso muertes
-          jugada = {msj:`${info.data}`}
-          receiveJugada(jugada)
-      */
+
         case 'next_turn':
           getStatus();
           toast(`Finalizo  el turno de ${info.data}`, {theme: 'dark'});
@@ -131,10 +128,9 @@ function Partida () {
         socket={websocket} 
         jugadores={matchState}/>
       <Jugadores jugadores={matchState}/>
-      
+      <Chat ws={websocket} messages={messages}/>
       <LogPartida messages={jugadas}></LogPartida>
     </div>
   );
 }
-//<Chat ws={websocket} messages={messages}/>
 export default Partida;

@@ -30,7 +30,7 @@ export default function LogPartida({messages}) {
         </div>
         </>
     ) : (
-        <button type='button' className={styles.chat_hidden} onClick={toggleOpened}>Jugadas</button>
+        <button type='button' className={styles.chat_hidden} onClick={toggleOpened}>Historial de Jugadas</button>
       )}
     </div>
     </>
