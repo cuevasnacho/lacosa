@@ -21,6 +21,12 @@ class cards_subtypes(Enum):
     DEFENSE = 3
     OBSTACLE = 4
 
+class player_status(Enum):
+    WAITING = 1
+    ROBBING = 2
+    PLAYING = 3 
+    EXCHANGING = 4
+    DEFENDING = 5
 
 class results(Enum):
     SUCSSESFUL = 1

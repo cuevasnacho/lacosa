@@ -13,6 +13,9 @@ class Player(db.Entity):
     player_role = Optional(int)
     player_dead= Optional(bool)
     player_isHost = Required(bool)
+    player_status = Optional(int) # esta es la fase del player
+    player_quarentine_count = Optional(int)
+
 
     player_cards = Set("Card", nullable =True)
     player_lobby = Optional("Lobby")
