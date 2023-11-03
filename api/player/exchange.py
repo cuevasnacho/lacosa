@@ -1,12 +1,10 @@
 from pony.orm import db_session
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel
-from api.player.steal_card import get_match
-from db.database import Player, Match, Card
+from db.database import Player, Card
 from pony.orm import db_session, commit
 from api.card.alejate import adjacent_players
-from definitions import card_position,cards_subtypes,results, player_roles
+from definitions import player_roles
 
 router = APIRouter()
 
@@ -14,7 +12,7 @@ router = APIRouter()
 @db_session
 def valid_card(card_id,role):
     if role == player_roles.THE_THING.value:
-        not_valid_cards = ["la_cosa"]
+        not_valid_cards = ["lacosa"]
     elif role == player_roles.HUMAN.value:
         not_valid_cards = ["infectado"] 
     elif role == player_roles.INFECTED.value:
@@ -35,7 +33,7 @@ def valid_oponent(player_id,oponent_id,role,oponent_at_left,oponent_at_right,car
 
     if role != player_roles.THE_THING.value:
         player_hand = Card.select(lambda card : card.card_player.player_id == player_id and 
-                                    card.card_cardT.cardT_name == "infectado") #ver que funcione
+                                    card.card_cardT.cardT_name == "infectado") 
         infect_card = 0
         for card in player_hand:
             infect_card += 1
@@ -62,53 +60,56 @@ def valid_oponent(player_id,oponent_id,role,oponent_at_left,oponent_at_right,car
 
     return valid
 
-#encargado de ver si se cumplen todas las condiciones para poder intercambiar
-@router.get("/intercambio/peticion/{player_id}/{oponent_id}/{player_card_id}/{reason}")
-async def exchange_petition(player_id : int, oponent_id : int, player_card_id : int, reason : int):
-    try: 
-        player = Player[player_id]
-    except:
-        content = "El objeto no existe"
-        return JSONResponse(content = content, status_code = 404)
-    
-    oponent_position = adjacent_players(player_id,oponent_id) 
-    is_card_valid = valid_card(player_card_id,player.player_role)
-    is_oponent_valid = valid_oponent(player_id,oponent_id,player.player_role,oponent_position[0],oponent_position[1],player_card_id)
-    #mandar mensaje por soccket
-    exchange = is_card_valid and is_oponent_valid
-    return JSONResponse(content = exchange, status_code = 200)
-
 @db_session
 def have_defense_card(oponent_id):
     defense_cards = ["aterrador","no_gracias","fallaste"]  
-    cards = Card.select(lambda card : card.card_player == oponent_id)
+    cards = Card.select(lambda card : card.card_player.player_id == oponent_id)
     for card in cards : 
         if card.card_cardT.cardT_name in defense_cards:
             return True 
     return False
 
+#encargado de ver si se cumplen todas las condiciones para poder intercambiar
+@router.get("/intercambio/valido/{player_id}/{oponent_id}/{player_card_id}")
+async def exchange_petition(player_id : int, oponent_id : int, player_card_id : int):
+    with db_session:
+        try: 
+            player = Player[player_id]
+        except:
+            content = "El objeto no existe"
+            return JSONResponse(content = content, status_code = 404)
+        
+        oponent_position = adjacent_players(player_id,oponent_id) 
+        is_card_valid = valid_card(player_card_id,player.player_role)
+        is_oponent_valid = valid_oponent(player_id,oponent_id,player.player_role,oponent_position[0],oponent_position[1],player_card_id)
+        #mandar mensaje por soccket
+        exchange = is_card_valid and is_oponent_valid
+        print(is_card_valid)
+        print(is_oponent_valid)
+        return JSONResponse(content = exchange, status_code = 200)
+
 #encargado solamente de chequear si se puede defender
-@router.get("/intercambio/aceptacion/{player_id}/{card_id}")
-async def exchange_accept(player_id : int, card_id : int):
-    #player_id es el oponent del endpoind anterior 
-    defense = have_defense_card(player_id)
+@router.get("/intercambio/defensa/{player_defense_id}")
+async def exchange_accept(player_defense_id : int): 
+    defense = have_defense_card(player_defense_id)
     return JSONResponse(content = defense, status_code = 200)
 
 #swap de cartas 
-@router.put("/intercambio/cartas/{match_id}/{player_id}/{card1_id}/{oponent_id}/{card2_id}")
-async def exchange_accept(match_id: int, player_id : int, card1_id : int, oponent_id : int, card2_id : int):
-    try: 
-        player = Player[player_id]
-        player_card = Card[card1_id]
-        oponent = Player[oponent_id]
-        oponent_card = Card[card2_id]
-    except:
-        content = "El objeto no existe"
-        return JSONResponse(content = content, status_code = 404)
-
+@router.put("/intercambio/cartas/{player_id}/{card1_id}/{oponent_id}/{card2_id}")
+async def exchange_accept(player_id : int, card1_id : int, oponent_id : int, card2_id : int):
     with db_session :
+        try: 
+            player = Player[player_id]
+            player_card = Card[card1_id]
+            oponent = Player[oponent_id]
+            oponent_card = Card[card2_id]
+        except:
+            content = "El objeto no existe"
+            return JSONResponse(content = content, status_code = 404)
+
         player_card.card_player = oponent.player_id
         oponent_card.card_player = player.player_id
+        commit()
 
-    content = "Cambio realizado"
-    return JSONResponse(content = content, status_code = 200)
+        content = "Cambio realizado"
+        return JSONResponse(content = content, status_code = 200)

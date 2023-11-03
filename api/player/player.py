@@ -32,7 +32,7 @@ async def Crear_Jugador(new_player: PlayerIn) -> PlayerOut:
         return JSONResponse(content=message, status_code=status_code)
     with db_session:
         player = db_player(player_name= new_player.player_name, player_ingame = False, player_isHost=False, 
-                           player_dead = False, player_position = 0, player_exchangeR = 0, player_exchangeL = 0,
+                           player_dead = False, player_position = 0, player_exchangeR = True, player_exchangeL = True,
                             player_role = 0, player_lobby = None, player_current_match_id = None )
         commit()
         return PlayerOut(player_id=player.player_id, player_name=player.player_name)
