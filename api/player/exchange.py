@@ -84,8 +84,6 @@ async def exchange_petition(player_id : int, oponent_id : int, player_card_id : 
         is_oponent_valid = valid_oponent(player_id,oponent_id,player.player_role,oponent_position[0],oponent_position[1],player_card_id)
         #mandar mensaje por soccket
         exchange = is_card_valid and is_oponent_valid
-        print(is_card_valid)
-        print(is_oponent_valid)
         return JSONResponse(content = exchange, status_code = 200)
 
 #encargado solamente de chequear si se puede defender
