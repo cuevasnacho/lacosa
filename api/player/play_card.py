@@ -10,8 +10,10 @@ from pydantic import BaseModel
 import json 
 from typing import List
 from definitions import player_roles
+from api.match.match_websocket import manager
 
 router = APIRouter()
+
 
 @db_session
 def check_pre_conditions(id_player,id_card):
