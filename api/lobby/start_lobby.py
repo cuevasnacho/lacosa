@@ -7,6 +7,7 @@ from pony import orm
 from api.match.create_desk import *
 from api.match.deal_cards import *
 import json 
+from api.messages import start_next_turn
 
 router = APIRouter()
 
@@ -88,6 +89,7 @@ async def start_match(lobby_id : int):
             "message" : f"Partida {lobby_id} iniciada",
             "match_id" : get_match_id(lobby_id)    
         }
+
 
         return JSONResponse(content = json.loads(json.dumps(content)), status_code = 200)
     else:

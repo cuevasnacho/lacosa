@@ -10,8 +10,10 @@ from pydantic import BaseModel
 import json 
 from typing import List
 from definitions import player_roles
-
+from api.match.match_websocket import manager
+from api.messages import iniciar_defensa, iniciar_intercambio
 router = APIRouter()
+
 
 @db_session
 def check_pre_conditions(id_player,id_card):
@@ -49,6 +51,11 @@ def can_player_defend_himself(id_player,id_card):
         return defense
     else:
         return False #CAMBIAR POR FALSE
+
+@db_session
+def get_match_id(player_id):
+    player = Player.get(player_id = player_id)
+    return player.player_current_match_id.match_id
 
 @db_session
 def get_card_name(id_card):
@@ -129,7 +136,6 @@ def is_end_game(id_card):
         response = humans_alive
     return response
 
-
 @router.put("/carta/jugar/{player_id}/{card_id}/{oponent_id}")
 async def play_card(player_id : int, card_id : int, oponent_id : int):
     if check_pre_conditions(player_id, card_id):
@@ -137,13 +143,16 @@ async def play_card(player_id : int, card_id : int, oponent_id : int):
         valid_play = response[0]
         card_name = response[1]
         end_game = is_end_game(card_id)
+        match_id = get_match_id(player_id)
         if valid_play:
             if can_player_defend_himself(oponent_id,card_id) and oponent_id != player_id:
                 defend_with = posible_response(card_id)
-                content = players_status_after_play_card(player_id,oponent_id,True,card_name,end_game,defend_with)                
+                content = players_status_after_play_card(player_id,oponent_id,True,card_name,end_game,defend_with)
+                iniciar_defensa(match_id,player_id,defend_with)               
             else:
                 content = players_status_after_play_card(player_id,oponent_id,False,card_name,end_game,[])
                 fullfile_efect(oponent_id,card_id)
+                iniciar_intercambio(match_id,player_id)
             return JSONResponse(content = content, status_code = 200)
         else:
             content = "Jugada invalida"
