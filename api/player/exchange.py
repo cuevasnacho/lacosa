@@ -71,7 +71,7 @@ def have_defense_card(oponent_id):
 
 #encargado de ver si se cumplen todas las condiciones para poder intercambiar
 @router.get("/intercambio/valido/{player_id}/{oponent_id}/{player_card_id}")
-async def exchange_petition(player_id : int, oponent_id : int, player_card_id : int):
+async def exchange_valid(player_id : int, oponent_id : int, player_card_id : int):
     with db_session:
         try: 
             player = Player[player_id]
@@ -88,25 +88,23 @@ async def exchange_petition(player_id : int, oponent_id : int, player_card_id : 
 
 #encargado solamente de chequear si se puede defender
 @router.get("/intercambio/defensa/{player_defense_id}")
-async def exchange_accept(player_defense_id : int): 
+async def exchange_defense(player_defense_id : int): 
     defense = have_defense_card(player_defense_id)
     return JSONResponse(content = defense, status_code = 200)
 
 #swap de cartas 
 @router.put("/intercambio/cartas/{player_id}/{card1_id}/{oponent_id}/{card2_id}")
-async def exchange_accept(player_id : int, card1_id : int, oponent_id : int, card2_id : int):
+async def swap_cards(player_id : int, card1_id : int, oponent_id : int, card2_id : int):
     with db_session :
         try: 
-            player = Player[player_id]
-            player_card = Card[card1_id]
-            oponent = Player[oponent_id]
-            oponent_card = Card[card2_id]
+            player_card = Card.get(card_id = card1_id)
+            oponent_card = Card.get(card_id = card2_id)
         except:
             content = "El objeto no existe"
             return JSONResponse(content = content, status_code = 404)
 
-        player_card.card_player = oponent.player_id
-        oponent_card.card_player = player.player_id
+        player_card.card_player = oponent_id
+        oponent_card.card_player = player_id
         commit()
 
         content = "Cambio realizado"
