@@ -69,6 +69,10 @@ async def defend(defensor_id : int, card_id : int, attacker_id : int):
         defensor_name = (Player.get(player_id = defensor_id)).player_name
         attacker_name = (Player.get(player_id = attacker_id)).player_name
         match_id = (Player.get(player_id = attacker_id)).player_current_match_id.match_id
+        
+        #discard_card(card_id)
+        #steal_card_not_panic(defensor_id)
+
         iniciar_intercambio(match_id, attacker_id)
 
         return response_defense(atacker_username =attacker_name,

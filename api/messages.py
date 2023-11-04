@@ -22,7 +22,7 @@ async def elegir_jugada(match_id,player_id):
     await manager.send_data_to(content,match_id,player_id)
 
 async def iniciar_defensa(match_id,player_id,card_name):
-    content = { 'action' : 'iniciar_defensa', 'data' : {"defense_with" :card_name}}
+    content = { 'action' : 'iniciar_defensa', 'data' : card_name}
     await manager.send_data_to(content,match_id,player_id)
 
 async def iniciar_intercambio(match_id,player_id):
