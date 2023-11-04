@@ -1,4 +1,10 @@
 from api.match.match_websocket import manager
+from db.database import Player
+
+
+def genrate_posible_play(player_id):
+    return True
+
 
 
 async def start_next_turn(match_id,next_player_id):
@@ -6,15 +12,17 @@ async def start_next_turn(match_id,next_player_id):
     await manager.send_data_to(content,match_id,next_player_id)
 
 async def forzar_jugada(match_id,player_id,card_id):
-    content = {'action' : 'forzar_jugada'} #forma de return para las cartas
+
+    content = {'action' : 'forzar_jugada', 'data' :{"card_to_play":card_id}} #forma de return para las cartas
     await manager.send_data_to(content,match_id,player_id)
 
 async def elegir_jugada(match_id,player_id):
-    content = {'action' : 'elegir_jugada'} #forma de return para las cartas
+    posible_plays = genrate_posible_play(player_id)
+    content = {'action' : 'elegir_jugada', 'data' : posible_plays} #forma de return para las cartas
     await manager.send_data_to(content,match_id,player_id)
 
 async def iniciar_defensa(match_id,player_id,card_name):
-    content = { 'action' : 'iniciar_defensa'}
+    content = { 'action' : 'iniciar_defensa', 'data' : {"defense_with" :card_name}}
     await manager.send_data_to(content,match_id,player_id)
 
 async def iniciar_intercambio(match_id,player_id):

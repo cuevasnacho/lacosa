@@ -8,6 +8,7 @@ from definitions import cards_subtypes
 from pydantic import BaseModel
 import json 
 from definitions import  cards_subtypes
+from messages import iniciar_intercambio
 
 router = APIRouter()
 
@@ -67,6 +68,8 @@ async def defend(defensor_id : int, card_id : int, attacker_id : int):
         card_name = (Card.get(card_id = card_id)).card_cardT.card_name
         defensor_name = (Player.get(player_id = defensor_id)).player_name
         attacker_name = (Player.get(player_id = attacker_id)).player_name
+        match_id = (Player.get(player_id = attacker_id)).player_current_match_id.match_id
+        iniciar_intercambio(match_id, attacker_id)
 
         return response_defense(atacker_username =attacker_name,
                                  defensor_username = defensor_name,
