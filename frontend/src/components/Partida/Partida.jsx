@@ -97,17 +97,6 @@ function Partida () {
           setStage(Stages[inactivo]);
           break;
 
-        /*
-        action:
-        iniciar_turno
-        forzar_jugada
-        elegir_jugada
-        iniciar_defensa --> play_defense - no_defense
-        iniciar_intercambio
-        sol_intercambio (solicitar, al que le intercambian)
-        fin_turno
-        */
-        
         case 'message':
           const message = JSON.parse(e.data).data;
           setMessages([...messages, message]);
@@ -142,15 +131,6 @@ function Partida () {
           toast(`${mensaje_cartas}`, {theme: 'dark'});
           break;
 
-<<<<<<< HEAD
-=======
-        case 'message':
-          const message = JSON.parse(e.data).data;
-          console.log(message)
-          setMessages([...messages, message]);
-          break;
-
->>>>>>> dev
         case 'notify_defense':
           toast(`Podes defenderte de ${info.data.atacante_username} con ${info.data.card_defense_name}`);
           break;
@@ -181,9 +161,5 @@ function Partida () {
     </div>
   );
 }
-<<<<<<< HEAD
 
 export default Partida;
-=======
-export default Partida;
->>>>>>> dev
