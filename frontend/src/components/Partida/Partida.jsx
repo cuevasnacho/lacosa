@@ -19,7 +19,9 @@ function Partida () {
   const [websocket, setWebsocket] = useState(null);
   const [messages, setMessages] = useState([]);
   const [jugadas,setJugadas]=useState([])
-
+  //
+  const [jugador,setJugador]=useState(null)
+  //
   const [playerState, setPlayerState] = useState({});
   const [manoJugador, setManoJugador] = useState([]);   // Indica las cartas que tengo en la mano
   const [matchState, setMatchState] = useState([]); // username: string, id: int, esTurno: bool, posicion: int, eliminado: bool	
@@ -51,7 +53,6 @@ function Partida () {
     setManoJugador(cards);
   }
 
-  
   useEffect (() => {
     const url = `ws://localhost:8000/ws/match/${idPartida}/${idPlayer}`;
     const ws = new WebSocket(url);
@@ -74,6 +75,17 @@ function Partida () {
           toast(`${info.data.player} jugó la carta ${info.data.card} sobre ${info.data.target}`, {theme: 'dark'});
           jugada = {msj:`${info.data.player} jugó la carta ${info.data.card} sobre ${info.data.target}`}
           receiveJugada(jugada)
+          let jugadores2=[
+            {id:5,right:false,left:true},
+            {id:6,right:true,left:false},
+            {id:7,right:true,left:true},
+            {id:8,right:true,left:true}
+          ]
+          for (let i = 0; i < jugadores2.length; i++) {
+            if(jugadores2[i].id === idPlayer){
+              setJugador(jugadores2[i])
+            }
+          }
           break;
 
         case 'next_turn':
@@ -127,7 +139,7 @@ function Partida () {
         actualizar={setManoJugador} 
         socket={websocket} 
         jugadores={matchState}/>
-      <Jugadores jugadores={matchState}/>
+      <Jugadores jugadores={matchState} jugador={jugador}/>
       <Chat ws={websocket} messages={messages}/>
       <LogPartida messages={jugadas}></LogPartida>
     </div>
