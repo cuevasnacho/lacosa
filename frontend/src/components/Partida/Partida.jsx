@@ -11,7 +11,6 @@ import Mazo from '../Mazo/Mazo.jsx';
 import MazoDescarte from '../Mazo/MazoDescarte.jsx';
 import Chat from '../Chat/Chat.jsx';
 import Finalizar from '../FinalizarPartida/Finalizar.jsx';
-import Stages from './Stages.jsx';
 import LogPartida from '../LogPartida/LogPartida.jsx';
 
 function Partida () {
@@ -21,7 +20,7 @@ function Partida () {
   const [messages, setMessages] = useState([]);
   const [jugadas,setJugadas]=useState([])
 
-  const [stage, setStage] = useState(Stages[inactivo]);
+  const [stage, setStage] = useState(0);
   const [playerState, setPlayerState] = useState({});
   const [manoJugador, setManoJugador] = useState([]);   // Indica las cartas que tengo en la mano
   const [matchState, setMatchState] = useState([]); // username: string, id: int, esTurno: bool, posicion: int, eliminado: bool	
@@ -71,30 +70,30 @@ function Partida () {
       const info = JSON.parse(e.data);
       switch (info.action) {
         case 'iniciar_turno':
-          setStage(Stages[robar_carta]);
+          setStage(1);
           break;
 
         case 'forzar_jugada':
-          setStage(Stages[forzar_carta]);
+          setStage(2);
           break;
 
         case 'elegir_jugada':
-          setStage(Stages[jugar_carta]);
+          setStage(3);
           break;
 
         case 'iniciar_defensa':
-          setStage(Stages[defensa]);
+          setStage(4);
           break;
 
         case 'iniciar_intercambio':
-          setStage(Stages[intercambio]);
+          setStage(5);
           break;
 
         case 'sol_intercambio':
           break;
         
         case 'fin_turno':
-          setStage(Stages[inactivo]);
+          setStage(0);
           break;
 
         case 'message':
