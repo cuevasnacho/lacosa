@@ -54,8 +54,10 @@ function Partida () {
 
   
   useEffect (() => {
-    const url = `ws://localhost:8000/ws/match/${idPartida}/${idPlayer}`;
-    const ws = new WebSocket(url);
+    const url_pasivo = `ws://localhost:8000/ws/match/pasivo/${idPartida}/${idPlayer}`;
+    const url_activo = `ws://localhost:8000/ws/match/activo/${idPartida}/${idPlayer}`;
+    const ws = new WebSocket(url_pasivo);
+    const ws_activo = new WebSocket(url_activo);
 
     ws.onopen = (event) => {
       initializeGame();
@@ -66,7 +68,7 @@ function Partida () {
     const receiveJugada=(jugada)=>setJugadas((state)=>[...state,jugada])
     let jugada="";
     // recieve message every start page
-    ws.onmessage = (e) => {
+    ws_activo.onmessage = (e) => {
       const info = JSON.parse(e.data);
       switch (info.action) {
         case 'iniciar_turno':
@@ -95,7 +97,12 @@ function Partida () {
         case 'fin_turno':
           setStage(0);
           break;
-
+      }
+    };
+    
+    ws.onmessage = (e) => {
+      const info = JSON.parse(e.data);
+      switch (info.action) {
         case 'message':
           const message = JSON.parse(e.data).data;
           setMessages([...messages, message]);
@@ -136,8 +143,8 @@ function Partida () {
       }
     };
    
-    //clean up function when we close page
-    return () => ws.close();
+    // clean up function when we close page
+    return () => {ws.close(); ws_activo.close();}
   }, [messages]);
 
   return (
