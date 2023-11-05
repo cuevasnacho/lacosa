@@ -142,15 +142,12 @@ function Partida () {
           toast(`${mensaje_cartas}`, {theme: 'dark'});
           break;
 
-<<<<<<< HEAD
-=======
         case 'message':
           const message = JSON.parse(e.data).data;
           console.log(message)
           setMessages([...messages, message]);
           break;
 
->>>>>>> dev
         case 'notify_defense':
           toast(`Podes defenderte de ${info.data.atacante_username} con ${info.data.card_defense_name}`);
           break;
@@ -181,9 +178,4 @@ function Partida () {
     </div>
   );
 }
-<<<<<<< HEAD
-
 export default Partida;
-=======
-export default Partida;
->>>>>>> dev
