@@ -14,7 +14,7 @@ cambio_de_lugar = CambioDeLugar()
 mas_vale_que_corras = MasValeQueCorras()
 whisky = Whisky()
 puerta_atrancada = PuertaAtrancada()
-
+infectado = Infectado()
 Template_Diccionary = {
     "lanzallamas" : lanzallamas,
     "lacosa"     : la_cosa,
@@ -25,7 +25,8 @@ Template_Diccionary = {
     "vigila_tus_espaldas" : vigila_tus_espaldas,
     "mas_vale_que_corras" : mas_vale_que_corras,
     "whisky" : whisky,
-    "puerta_atrancada" : puerta_atrancada
+    "puerta_atrancada" : puerta_atrancada,
+    "infectado" : infectado
 }
 
 def already_load(name):

@@ -379,3 +379,26 @@ class PuertaAtrancada(card_template):
 
       def fullfile_efect(self,target_id):
           return True
+
+infectado_effect = "Si recibes esta carta de otro jugador quedas infectado y debes quedarte esta carrta hasta el final de la partida"
+
+class Infectado(card_template):
+    
+    def __init__(self):
+          super().__init__(False, cards_subtypes.INFECTION.value, infectado_effect, "infectado")
+
+      #si no hay condiciones necesarias para jugar la carta, devuelve false o true
+    def valid_play(self,player_cause_id,target_id):
+
+        return False
+
+      #se añade pĺayer_id para indicar el jugador que causo la jugada
+    @db_session
+    def aplicar_efecto(self, objective_id, player_cause_id):
+        return []
+
+    def aplay_defense_effect(self,defensor_id, attacker_id):
+        return True
+
+    def fullfile_efect(self,target_id):
+        return True
