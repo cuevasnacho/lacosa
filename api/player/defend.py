@@ -8,7 +8,7 @@ from definitions import cards_subtypes
 from pydantic import BaseModel
 import json 
 from definitions import  cards_subtypes, card_position
-from messages import iniciar_intercambio
+from api.messages import iniciar_intercambio
 from api.player.steal_card import discard_to_deck
 
 router = APIRouter()

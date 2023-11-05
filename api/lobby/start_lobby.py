@@ -87,9 +87,8 @@ async def start_match(lobby_id : int):
 
         content = {
             "message" : f"Partida {lobby_id} iniciada",
-            "match_id" : get_match_id(lobby_id)    
+            "match_id" : get_match_id(lobby_id)
         }
-
 
         return JSONResponse(content = json.loads(json.dumps(content)), status_code = 200)
     else:
