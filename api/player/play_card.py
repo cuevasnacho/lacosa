@@ -12,6 +12,7 @@ from typing import List
 from definitions import player_roles
 from api.match.match_websocket import manager
 from api.messages import iniciar_defensa, iniciar_intercambio
+from api.player.defend import discard_Card
 router = APIRouter()
 
 
@@ -98,7 +99,10 @@ def posible_response(card_id):
 
 @db_session
 def fullfile_efect(target_id,id_card):
-    return True
+    card_name = (Card.get(card_id = id_card)).card_cardT.cardT_name 
+    card_used = Template_Diccionary[card_name]
+    card_used.fullfile_efect(target_id)
+
 
 @db_session
 def players_status_after_play_card(id_player,oponent_id,defense,cards_names,is_end_game,defense_with):
@@ -148,10 +152,12 @@ async def play_card(player_id : int, card_id : int, oponent_id : int):
             if can_player_defend_himself(oponent_id,card_id) and oponent_id != player_id:
                 defend_with = posible_response(card_id)
                 content = players_status_after_play_card(player_id,oponent_id,True,card_name,end_game,defend_with)
+                discard_Card(card_id)
                 iniciar_defensa(match_id,player_id,defend_with)               
             else:
                 content = players_status_after_play_card(player_id,oponent_id,False,card_name,end_game,[])
                 fullfile_efect(oponent_id,card_id)
+                discard_Card(card_id)
                 iniciar_intercambio(match_id,player_id)
             return JSONResponse(content = content, status_code = 200)
         else:

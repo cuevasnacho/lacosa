@@ -114,7 +114,7 @@ async def steal_card(player_id : int)-> carta_robada:
             return content
 
         except ObjectNotFound as e:
-            print(f"Exception type: {type(e)}")
+            print(f"Exception type: {type(e)}") 
             content = str(e)
             return JSONResponse(content=content, status_code=404)
         
