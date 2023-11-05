@@ -12,12 +12,14 @@ import MazoDescarte from '../Mazo/MazoDescarte.jsx';
 import Chat from '../Chat/Chat.jsx';
 import Finalizar from '../FinalizarPartida/Finalizar.jsx';
 import Stages from './Stages.jsx';
+import LogPartida from '../LogPartida/LogPartida.jsx';
 
 function Partida () {
   const idPlayer = JSON.parse(sessionStorage.getItem('user_id'));
   const { idPartida } = useParams();
   const [websocket, setWebsocket] = useState(null);
   const [messages, setMessages] = useState([]);
+  const [jugadas,setJugadas]=useState([])
 
   const [stage, setStage] = useState(Stages[inactivo]);
   const [playerState, setPlayerState] = useState({});
@@ -61,7 +63,9 @@ function Partida () {
     };
 
     setWebsocket(ws);
-  
+    //funcion agregada (va guardando el historial completo de jugadas)
+    const receiveJugada=(jugada)=>setJugadas((state)=>[...state,jugada])
+    let jugada="";
     // recieve message every start page
     ws.onmessage = (e) => {
       const info = JSON.parse(e.data);
@@ -119,11 +123,13 @@ function Partida () {
           const tipo_carta_descartada = info.data.tipo ? 1 : 0;
           setMazoDescarteState(tipo_carta_descartada);
           toast(`${info.data.player} jugó la carta ${info.data.card} sobre ${info.data.target}`, {theme: 'dark'});
+          jugada = {msj:`${info.data.player} jugó la carta ${info.data.card} sobre ${info.data.target}`}
+          receiveJugada(jugada)
           break;
 
         case 'next_turn':
           getStatus();
-          toast(`Finalizo el turno de ${info.data}`, {theme: 'dark'});
+          toast(`Finalizo  el turno de ${info.data}`, {theme: 'dark'});
           break;
         
         case 'show_cards':
@@ -136,6 +142,15 @@ function Partida () {
           toast(`${mensaje_cartas}`, {theme: 'dark'});
           break;
 
+<<<<<<< HEAD
+=======
+        case 'message':
+          const message = JSON.parse(e.data).data;
+          console.log(message)
+          setMessages([...messages, message]);
+          break;
+
+>>>>>>> dev
         case 'notify_defense':
           toast(`Podes defenderte de ${info.data.atacante_username} con ${info.data.card_defense_name}`);
           break;
@@ -162,8 +177,13 @@ function Partida () {
         jugadores={matchState}/>
       <Jugadores jugadores={matchState}/>
       <Chat ws={websocket} messages={messages}/>
+      <LogPartida messages={jugadas}></LogPartida>
     </div>
   );
 }
+<<<<<<< HEAD
 
 export default Partida;
+=======
+export default Partida;
+>>>>>>> dev
