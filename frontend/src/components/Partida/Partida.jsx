@@ -161,5 +161,4 @@ function Partida () {
     </div>
   );
 }
-
 export default Partida;
