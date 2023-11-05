@@ -50,7 +50,7 @@ class card_template(ABC):
         pass
 
     @abstractmethod
-    def aplay_defense_effect(defensor_id, attacker_id):
+    def aplay_defense_effect(defensor_id, attacker_id,card_id):
         pass
 
     @abstractmethod
@@ -80,7 +80,7 @@ class lanzallamas_T(card_template):
         commit()
         return []
         
-    def aplay_defense_effect(self,defensor_id, attacker_id):
+    def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
         return True
     
     @db_session
@@ -110,7 +110,7 @@ class laCosa_T(card_template):
     def aplicar_efecto(self,objective_id,player_cause_id):
         return []
 
-    def aplay_defense_effect(self,defensor_id, attacker_id):
+    def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
         pass
     
     def fullfile_efect(self,target_id):
@@ -132,7 +132,7 @@ class NadaDeBarbacoa(card_template):
         return []
 
     @db_session
-    def aplay_defense_effect(self,defensor_id, attacker_id):
+    def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
         objective_player = Player.get(player_id = defensor_id)
         objective_player.player_dead = False
         commit()
@@ -159,7 +159,7 @@ class Sospecha(card_template):
         deck_cards = Card.select(lambda c : c.card_player.player_id == target_id).random(1)[0]
         return [deck_cards.card_cardT.cardT_name]
     
-    def aplay_defense_effect(self,defensor_id, attacker_id):
+    def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
         return True
     
     def fullfile_efect(self,target_id):
@@ -186,7 +186,7 @@ class Analisis(card_template):
             target_hand.append(cards.card_cardT.cardT_name)
         return target_hand
         
-    def aplay_defense_effect(self,defensor_id, attacker_id):
+    def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
         return True
     
     def fullfile_efect(self,target_id):
@@ -227,7 +227,7 @@ class CambioDeLugar(card_template):
 
         return []
 
-    def aplay_defense_effect(self,defensor_id, attacker_id):
+    def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
         return True
     
     def fullfile_efect(self,target_id):
@@ -260,7 +260,7 @@ class VigilaTusEspaldas(card_template):
 
         return []
 
-    def aplay_defense_effect(self,defensor_id, attacker_id):
+    def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
         return True
     
     def fullfile_efect(self,target_id):
@@ -296,7 +296,7 @@ class MasValeQueCorras(card_template):
 
         return []
     
-    def aplay_defense_effect(self,defensor_id, attacker_id):
+    def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
         return True
     
     def fullfile_efect(self,target_id):
@@ -324,7 +324,7 @@ class Whisky(card_template):
 
           return revealed_cards
 
-      def aplay_defense_effect(self,defensor_id, attacker_id):
+      def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
           return True
 
       def fullfile_efect(self,target_id):

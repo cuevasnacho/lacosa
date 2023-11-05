@@ -102,7 +102,33 @@ async def defend(defensor_id : int, card_id : int, attacker_id : int):
 
     if(is_valid[0]):
         card_to_use = is_valid[1]
-        card_to_use.aplay_defense_effect(defensor_id, attacker_id)
+        card_to_use.aplay_defense_effect(defensor_id, attacker_id,0)
+
+        card_name = (Card.get(card_id = card_id)).card_cardT.card_name
+        defensor_name = (Player.get(player_id = defensor_id)).player_name
+        attacker_name = (Player.get(player_id = attacker_id)).player_name
+        match_id = (Player.get(player_id = attacker_id)).player_current_match_id.match_id
+        
+        discard_Card(card_id)
+
+        steal_card_not_panic(defensor_id)
+
+        iniciar_intercambio(match_id, attacker_id)
+
+        return response_defense(atacker_username =attacker_name,
+                                 defensor_username = defensor_name,
+                                 card_name = card_name)    
+    else :
+        return is_valid[1]
+
+@router.post("/defensa/inercambio/{card_id}/{defensor_id}/{attacker_id}/{card_exchange_id}")
+async def defend(defensor_id : int, card_id : int, attacker_id : int,card_exchange_id :int):
+
+    is_valid = validate_defense(card_id,defensor_id,attacker_id)
+
+    if(is_valid[0]):
+        card_to_use = is_valid[1]
+        card_to_use.aplay_defense_effect(defensor_id, attacker_id,card_exchange_id)
 
         card_name = (Card.get(card_id = card_id)).card_cardT.card_name
         defensor_name = (Player.get(player_id = defensor_id)).player_name
