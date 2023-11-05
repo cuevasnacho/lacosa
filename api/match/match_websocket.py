@@ -11,19 +11,18 @@ router = APIRouter()
 
 manager = ConnectionManager()
 
+manager_activo = ConnectionManager()
 show_cards_to_all = ['whisky']
 
 @db_session
 async def first_player(match_id):
     player_id = (Match.get(match_id = match_id)).match_currentP.player_id 
     content = {'action' : 'iniciar_turno'}
-    await manager.send_data_to(content, match_id, player_id)
+    await manager_activo.send_data_to(content, match_id, player_id)
 
-@router.websocket("/ws/match/{match_id}/{player_id}")
+@router.websocket("/ws/match/pasivo/{match_id}/{player_id}")
 async def match_websocket(websocket : WebSocket,match_id : int, player_id : int):  
     await manager.connect(websocket,match_id,player_id)
-    
-    first_player(match_id)  # avisa al primer jugador que juega
     try:
         while True:
             ws = await websocket.receive_json()
@@ -73,5 +72,16 @@ async def match_websocket(websocket : WebSocket,match_id : int, player_id : int)
         
     except WebSocketDisconnect:
         manager.disconnect(websocket,match_id,player_id)
+        content = "Websocket desconectado"
+        return JSONResponse(content = content, status_code = 200) 
+
+@router.websocket("/ws/match/activo/{match_id}/{player_id}")
+async def match_websocket(websocket : WebSocket,match_id : int, player_id : int):  
+    await manager_activo.connect(websocket,match_id,player_id)
+    try:
+        first_player(match_id)
+    
+    except WebSocketDisconnect:
+        manager_activo.disconnect(websocket,match_id,player_id)
         content = "Websocket desconectado"
         return JSONResponse(content = content, status_code = 200) 
