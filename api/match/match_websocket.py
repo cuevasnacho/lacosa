@@ -74,13 +74,16 @@ async def match_websocket(websocket : WebSocket,match_id : int, player_id : int)
         manager.disconnect(websocket,match_id,player_id)
         content = "Websocket desconectado"
         return JSONResponse(content = content, status_code = 200) 
-
+"""
+"""
 @router.websocket("/ws/match/activo/{match_id}/{player_id}")
 async def match_websocket(websocket : WebSocket,match_id : int, player_id : int):  
     await manager_activo.connect(websocket,match_id,player_id)
     try:
+        print("antes de enviar el mensaje")
         first_player(match_id)
-    
+        print("despues de enviar el mensaje")
+
     except WebSocketDisconnect:
         manager_activo.disconnect(websocket,match_id,player_id)
         content = "Websocket desconectado"

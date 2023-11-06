@@ -153,7 +153,7 @@ async def play_card(player_id : int, card_id : int, oponent_id : int):
                 defend_with = posible_response(card_id)
                 content = players_status_after_play_card(player_id,oponent_id,True,card_name,end_game,defend_with)
                 discard_Card(card_id)
-                iniciar_defensa(match_id,player_id,defend_with)               
+                iniciar_defensa(match_id,oponent_id,defend_with,player_id,get_card_name(card_id))               
             else:
                 content = players_status_after_play_card(player_id,oponent_id,False,card_name,end_game,[])
                 fullfile_efect(oponent_id,card_id)

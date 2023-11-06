@@ -19,8 +19,9 @@ async def elegir_jugada(match_id,player_id):
     content = {'action' : 'elegir_jugada'} #forma de return para las cartas
     await manager_activo.send_data_to(content,match_id,player_id)
 
-async def iniciar_defensa(match_id,player_id,card_name):
-    content = { 'action' : 'iniciar_defensa', 'data' : card_name}
+async def iniciar_defensa(match_id,player_id,card_name,atacker_id,atack_card_name):
+    data = {'card_to_defend' :card_name, 'atacker_id' : atacker_id, 'atack_card_name' : atack_card_name}
+    content = { 'action' : 'iniciar_defensa', 'data' :data }
     await manager_activo.send_data_to(content,match_id,player_id)
 
 async def iniciar_intercambio(match_id,player_id):
