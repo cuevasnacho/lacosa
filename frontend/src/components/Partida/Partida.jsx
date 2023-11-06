@@ -84,6 +84,8 @@ function Partida () {
           break;
 
         case 'iniciar_defensa':
+          /* Como respuesta nos viene en data
+          una lista con las posibles cartas a usar*/
           setStage(4);
           break;
 

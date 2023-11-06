@@ -52,8 +52,7 @@ function JugarCarta({carta, socket, jugadores, funcionDescartar, mano}) {
         data : isover
       });
 
-      // descartarCarta(funcionDescartar, mano, carta, socket);
-      socket.send(mensaje_isover);
+      descartarCarta(funcionDescartar, mano, carta, socket);
     }
     else
     {
