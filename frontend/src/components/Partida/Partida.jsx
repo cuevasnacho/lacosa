@@ -19,7 +19,7 @@ function Partida () {
   const [websocket, setWebsocket] = useState(null);
   const [messages, setMessages] = useState([]);
   const [jugadas,setJugadas]=useState([])
-
+  const [jugador,setJugador] = useState({})
   const [playerState, setPlayerState] = useState({});
   const [manoJugador, setManoJugador] = useState([]);   // Indica las cartas que tengo en la mano
   const [matchState, setMatchState] = useState([]); // username: string, id: int, esTurno: bool, posicion: int, eliminado: bool	
@@ -32,6 +32,7 @@ function Partida () {
       service: `partida/status/${idPartida}/${idPlayer}`,
     });
     const status = responseStatus;
+    setJugador(status.jugador)
     const jugadores = arrangePlayers(status.jugadores);
     setMatchState(jugadores);
     setPlayerState(status.jugador);
@@ -111,7 +112,7 @@ function Partida () {
    
     //clean up function when we close page
     return () => ws.close();
-  }, [messages]);
+  }, [messages,mazoDescarteState]);
 
   return (
     <div className={styles.container}>
@@ -127,7 +128,7 @@ function Partida () {
         actualizar={setManoJugador} 
         socket={websocket} 
         jugadores={matchState}/>
-      <Jugadores jugadores={matchState}/>
+      <Jugadores jugadores={matchState} jugador={jugador}/>
       <Chat ws={websocket} messages={messages}/>
       <LogPartida messages={jugadas}></LogPartida>
     </div>

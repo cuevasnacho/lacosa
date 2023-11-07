@@ -9,6 +9,15 @@
     position: absolute;
     top: 0;
 }
+.puertaLeft{
+  padding-top: 5rem;
+  padding-left:2rem;
+}
+
+.puertaRight{
+  padding-top: 5rem;
+  padding-right: 2rem;
+}
 
 .jugadorLeft {
   display: flex;
