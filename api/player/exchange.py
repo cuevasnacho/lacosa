@@ -83,7 +83,13 @@ async def exchange_valid(player_id : int, oponent_id : int, player_card_id : int
         oponent_position = adjacent_players(player_id,oponent_id) 
         is_card_valid = valid_card(player_card_id,player.player_role)
         is_oponent_valid = valid_oponent(player_id,oponent_id,player.player_role,oponent_position[0],oponent_position[1],player_card_id,motive)
-        #mandar mensaje por soccket
+
+        if motive != "":
+            #mandar mensaje por soccket
+            pass
+        elif motive == "fallaste":
+            pass
+
         exchange = is_card_valid and is_oponent_valid
         return JSONResponse(content = exchange, status_code = 200)
 
@@ -94,9 +100,9 @@ async def exchange_defense(player_defense_id : int):
     return JSONResponse(content = defense, status_code = 200)
 
 #swap de cartas 
-@router.put("/intercambio/cartas/{player_id}/{card1_id}/{oponent_id}/{card2_id}")
-async def swap_cards(player_id : int, card1_id : int, oponent_id : int, card2_id : int):
-    with db_session :
+@router.put("/intercambio/cartas/{player_id}/{card1_id}/{oponent_id}/{card2_id}/{motive}")
+async def swap_cards(player_id : int, card1_id : int, oponent_id : int, card2_id : int, motive : str):
+    with db_session:
         try: 
             player = Player[player_id]
             oponent = Player[oponent_id]
@@ -108,6 +114,9 @@ async def swap_cards(player_id : int, card1_id : int, oponent_id : int, card2_id
 
         player_card.card_player = oponent_id
         oponent_card.card_player = player_id
+
+        if player_card.card_cardT.cardT_name == "infectado" and motive != "fallaste":
+            oponent.player_role = player_roles.INFECTED.value        
         commit()
 
         if player.player_quarentine_count > 0 :
