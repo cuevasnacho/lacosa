@@ -3,7 +3,7 @@ import { useState } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap';
 import { descartarCarta } from "./DescartarCarta";
-import { playCard } from '../Partida/functions.jsx';
+import { playCard, getHand } from '../Partida/functions.jsx';
 import styles from './JugarCarta.module.css';
 
 function JugarCarta({carta, socket, jugadores, funcionDescartar, mano}) {
@@ -51,7 +51,8 @@ function JugarCarta({carta, socket, jugadores, funcionDescartar, mano}) {
 
       socket.send(mensaje_isover);
 
-      descartarCarta(funcionDescartar, mano, carta, socket);
+      getHand(funcionDescartar);
+
     }
     else
     {

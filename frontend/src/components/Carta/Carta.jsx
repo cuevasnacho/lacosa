@@ -40,7 +40,6 @@ function Carta({ carta, stage, actualizar, mano, socket, jugadores}) {
                 </div>
             )}
 
-            /* Forzar */
             { isHover && 
             (stage == 2 && carta.tipo) && (
                 <div className={styles.botones}>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { httpRequest } from '../../services/HttpService.js';
-import { arrangePlayers } from './functions.jsx';
+import { arrangePlayers, nextTurn, getHand } from './functions.jsx';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import styles from './Partida.module.css';
@@ -15,6 +15,7 @@ import LogPartida from '../LogPartida/LogPartida.jsx';
 
 function Partida () {
   const idPlayer = JSON.parse(sessionStorage.getItem('user_id'));
+  const username = window.sessionStorage.getItem('username');
   const { idPartida } = useParams();
   const [websocket, setWebsocket] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -40,16 +41,8 @@ function Partida () {
 
   async function initializeGame() {
     getStatus();
-
     window.sessionStorage.setItem('match_id', idPartida);
-
-    const responseCards = await httpRequest({
-      method: 'GET',
-      service: `players/${idPlayer}/${idPartida}`,
-    });
-    
-    const cards = responseCards.cartas;
-    setManoJugador(cards);
+    getHand(setManoJugador);
   }
 
   
@@ -70,6 +63,7 @@ function Partida () {
     // recieve message every start page
     ws_activo.onmessage = (e) => {
       const info = JSON.parse(e.data);
+      alert(info.action);
       switch (info.action) {
         case 'iniciar_turno':
           setStage(1);
@@ -98,6 +92,7 @@ function Partida () {
         
         case 'fin_turno':
           setStage(0);
+          nextTurn(idPartida, websocket, username);
           break;
       }
     };
@@ -119,9 +114,10 @@ function Partida () {
         case 'play_card':
           const tipo_carta_descartada = info.data.tipo ? 1 : 0;
           setMazoDescarteState(tipo_carta_descartada);
+          getStatus();
           toast(`${info.data.player} jugó la carta ${info.data.card} sobre ${info.data.target}`, {theme: 'dark'});
-          jugada = {msj:`${info.data.player} jugó la carta ${info.data.card} sobre ${info.data.target}`}
-          receiveJugada(jugada)
+          jugada = {msj:`${info.data.player} jugó la carta ${info.data.card} sobre ${info.data.target}`};
+          receiveJugada(jugada);
           break;
 
         case 'next_turn':

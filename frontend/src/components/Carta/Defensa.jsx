@@ -12,7 +12,7 @@ function Defensa({dataSocket, stage, manoJugador, setManoJugador, socket})
     const toggle = () => setModal(!modal);
     
     const defensor_id = window.sessionStorage.getItem('user_id');
-    const defenseCardId = null;
+    let defenseCardId = null;
 
     async function handleDefensa(defenseCardName, attacker_id)
     {
