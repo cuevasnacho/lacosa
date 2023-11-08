@@ -6,7 +6,7 @@ import { descartarCarta } from "./DescartarCarta";
 import { playCard, getHand } from '../Partida/functions.jsx';
 import styles from './JugarCarta.module.css';
 
-function JugarCarta({carta, socket, jugadores, funcionDescartar, mano}) {
+function JugarCarta({carta, socket, jugadores, actualizar, mano}) {
   const username = window.sessionStorage.getItem('username');
   const [dropdownm, setDropdown] = useState(false);
 
@@ -22,36 +22,11 @@ function JugarCarta({carta, socket, jugadores, funcionDescartar, mano}) {
         target_username: target_username,
       }
       playCard(carta, target, socket);
+      console.log("se hizo play card");
       
-      const se_puede_defender = response[1].player_defense;
-      const defensor_id = response[1].player_id;
-      const card_used_name = carta.cartaNombre;
-      const card_defense_name = response[1].card_name[0];
-
-      if (se_puede_defender) {
-        const notify_defense = JSON.stringify({action: 'notify_defense', 
-                                              data: 
-                                              {defensor_id: defensor_id,
-                                              attack_card_name: card_used_name,
-                                              atacante_id: player_id,
-                                              atacante_username: username,
-                                              card_defense_name: card_defense_name}});
-                                    
-        socket.send(notify_defense);
-      }
-
-      
-      
-      const isover = response[0].end_game;
-      console.log(isover);
-      const mensaje_isover = JSON.stringify({
-        action : 'end_game',
-        data : isover
-      });
-
-      socket.send(mensaje_isover);
-
-      getHand(funcionDescartar);
+      setTimeout(() => {
+        getHand(actualizar);
+      }, 100);
 
     }
     else

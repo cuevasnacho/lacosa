@@ -21,19 +21,13 @@ function Carta({ carta, stage, actualizar, mano, socket, jugadores}) {
             onMouseLeave={() => setIsHover(false)}>
             <img alt={carta.cartaNombre} src={Diccionario[carta.cartaNombre]} width={130}/>
             
-            { isHover && esDefensa &&
-             (
-                <div className={styles.botones}>
-                    <button className={styles.boton} onClick={Defensa} >Defenderse</button>
-                </div>
-            )}
 
             { isHover && esJugar && (
                 <div className={styles.botones}>
                     <JugarCarta carta={carta} 
                         socket={socket} 
                         jugadores={jugadores} 
-                        funcionDescartar={actualizar} 
+                        actualizar={actualizar} 
                         mano={mano}/>
                     <button className={styles.boton} onClick={() => 
                         descartarCarta(actualizar, mano, carta, socket)}>Descartar</button>
@@ -46,7 +40,7 @@ function Carta({ carta, stage, actualizar, mano, socket, jugadores}) {
                     <JugarCarta carta={carta} 
                         socket={socket} 
                         jugadores={jugadores} 
-                        funcionDescartar={actualizar} 
+                        actualizar={actualizar} 
                         mano={mano}/>
                 </div>
             )}

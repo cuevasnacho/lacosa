@@ -1,4 +1,5 @@
 import { httpRequest } from '../../services/HttpService';
+import { getHand } from '../Partida/functions';
 /*
     actualizar: funcion que actualiza la mano del jugador
     mano: array de cartas que tiene el jugador
@@ -20,11 +21,7 @@ export async function descartarCarta(actualizar, mano, carta, socket)
                         method: 'PUT',
                         service: 'carta/descartar/' + playerID + '/' + carta.id,
                     });
-                    
-                    
-                    actualizar((manoPrevia) => {
-                       return manoPrevia.filter(cartaPrevia => cartaPrevia.id !== carta.id);
-                    });
+                    getHand(actualizar);
                 }
                 else
                 {

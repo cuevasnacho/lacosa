@@ -55,15 +55,15 @@ function Partida () {
     ws.onopen = (event) => {
       initializeGame();
     };
-
     setWebsocket(ws);
+
     //funcion agregada (va guardando el historial completo de jugadas)
     const receiveJugada=(jugada)=>setJugadas((state)=>[...state,jugada])
     let jugada="";
     // recieve message every start page
     ws_activo.onmessage = (e) => {
       const info = JSON.parse(e.data);
-      alert(info.action);
+      console.log(info.action);
       switch (info.action) {
         case 'iniciar_turno':
           setStage(1);
@@ -92,7 +92,7 @@ function Partida () {
         
         case 'fin_turno':
           setStage(0);
-          nextTurn(idPartida, websocket, username);
+          nextTurn(idPartida, ws, username);
           break;
       }
     };
