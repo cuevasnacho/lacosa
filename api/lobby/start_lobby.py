@@ -7,7 +7,6 @@ from pony import orm
 from api.match.create_desk import *
 from api.match.deal_cards import *
 import json 
-from api.messages import start_next_turn
 
 router = APIRouter()
 

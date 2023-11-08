@@ -3,7 +3,7 @@ import { useState } from 'react';
 import styles from "./Carta.module.css";
 import Diccionario from './Diccionario.jsx';
 import { descartarCarta } from './DescartarCarta.jsx';
-import { defensa } from "./Defensa.jsx";
+import Defensa from "./Defensa.jsx";
 import  JugarCarta  from './JugarCarta.jsx';
 
 function Carta({ carta, stage, actualizar, mano, socket, jugadores}) {
@@ -24,7 +24,7 @@ function Carta({ carta, stage, actualizar, mano, socket, jugadores}) {
             { isHover && esDefensa &&
              (
                 <div className={styles.botones}>
-                    <button className={styles.boton} onClick={defensa} >Defenderse</button>
+                    <button className={styles.boton} onClick={Defensa} >Defenderse</button>
                 </div>
             )}
 

@@ -113,7 +113,7 @@ async def defend(defensor_id : int, card_id : int, attacker_id : int):
 
         steal_card_not_panic(defensor_id)
 
-        iniciar_intercambio(match_id, attacker_id)
+        await iniciar_intercambio(match_id, attacker_id)
 
         return response_defense(atacker_username =attacker_name,
                                  defensor_username = defensor_name,

@@ -107,9 +107,9 @@ async def steal_card(player_id : int)-> carta_robada:
                                   tipo = card.card_cardT.cardT_type)
 
             if (card.card_cardT.cardT_type):
-                forzar_jugada(match.match_id, player_id, card.card_id)
+                await forzar_jugada(match.match_id, player_id, card.card_id)
             else:
-                elegir_jugada(match.match_id, player_id)
+                await elegir_jugada(match.match_id, player_id)
 
             return content
 

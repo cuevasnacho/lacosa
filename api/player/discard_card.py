@@ -33,9 +33,9 @@ def card_belong_player(player_id, card_id):
         return False
 
 @db_session
-def start_exchange(player_id):
+async def start_exchange(player_id):
     match_id = (Player.get(player_id = player_id)).player_current_match_id.match_id
-    iniciar_intercambio(match_id,player_id)
+    await iniciar_intercambio(match_id,player_id)
     
 
 @router.put("/carta/descartar/{player_id}/{id_card}")
@@ -55,7 +55,7 @@ async def discard_card(player_id : int, id_card : int):
             card_to_update.card_player = None 
             commit()
 
-        start_exchange(player_id)
+        await start_exchange(player_id)
         message = "Carta descartada"
         status_code = 200 #OK
         return JSONResponse(content=message, status_code=status_code)    

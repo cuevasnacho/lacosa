@@ -16,8 +16,8 @@ show_cards_to_all = ['whisky']
 
 @db_session
 async def first_player(match_id):
-    player_id = (Match.get(match_id = match_id)).match_currentP.player_id 
-    content = {'action' : 'iniciar_turno'}
+    player_id = (Match.get(match_id = match_id)).match_currentP
+    content = {'action' : 'iniciar_turno','data' : {}}
     await manager_activo.send_data_to(content, match_id, player_id)
 
 @router.websocket("/ws/match/pasivo/{match_id}/{player_id}")
@@ -81,8 +81,10 @@ async def match_websocket(websocket : WebSocket,match_id : int, player_id : int)
     await manager_activo.connect(websocket,match_id,player_id)
     try:
         print("antes de enviar el mensaje")
-        first_player(match_id)
+        await first_player(match_id)
         print("despues de enviar el mensaje")
+        while True:
+             ws = await websocket.receive_json()
 
     except WebSocketDisconnect:
         manager_activo.disconnect(websocket,match_id,player_id)
