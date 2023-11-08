@@ -1,5 +1,17 @@
 import { httpRequest } from "../../services/HttpService";
 
+async function getHand(actualizarMano) {
+    const idPartida = JSON.parse(window.sessionStorage.getItem('match_id'));
+    const idPlayer = JSON.parse(window.sessionStorage.getItem('user_id'));
+
+    const responseCards = await httpRequest({
+      method: 'GET',
+      service: `players/${idPlayer}/${idPartida}`,
+    });
+    console.log(responseCards.cartas);
+    actualizarMano(responseCards.cartas);
+}
+
 function sortPlayers(jugadores) {
     const sortedPlayers = jugadores.sort((a,b) => a.posicion - b.posicion);
     return sortedPlayers;
@@ -17,6 +29,70 @@ async function nextTurn(id_match, socket, actual_player_username) {
 
 function mod(i, n) {  // positive modulo
   return ((i % n) + n) % n;
+}
+
+async function playCard(carta, target, socket) {
+  const player_id = JSON.parse(sessionStorage.getItem('user_id'));
+  const username = window.sessionStorage.getItem('username');
+  
+  let headers = { Accept: '*/*' };
+  const response = await httpRequest({
+    headers : headers,
+    method: 'PUT',
+    service: `carta/jugar/${player_id}/${carta.id}/${target.target_id}`,
+  });
+  
+  // response[0] es el jugador que jugo la carta
+  // response[1] es el jugador al que le juegan la carta
+  const cartas_mostrar = response[0].card_name;
+  const mensaje = JSON.stringify({
+    action: 'play_card',
+    data: {
+      card: carta.cartaNombre,
+      player: username, 
+      target: target.target_username,
+      tipo: carta.tipo,
+    }});
+
+  const mensaje_cartas = JSON.stringify({
+    action: 'show_cards',
+    data: {
+      card: carta.cartaNombre,
+      mostrar: cartas_mostrar
+    }
+
+  
+  });
+
+  const se_puede_defender = response[1].player_defense;
+  const defensor_id = response[1].player_id;
+  const card_used_name = carta.cartaNombre;
+  const card_defense_name = response[1].card_name[0];
+
+  if (se_puede_defender) {
+    const notify_defense = JSON.stringify({action: 'notify_defense', 
+                                          data: 
+                                          {defensor_id: defensor_id,
+                                          attack_card_name: card_used_name,
+                                          atacante_id: player_id,
+                                          atacante_username: username,
+                                          card_defense_name: card_defense_name}});
+                                
+    socket.send(notify_defense);
+  }
+
+  const isover = response[0].end_game;
+  console.log(isover);
+  const mensaje_isover = JSON.stringify({
+    action : 'end_game',
+    data : isover
+  });
+
+  socket.send(mensaje_isover);
+
+  socket.send(mensaje);
+  socket.send(mensaje_cartas);
+  
 }
 
 function arrangePlayers(jugadoresDesordenados) {
@@ -62,4 +138,4 @@ function arrangePlayers(jugadoresDesordenados) {
   return left.concat(middle, right, player);
 }
 
-export { nextTurn, arrangePlayers };
+export { nextTurn, arrangePlayers, playCard, getHand };

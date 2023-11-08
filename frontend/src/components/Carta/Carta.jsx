@@ -3,12 +3,16 @@ import { useState } from 'react';
 import styles from "./Carta.module.css";
 import Diccionario from './Diccionario.jsx';
 import { descartarCarta } from './DescartarCarta.jsx';
+import Defensa from "./Defensa.jsx";
 import  JugarCarta  from './JugarCarta.jsx';
 
-function Carta({ carta, esTurno , actualizar, mano, socket, jugadores}) {
+function Carta({ carta, stage, actualizar, mano, socket, jugadores}) {
     const [isHover, setIsHover] = useState(false);
     
-    const cartaState = esTurno ? `${styles.carta} ${styles.cartaTurno}` : styles.carta;
+    const cartaState = (stage == 3) ? `${styles.carta} ${styles.cartaTurno}` : styles.carta;
+    
+    const esDefensa = new Boolean(carta.cartaNombre != 'lacosa' && stage == 4);
+    const esJugar = new Boolean(stage == 3 && carta.cartaNombre != 'lacosa');
 
     return (
         <div 
@@ -16,15 +20,28 @@ function Carta({ carta, esTurno , actualizar, mano, socket, jugadores}) {
             onMouseEnter={() => setIsHover(true)}
             onMouseLeave={() => setIsHover(false)}>
             <img alt={carta.cartaNombre} src={Diccionario[carta.cartaNombre]} width={130}/>
-            { isHover && esTurno && carta.cartaNombre != 'lacosa' &&(
+            
+
+            { isHover && esJugar && (
                 <div className={styles.botones}>
                     <JugarCarta carta={carta} 
                         socket={socket} 
                         jugadores={jugadores} 
-                        funcionDescartar={actualizar} 
+                        actualizar={actualizar} 
                         mano={mano}/>
                     <button className={styles.boton} onClick={() => 
                         descartarCarta(actualizar, mano, carta, socket)}>Descartar</button>
+                </div>
+            )}
+
+            { isHover && 
+            (stage == 2 && carta.tipo) && (
+                <div className={styles.botones}>
+                    <JugarCarta carta={carta} 
+                        socket={socket} 
+                        jugadores={jugadores} 
+                        actualizar={actualizar} 
+                        mano={mano}/>
                 </div>
             )}
         </div>
