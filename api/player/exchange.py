@@ -24,7 +24,7 @@ def valid_card(card_id,role):
     return True
 
 @db_session
-def valid_oponent(player_id,oponent_id,role,oponent_at_left,oponent_at_right,card_id):
+def valid_oponent(player_id,oponent_id,role,oponent_at_left,oponent_at_right,card_id,motive):
     oponent = Player[oponent_id]    
     card = Card[card_id]
     oponent = Player[oponent_id]
@@ -50,7 +50,7 @@ def valid_oponent(player_id,oponent_id,role,oponent_at_left,oponent_at_right,car
                 valid = valid and False 
     
     #carta no es seducion -> derecha o izq
-    if card.card_cardT.cardT_name != "seduccion:":
+    if motive != "seduccion":
         if not (oponent_at_left or oponent_at_right): #el jugador no es adyecente
             valid = valid and False 
 
@@ -70,8 +70,9 @@ def have_defense_card(oponent_id):
     return False
 
 #encargado de ver si se cumplen todas las condiciones para poder intercambiar
-@router.get("/intercambio/valido/{player_id}/{oponent_id}/{player_card_id}")
-async def exchange_valid(player_id : int, oponent_id : int, player_card_id : int):
+#motive : motivo del intercambio, si es una carta es su nombre si es por intercambio normal es "intercambio"
+@router.get("/intercambio/valido/{player_id}/{oponent_id}/{player_card_id}/{motive}")
+async def exchange_valid(player_id : int, oponent_id : int, player_card_id : int, motive : str):
     with db_session:
         try: 
             player = Player[player_id]
@@ -81,7 +82,7 @@ async def exchange_valid(player_id : int, oponent_id : int, player_card_id : int
         
         oponent_position = adjacent_players(player_id,oponent_id) 
         is_card_valid = valid_card(player_card_id,player.player_role)
-        is_oponent_valid = valid_oponent(player_id,oponent_id,player.player_role,oponent_position[0],oponent_position[1],player_card_id)
+        is_oponent_valid = valid_oponent(player_id,oponent_id,player.player_role,oponent_position[0],oponent_position[1],player_card_id,motive)
         #mandar mensaje por soccket
         exchange = is_card_valid and is_oponent_valid
         return JSONResponse(content = exchange, status_code = 200)
@@ -97,6 +98,8 @@ async def exchange_defense(player_defense_id : int):
 async def swap_cards(player_id : int, card1_id : int, oponent_id : int, card2_id : int):
     with db_session :
         try: 
+            player = Player[player_id]
+            oponent = Player[oponent_id]
             player_card = Card.get(card_id = card1_id)
             oponent_card = Card.get(card_id = card2_id)
         except:
@@ -107,5 +110,11 @@ async def swap_cards(player_id : int, card1_id : int, oponent_id : int, card2_id
         oponent_card.card_player = player_id
         commit()
 
+        if player.player_quarentine_count > 0 :
+            #MANDAR MENSAJE POR SOQUET DE LA NUEVA CARTA
+            pass
+        if oponent.player_quarentine_count > 0:
+            #MANDAR MENSAJE POR SOQUET DE LA NUEVA CARTA
+            pass
         content = "Cambio realizado"
         return JSONResponse(content = content, status_code = 200)
