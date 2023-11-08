@@ -3,10 +3,8 @@ import { useState } from 'react';
 
 export default function LogPartida({messages}) {
   const [opened, setOpened] = useState(false);
-     messages.map((value) =>{
-       console.log(value.msj)
-     })
-    const toggleOpened = () => {
+     
+  const toggleOpened = () => {
         setOpened(!opened);
     }
   return (

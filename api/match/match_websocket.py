@@ -3,7 +3,7 @@ from api.player.player import get_jugador
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 from fastapi.responses import JSONResponse
 from pony.orm import db_session
-from db.database import Lobby
+from db.database import Match
 from api.websocket import ConnectionManager
 from api.player.finalize_action import fullfile_action
 
@@ -11,9 +11,16 @@ router = APIRouter()
 
 manager = ConnectionManager()
 
+manager_activo = ConnectionManager()
 show_cards_to_all = ['whisky']
 
-@router.websocket("/ws/match/{match_id}/{player_id}")
+@db_session
+async def first_player(match_id):
+    player_id = (Match.get(match_id = match_id)).match_currentP
+    content = {'action' : 'iniciar_turno','data' : {}}
+    await manager_activo.send_data_to(content, match_id, player_id)
+
+@router.websocket("/ws/match/pasivo/{match_id}/{player_id}")
 async def match_websocket(websocket : WebSocket,match_id : int, player_id : int):  
     await manager.connect(websocket,match_id,player_id)
     try:
@@ -65,5 +72,21 @@ async def match_websocket(websocket : WebSocket,match_id : int, player_id : int)
         
     except WebSocketDisconnect:
         manager.disconnect(websocket,match_id,player_id)
+        content = "Websocket desconectado"
+        return JSONResponse(content = content, status_code = 200) 
+"""
+"""
+@router.websocket("/ws/match/activo/{match_id}/{player_id}")
+async def match_websocket(websocket : WebSocket,match_id : int, player_id : int):  
+    await manager_activo.connect(websocket,match_id,player_id)
+    try:
+        print("antes de enviar el mensaje")
+        await first_player(match_id)
+        print("despues de enviar el mensaje")
+        while True:
+             ws = await websocket.receive_json()
+
+    except WebSocketDisconnect:
+        manager_activo.disconnect(websocket,match_id,player_id)
         content = "Websocket desconectado"
         return JSONResponse(content = content, status_code = 200) 
