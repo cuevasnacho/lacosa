@@ -81,7 +81,6 @@ async function playCard(carta, target, socket) {
   }
 
   const isover = response[0].end_game;
-  console.log(isover);
   const mensaje_isover = JSON.stringify({
     action : 'end_game',
     data : isover
@@ -96,7 +95,6 @@ async function playCard(carta, target, socket) {
 
 function arrangePlayers(jugadoresDesordenados) {
   const jugadores = sortPlayers(jugadoresDesordenados);
-  console.log(jugadores);
   let left,right,middle,player;
   const length = jugadores.length;
 
@@ -144,7 +142,6 @@ async function intercambiarDefensa(oponent_id, card_id) {
     service: `intercambio/defensa/${player_id}/${oponent_id}/${card_id}`,
     headers: { Accept: '*/*' },
   });
-  console.log(response);
   return JSON.parse(response.data);
 }
 

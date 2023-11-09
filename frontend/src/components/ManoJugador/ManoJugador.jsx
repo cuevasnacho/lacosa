@@ -1,7 +1,7 @@
 import Carta from '../Carta/Carta.jsx';
 import style from './ManoJugador.module.css';
 
-function ManoJugador({ cartas, stage , data, actualizar, socket, jugadores}) {
+function ManoJugador({ cartas, stage, actstage, data, actualizar, socket, jugadores}) {
   return (
     <div className={style.ManoJugador}>
       {cartas.map((carta, index) => (
@@ -12,6 +12,7 @@ function ManoJugador({ cartas, stage , data, actualizar, socket, jugadores}) {
         >
           <Carta  carta={carta} 
                   stage={stage} 
+                  actstage={actstage}
                   data={data}
                   actualizar={actualizar} 
                   mano={cartas} 

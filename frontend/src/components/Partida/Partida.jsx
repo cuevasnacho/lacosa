@@ -45,6 +45,12 @@ function Partida () {
     window.sessionStorage.setItem('match_id', idPartida);
     getHand(setManoJugador);
   }
+
+  function toastStage(text) {
+    toast.info(text, {
+      position: toast.POSITION.TOP_LEFT,
+    })
+  }
   
   useEffect (() => {
     const url_pasivo = `ws://localhost:8000/ws/match/pasivo/${idPartida}/${idPlayer}`;
@@ -63,30 +69,35 @@ function Partida () {
     // recieve message every start page
     ws_activo.onmessage = (e) => {
       const info = JSON.parse(e.data);
-      console.log(info.action);
       switch (info.action) {
         case 'iniciar_turno':
+          toastStage(info.action);
           setStage(1);
           break;
 
         case 'forzar_jugada':
+          toastStage(info.action);
           setStage(2);
           break;
 
         case 'elegir_jugada':
+          toastStage(info.action);
           setStage(3);
           break;
 
         case 'iniciar_defensa':
+          toastStage(info.action);
           setStage(4);
           break;
 
         case 'iniciar_intercambio':
+          toastStage(info.action);
           setSocketData(info.data);
           setStage(5);
           break;
 
         case 'sol_intercambio':
+          toastStage(info.action);
           setSocketData(info.data);
           const oponent_id = parseInt(info.data.oponent_id);
           const card_id = parseInt(info.data.card_id);
@@ -94,18 +105,17 @@ function Partida () {
 
           intercambiarDefensa(oponent_id, card_id)
             .then(canDefend => {
-              console.log(canDefend);
               if (canDefend) {
                 // proceso de defensa
               }
               else {
-                console.log('entre a solinterc');
                 setStage(7);
               }
             });
           break;
         
         case 'fin_turno':
+          toastStage(info.action);
           setStage(0);
           nextTurn(idPartida, ws, username);
           break;
@@ -169,7 +179,8 @@ function Partida () {
       <MazoDescarte mazoDescarteState={mazoDescarteState}/>
       <ManoJugador 
         cartas={manoJugador} 
-        stage={stage} 
+        stage={stage}
+        actstage={setStage}
         data={socketData}
         actualizar={setManoJugador} 
         socket={websocket} 
