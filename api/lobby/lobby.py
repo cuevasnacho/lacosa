@@ -30,6 +30,10 @@ async def Crear_Lobby(new_lobby: CreateLobby):
         message = "Nombe demasiado largo"
         status_code = 406 # no acceptable
         return JSONResponse(content=message, status_code=status_code)
+    if len(new_lobby.lobby_password)>12:
+        message = "Contraseña demasiado larga"
+        status_code = 406 # no acceptable
+        return JSONResponse(content=message, status_code=status_code)
     if new_lobby.lobby_max>12:
         message = "Maximo de players no permitido"
         status_code = 406 # no acceptable
