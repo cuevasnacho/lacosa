@@ -5,7 +5,7 @@ from pony.orm import db_session,commit
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 from definitions import card_position
-from api.messages import iniciar_intercambio, fin_turno
+from api.messages import iniciar_intercambio, fin_turno,end_or_exchange
 
 router = APIRouter()
 
@@ -33,9 +33,9 @@ def card_belong_player(player_id, card_id):
         return False
 
 @db_session
-async def start_exchange(player_id):
+async def next_phase(player_id):
     match_id = (Player.get(player_id = player_id)).player_current_match_id.match_id
-    await fin_turno(match_id,player_id)
+    await end_or_exchange(match_id,player_id)
     
 
 @router.put("/carta/descartar/{player_id}/{id_card}")
@@ -55,7 +55,7 @@ async def discard_card(player_id : int, id_card : int):
             card_to_update.card_player = None 
             commit()
 
-        await start_exchange(player_id)
+        await next_phase(player_id)
         message = "Carta descartada"
         status_code = 200 #OK
         return JSONResponse(content=message, status_code=status_code)    

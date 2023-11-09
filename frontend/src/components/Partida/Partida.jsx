@@ -64,6 +64,7 @@ function Partida () {
     ws_activo.onmessage = (e) => {
       const info = JSON.parse(e.data);
       console.log(info.action);
+      alert(info.action);
       switch (info.action) {
         case 'iniciar_turno':
           setStage(1);

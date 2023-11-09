@@ -92,7 +92,7 @@ async def exchange_valid(player_id : int, oponent_id : int, player_card_id : int
     print("entro al endpoint")
     if motive == "inicio_intercambio":
         print("se envia sol_intercambio")
-        await sol_intercambio(player.player_current_match_id.match_id,player_id,player_card_id,motive,oponent_id) # falta el oponent id
+        await sol_intercambio(player.player_current_match_id.match_id,oponent_id,player_card_id,motive,player_id) # falta el oponent id
 
     exchange = is_card_valid and is_oponent_valid
     code = 200 if exchange else 401
