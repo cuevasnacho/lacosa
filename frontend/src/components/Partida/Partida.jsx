@@ -44,7 +44,6 @@ function Partida () {
     window.sessionStorage.setItem('match_id', idPartida);
     getHand(setManoJugador);
   }
-
   
   useEffect (() => {
     const url_pasivo = `ws://localhost:8000/ws/match/pasivo/${idPartida}/${idPlayer}`;
@@ -78,8 +77,6 @@ function Partida () {
           break;
 
         case 'iniciar_defensa':
-          /* Como respuesta nos viene en data
-          una lista con las posibles cartas a usar*/
           setStage(4);
           break;
 
