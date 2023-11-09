@@ -12,6 +12,7 @@ import MazoDescarte from '../Mazo/MazoDescarte.jsx';
 import Chat from '../Chat/Chat.jsx';
 import Finalizar from '../FinalizarPartida/Finalizar.jsx';
 import LogPartida from '../LogPartida/LogPartida.jsx';
+import Defensa from '../Carta/Defensa.jsx';
 
 function Partida () {
   const idPlayer = JSON.parse(sessionStorage.getItem('user_id'));
@@ -27,6 +28,7 @@ function Partida () {
   const [matchState, setMatchState] = useState([]); // username: string, id: int, esTurno: bool, posicion: int, eliminado: bool	
   const [mazoDescarteState, setMazoDescarteState] = useState(2);  // Dice que carta se va a mostrar en el mazo de descarte
   const [isOver, setIsOver] = useState(false);
+  const [defenseData, setDefenseData] = useState(null);
 
   async function getStatus() {
     const responseStatus = await httpRequest({
@@ -81,6 +83,7 @@ function Partida () {
           /* Como respuesta nos viene en data
           una lista con las posibles cartas a usar*/
           setStage(4);
+          setDefenseData(info.data);
           break;
 
         case 'iniciar_intercambio':
@@ -145,10 +148,17 @@ function Partida () {
     return () => {ws.close(); ws_activo.close();}
   }, [messages]);
 
+
   return (
     <div className={styles.container}>
       {isOver && <Finalizar idpartida = {idPartida} idjugador={idPlayer}/>}
       <ToastContainer />
+      {stage == 4 && <Defensa 
+        dataSocket={defenseData} 
+        manoJugador={manoJugador}
+        stage={stage} 
+        setManoJugador={setManoJugador}
+        socket={websocket}/>}
       {playerState.esTurno && (<div className={styles.tuTurno}/>)}
       <div className={styles.detalleMesa}/>
       <Mazo stage={stage} mano={manoJugador} actualizarMano={setManoJugador}/>

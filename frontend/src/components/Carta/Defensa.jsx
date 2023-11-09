@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import {  useEffect, useState } from 'react';
 import { Modal, ModalHeader, ModalBody, Button, ModalFooter } from 'reactstrap';
 import { httpRequest } from '../../services/HttpService';
+import { getHand } from '../Partida/functions';
 
-function Defensa({dataSocket, stage, manoJugador, setManoJugador, socket})
+function Defensa({dataSocket, manoJugador, stage, setManoJugador, socket})
 {
     const defense_card_list = dataSocket.card_to_defend;
     const attacker = dataSocket.attacker_id;
@@ -10,9 +11,17 @@ function Defensa({dataSocket, stage, manoJugador, setManoJugador, socket})
 
     const [modal, setModal] = useState(true);
     const toggle = () => setModal(!modal);
+
+    const backdrop = false;
     
     const defensor_id = window.sessionStorage.getItem('user_id');
     let defenseCardId = null;
+
+    useEffect(() => {
+        if (stage === 4) {
+            toggle();
+        }
+    }, []);
 
     async function handleDefensa(defenseCardName, attacker_id)
     {
@@ -26,13 +35,7 @@ function Defensa({dataSocket, stage, manoJugador, setManoJugador, socket})
             service: `defensa/${defenseCardId}/${defensor_id}/${attacker_id}`
         });
 
-        const match_id = window.sessionStorage.getItem('match_id');
-        const nuevaMano = await httpRequest({
-            method: 'GET',
-            service: `players/${defensor_id}/${match_id}`
-        })
-
-        setManoJugador(nuevaMano.cartas)
+        getHand(setManoJugador);
 
         toggle();
     }
@@ -55,25 +58,20 @@ function Defensa({dataSocket, stage, manoJugador, setManoJugador, socket})
         toggle();
     }
 
-    if (stage != 4) 
-    {
-        return null;
-    }
-
     return(
-        <Modal isOpen={modal} toggle={toggle} backdrop="static" onExit={noDefense}>
+        <>
+        <Modal isOpen={modal} toggle={toggle} backdrop={backdrop} onExit={noDefense} >
             <ModalHeader toggle={toggle}> Defensa</ModalHeader>
             <ModalBody>
                 Has sido atacado con {attack_card_name}, te podés defender con:
                 <ul>
-                    { defense_card_list.map((card, index) => (
+                    {defense_card_list.map((card, index) => (
                         <li key={index}>
                             {card}
                             <Button onClick={() => handleDefensa(card, attacker)}>
                                 Usar
                             </Button>
-                        </li>))
-                    }
+                        </li>))}
                 </ul>
             </ModalBody>
             <ModalFooter>
@@ -81,7 +79,7 @@ function Defensa({dataSocket, stage, manoJugador, setManoJugador, socket})
                     No defenderse
                 </Button>
             </ModalFooter>
-        </Modal>
+        </Modal></>
     );
 }
 
