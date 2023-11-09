@@ -64,7 +64,6 @@ function Partida () {
     ws_activo.onmessage = (e) => {
       const info = JSON.parse(e.data);
       console.log(info.action);
-      alert(info.action);
       switch (info.action) {
         case 'iniciar_turno':
           setStage(1);
@@ -89,16 +88,21 @@ function Partida () {
 
         case 'sol_intercambio':
           setSocketData(info.data);
+          const oponent_id = parseInt(info.data.oponent_id);
+          const card_id = parseInt(info.data.card_id);
           setStage(6);
-          const canDefend = intercambiarDefensa(data.oponent_id, data.card_id);
-          console.log(canDefend);
-          if (canDefend) {
-            // proceso de defensa
-          }
-          else {
-            console.log('entre a solinterc');
-            setStage(7);
-          }
+
+          intercambiarDefensa(oponent_id, card_id)
+            .then(canDefend => {
+              console.log(canDefend);
+              if (canDefend) {
+                // proceso de defensa
+              }
+              else {
+                console.log('entre a solinterc');
+                setStage(7);
+              }
+            });
           break;
         
         case 'fin_turno':

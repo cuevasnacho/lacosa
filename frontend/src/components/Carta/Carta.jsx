@@ -1,8 +1,10 @@
 import React from "react";
 import { useState } from 'react';
+import { httpRequest } from "../../services/HttpService";
+import { descartarCarta } from './DescartarCarta.jsx';
+import { getHand } from "../Partida/functions.jsx";
 import styles from "./Carta.module.css";
 import Diccionario from './Diccionario.jsx';
-import { descartarCarta } from './DescartarCarta.jsx';
 import  JugarCarta  from './JugarCarta.jsx';
 
 function Carta({ carta, stage, data, actualizar, mano, socket, jugadores}) {
@@ -17,13 +19,13 @@ function Carta({ carta, stage, data, actualizar, mano, socket, jugadores}) {
             method: 'GET',
             service: `intercambio/valido/${player_id}/${data.oponent_id}/${carta.id}/${data.motive}`,
         });
-        const status = JSON.parse(response.status_code);
-        console.log(status);
-        if (status == 200) {
+        if (response) {
+            console.log(data);
             await httpRequest({
                 method: 'PUT',
-                service: `intercambio/cartas/${player_id}/${carta.id}/${data.oponent_id}/${data.carta_id}/${data.motive}`,
+                service: `intercambio/cartas/${player_id}/${carta.id}/${data.oponent_id}/${data.card_id}/${data.motive}`,
             });
+            getHand(actualizar);
         }
     }
 
