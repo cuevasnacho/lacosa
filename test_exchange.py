@@ -32,7 +32,7 @@ def test_swap_cards():
     set_env("db/test_swap_cards.txt",True)
     #intercambio
     time.sleep(1)
-    response = client.put("/intercambio/cartas/1/1/2/2") #jugador 1 tiene carta 1 y jugador 2 tiene carta 2
+    response = client.put("/intercambio/cartas/1/1/2/2/' '") #jugador 1 tiene carta 1 y jugador 2 tiene carta 2
     time.sleep(1)
     with db_session:
         #jugador 1 tiene carta 2
