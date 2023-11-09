@@ -89,11 +89,14 @@ async def exchange_valid(player_id : int, oponent_id : int, player_card_id : int
     is_card_valid = valid_card(player_card_id,player.player_role)
     is_oponent_valid = valid_oponent(player_id,oponent_id,player.player_role,oponent_position[0],oponent_position[1],player_card_id,motive)
     
+    print("entro al endpoint")
     if motive == "inicio_intercambio":
-        sol_intercambio(player.player_current_match_id.match_id,player_id,player_card_id,motive)
+        print("se envia sol_intercambio")
+        await sol_intercambio(player.player_current_match_id.match_id,player_id,player_card_id,motive,oponent_id) # falta el oponent id
 
     exchange = is_card_valid and is_oponent_valid
-    return JSONResponse(content = exchange, status_code = 200)
+    code = 200 if exchange else 401
+    return JSONResponse(content = exchange, status_code = code)
 
 #encargado solamente de chequear si se puede defender
 @router.get("/intercambio/defensa/{player_defense_id}/{attacker_id}/{attacker_card}")
@@ -104,8 +107,8 @@ async def exchange_defense(player_defense_id : int, attacker_id : int, attacker_
     attacker_card = Card[attacker_card]
     match_id = player.player_current_match_id.match_id
     if defense[0]:
-        iniciar_defensa(match_id,player_defense_id,defense[1],attacker_id,attacker_card.card_cardT.cardT_name)
-    return JSONResponse(content = defense[0], status_code = 200)
+        await iniciar_defensa(match_id,player_defense_id,defense[1],attacker_id,attacker_card.card_cardT.cardT_name)
+    return JSONResponse(content = {'data': defense[0]}, status_code = 200)
 
 #swap de cartas 
 @router.put("/intercambio/cartas/{player_id}/{card1_id}/{oponent_id}/{card2_id}/{motive}")
@@ -130,16 +133,16 @@ async def swap_cards(player_id : int, card1_id : int, oponent_id : int, card2_id
 
         if player.player_quarentine_count > 0 :
             data = f"El jugador {player.player_name} intercambio {player_card.card_cardT.cardT_name}"
-            message_quarentine(match_id,data)
+            await message_quarentine(match_id,data)
             data = f"El jugador {player.player_name} recibio {oponent_card.card_cardT.cardT_name}"
-            message_quarentine(match_id,data)
+            await message_quarentine(match_id,data)
 
         if oponent.player_quarentine_count > 0:
             data = f"El jugador {oponent.player_name} intercambio {oponent_card.card_cardT.cardT_name}"
-            message_quarentine(match_id,data)
+            await message_quarentine(match_id,data)
             data = f"El jugador {oponent.player_name} recibio {player_card.card_cardT.cardT_name}"
-            message_quarentine(match_id,data)
+            await message_quarentine(match_id,data)
 
-        fin_turno(match_id,oponent_id)
+        await fin_turno(match_id,oponent_id)
         content = "Cambio realizado"
         return JSONResponse(content = content, status_code = 200)

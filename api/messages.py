@@ -30,8 +30,9 @@ async def iniciar_intercambio(match_id,player_id):
     content = { 'action' : 'iniciar_intercambio', 'data':{}}
     await manager_activo.send_data_to(content,match_id,player_id)
 
-async def sol_intercambio(match_id,player_id,card_id,motive):
-    content = { 'action' : 'sol_intercambio', 'data':{'card_id': card_id,'motive' : motive}}
+async def sol_intercambio(match_id,player_id,card_id,motive,oponent_id):
+    breakpoint()
+    content = { 'action' : 'sol_intercambio', 'data':{'card_id': card_id,'motive' : motive, 'oponent_id': oponent_id}}
     await manager_activo.send_data_to(content,match_id,player_id)
 
 async def fin_turno(match_id,player_id):

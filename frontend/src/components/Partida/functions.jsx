@@ -138,4 +138,14 @@ function arrangePlayers(jugadoresDesordenados) {
   return left.concat(middle, right, player);
 }
 
-export { nextTurn, arrangePlayers, playCard, getHand };
+async function intercambiarDefensa(oponent_id, card_id) {
+  const player_id = JSON.parse(window.sessionStorage.getItem('user_id'));
+  const response = await httpRequest({
+    method: 'GET',
+    service: `intercambio/defensa/${player_id}/${oponent_id}/${card_id}`,
+  });
+  console.log(response);
+  return response.data;
+}
+
+export { nextTurn, arrangePlayers, playCard, getHand, intercambiarDefensa };

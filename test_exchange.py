@@ -7,7 +7,7 @@ import time
 from api.card.load_templates import load_templates
 
 client = TestClient(app)
-ACTUALIZAR ENDPOINDS
+#ACTUALIZAR ENDPOINDS
 def set_env(data,delete):
     database = "db/lacosa.sqlite"
     create_database_command = "python3 db/database.py"

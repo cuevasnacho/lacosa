@@ -1,5 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState } from "react";
+import { httpRequest } from "../../services/HttpService";
 import { ToastContainer, toast } from 'react-toastify';
 import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap';
 import { playCard, getHand } from '../Partida/functions.jsx';
@@ -7,8 +8,6 @@ import styles from './JugarCarta.module.css';
 
 function JugarCarta({carta, socket, jugadores, actualizar, mano, stage}) {
   const [dropdownm, setDropdown] = useState(false);
-  const esJugar = (stage == 2 || stage == 3);
-  const esIntercambio = stage == 5;
 
   function abrirCerrarMenu() {
     setDropdown(!dropdownm);
@@ -35,15 +34,20 @@ function JugarCarta({carta, socket, jugadores, actualizar, mano, stage}) {
     }
   }
 
-  async function intercambiar() {
-    alert('intercambio');
+  async function intercambiar(oponent_id) {
+    const player_id = JSON.parse(window.sessionStorage.getItem('user_id'));
+    await httpRequest({
+      method: 'GET',
+      service: `intercambio/valido/${player_id}/${oponent_id}/${carta.id}/inicio_intercambio`,
+      headers: {Accept: '*/*',}
+    });
   }
   
   return(
     <>
     <ToastContainer />
     <div className={styles.boton}>
-      {( esJugar &&
+      {(stage == 2 || stage == 3) && (
         <Dropdown isOpen={dropdownm} toggle={abrirCerrarMenu} direction="up">
           <DropdownToggle caret>
             Jugar Carta
@@ -59,7 +63,7 @@ function JugarCarta({carta, socket, jugadores, actualizar, mano, stage}) {
           </DropdownMenu>
         </Dropdown>
       )}
-      {( esIntercambio &&
+      {(stage == 5) && (
         <Dropdown isOpen={dropdownm} toggle={abrirCerrarMenu} direction="up">
           <DropdownToggle caret>
             Intercambiar
@@ -68,7 +72,7 @@ function JugarCarta({carta, socket, jugadores, actualizar, mano, stage}) {
             {jugadores.map((jugador, index) => (
               <DropdownItem
                 key={index}
-                onClick={() => intercambiar()}>
+                onClick={() => intercambiar(jugador.id)}>
                 {jugador.username}
               </DropdownItem>
             ))}

@@ -5,12 +5,27 @@ import Diccionario from './Diccionario.jsx';
 import { descartarCarta } from './DescartarCarta.jsx';
 import  JugarCarta  from './JugarCarta.jsx';
 
-function Carta({ carta, stage, actualizar, mano, socket, jugadores}) {
+function Carta({ carta, stage, data, actualizar, mano, socket, jugadores}) {
     const [isHover, setIsHover] = useState(false);
     
     const cartaState = (stage == 3) ? `${styles.carta} ${styles.cartaTurno}` : styles.carta;
     
-    const esJugar = new Boolean((stage == 3 || stage == 5) && carta.cartaNombre != 'lacosa');
+    async function resIntercambiar() {
+        const player_id = JSON.parse(window.sessionStorage.getItem('user_id'));
+    
+        const response = await httpRequest({
+            method: 'GET',
+            service: `intercambio/valido/${player_id}/${data.oponent_id}/${carta.id}/${data.motive}`,
+        });
+        const status = JSON.parse(response.status_code);
+        console.log(status);
+        if (status == 200) {
+            await httpRequest({
+                method: 'PUT',
+                service: `intercambio/cartas/${player_id}/${carta.id}/${data.oponent_id}/${data.carta_id}/${data.motive}`,
+            });
+        }
+    }
 
     return (
         <div 
@@ -19,29 +34,35 @@ function Carta({ carta, stage, actualizar, mano, socket, jugadores}) {
             onMouseLeave={() => setIsHover(false)}>
             <img alt={carta.cartaNombre} src={Diccionario[carta.cartaNombre]} width={130}/>
 
-            { isHover && esJugar && (
+            { (isHover && (stage == 3 || stage == 5)) && (
                 <div className={styles.botones}>
                     <JugarCarta carta={carta} 
                         socket={socket} 
                         jugadores={jugadores} 
                         actualizar={actualizar} 
                         mano={mano}
-                        stage={stage}/>
+                        stage={stage}
+                        data={data}/>
                     <button className={styles.boton} onClick={() => 
                         descartarCarta(actualizar, mano, carta, socket)}>Descartar</button>
                 </div>
             )}
 
-            { isHover && 
-            (stage == 2 && carta.tipo) && (
+            { (isHover && stage == 2 && carta.tipo) && (
                 <div className={styles.botones}>
                     <JugarCarta carta={carta} 
                         socket={socket} 
                         jugadores={jugadores} 
                         actualizar={actualizar} 
                         mano={mano}
-                        stage={stage}/>
+                        stage={stage}
+                        data={data}/>
                 </div>
+            )}
+            {(isHover && stage == 7) && (
+                <button type='button' className={styles.botonIntercambio} onClick={() => resIntercambiar()}>
+                Intercambiar
+                </button>
             )}
         </div>
     );

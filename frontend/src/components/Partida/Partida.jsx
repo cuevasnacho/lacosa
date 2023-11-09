@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { httpRequest } from '../../services/HttpService.js';
-import { arrangePlayers, nextTurn, getHand } from './functions.jsx';
+import { arrangePlayers, nextTurn, getHand, intercambiarDefensa } from './functions.jsx';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import styles from './Partida.module.css';
@@ -23,6 +23,7 @@ function Partida () {
 
   const [stage, setStage] = useState(0);
   const [playerState, setPlayerState] = useState({});
+  const [socketData, setSocketData] = useState({});
   const [manoJugador, setManoJugador] = useState([]);   // Indica las cartas que tengo en la mano
   const [matchState, setMatchState] = useState([]); // username: string, id: int, esTurno: bool, posicion: int, eliminado: bool	
   const [mazoDescarteState, setMazoDescarteState] = useState(2);  // Dice que carta se va a mostrar en el mazo de descarte
@@ -81,10 +82,22 @@ function Partida () {
           break;
 
         case 'iniciar_intercambio':
+          setSocketData(info.data);
           setStage(5);
           break;
 
         case 'sol_intercambio':
+          setSocketData(info.data);
+          setStage(6);
+          const canDefend = intercambiarDefensa(data.oponent_id, data.card_id);
+          console.log(canDefend);
+          if (canDefend) {
+            // proceso de defensa
+          }
+          else {
+            console.log('entre a solinterc');
+            setStage(7);
+          }
           break;
         
         case 'fin_turno':
@@ -104,7 +117,6 @@ function Partida () {
           
         case 'end_game':
           const respuesta = info.data;
-          console.log(respuesta);
           setIsOver(respuesta);
           break;
 
@@ -153,6 +165,7 @@ function Partida () {
       <ManoJugador 
         cartas={manoJugador} 
         stage={stage} 
+        data={socketData}
         actualizar={setManoJugador} 
         socket={websocket} 
         jugadores={matchState}/>

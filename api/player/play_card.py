@@ -158,7 +158,7 @@ async def play_card(player_id : int, card_id : int, oponent_id : int):
                 content = players_status_after_play_card(player_id,oponent_id,False,card_name,end_game,[])
                 fullfile_efect(oponent_id,card_id)
                 discard_Card(card_id)
-                await fin_turno(match_id,player_id)
+                await iniciar_intercambio(match_id,player_id)
             return JSONResponse(content = content, status_code = 200)
         else:
             content = "Jugada invalida"
