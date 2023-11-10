@@ -71,10 +71,11 @@ class lanzallamas_T(card_template):
         is_adjacent = adjacent_players(player_cause_id, target_id)
         valid = is_adjacent[0] or is_adjacent[1]
 
-        # cuando se implemente cuarentena remplazar que revice si el player_cause esta en cuarentena
-        in_quarantine = False 
+        player = Player[player_cause_id]
+        if player.player_quarentine_count > 0:
+            return False
 
-        return valid and (not in_quarantine)
+        return valid
     
 
     @db_session
@@ -216,12 +217,13 @@ class CambioDeLugar(card_template):
         is_adjacent = adjacent_players(player_cause_id, target_id)
         valid = is_adjacent[0] or is_adjacent[1]
 
-        someone_in_quarantine = False # cuando este implementada cuarentena modificar por un metodo
-                                        # que detecte si algun jugador esta en cuarentena    
+        player = Player[player_cause_id]
+        if player.player_quarentine_count > 0:
+            return False
 
         locked_door = False # cuando este implementada puerta atrancada modificar por un metodo que detecte 
                             # si hay una puerta atrancada en medio    
-        return valid and (not someone_in_quarantine) and (not locked_door) 
+        return valid and (not locked_door) 
 
     #se añade pĺayer_id para indicar el jugador que causo la jugada
     @db_session
@@ -404,3 +406,28 @@ class Aterrador(card_template):
 
       def fullfile_efect(self,target_id):
           return True
+    
+cuarentena = "No se podra intercambiar, jugar ni robar al jugador que se aplica"
+class Cuarentena(card_template):
+
+    def __init__(self):
+        super().__init__(False, cards_subtypes.OBSTACLE.value, cuarentena, "cuarentena")
+
+    @db_session
+    def valid_play(self,player_cause_id,target_id):
+        is_adjacent = adjacent_players(player_cause_id,target_id)
+        valid = is_adjacent[0] or is_adjacent[1]
+        return valid 
+    
+    @db_session
+    def aplicar_efecto(self, objective_id, player_cause_id):
+        objective_player = Player.get(player_id = objective_id)
+        objective_player.player_quarentine_count = 2
+        commit()
+        return []
+
+    def aplay_defense_effect(self,defensor_id, attacker_id):
+        return True
+
+    def fullfile_efect(self,target_id):
+        return True
