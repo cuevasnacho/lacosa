@@ -15,7 +15,7 @@ async function getHand(actualizarMano) {
           actualizarMano(responseCards.cartas);
         }, 100);
       }
-      
+      console.log(JSON.stringify(responseCards.cartas));
     } 
     catch (error) {
       alert(error);

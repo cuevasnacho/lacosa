@@ -86,6 +86,7 @@ class lanzallamas_T(card_template):
     
     @db_session
     def fullfile_efect(self,target_id):
+        """
         target = Player.get(player_id = target_id)
 
         target_hand = list(target.player_cards)
@@ -95,7 +96,7 @@ class lanzallamas_T(card_template):
             card.card_player = None
 
         commit()
-    
+        """
         return True
 
 cosa_Effect = "something"

@@ -59,7 +59,7 @@ def steal_card_not_panic(player_id):
 @db_session
 def validate_defense(id_card,defensor_id,attacker_id):
     
-    card = Card.get(card_id = id_card)
+    card = Card[id_card]
     defensor = Player.get(player_id = defensor_id)
     attacker = Player.get(player_id = attacker_id)
     if card is None:
@@ -74,8 +74,9 @@ def validate_defense(id_card,defensor_id,attacker_id):
         messeage = "El id del atacante es invalido"
         response = JSONResponse(content = messeage, status_code = 404)
         return (False,response)
-    
-    if card.card_player.player_id != defensor.player_id:
+    print(card.card_player)
+    print(defensor.player_id)
+    if card.card_player != defensor.player_id:
         messeage = "La carta no pertenece al defensor"
         response = JSONResponse(content = messeage, status_code = 406)
         return (False,response)
@@ -96,7 +97,7 @@ def validate_defense(id_card,defensor_id,attacker_id):
     return (True, card_template)
 
 @router.post("/defensa/{card_id}/{defensor_id}/{attacker_id}/{exchange_card_id}}")
-async def defend(defensor_id : int, card_id : int, attacker_id : int,exchange_card_id : int)-> response_defense:
+async def defend(card_id : int, defensor_id : int,  attacker_id : int,exchange_card_id : int)-> response_defense:
 
     is_valid = validate_defense(card_id,defensor_id,attacker_id)
 

@@ -14,7 +14,7 @@ cambio_de_lugar = CambioDeLugar()
 mas_vale_que_corras = MasValeQueCorras()
 whisky = Whisky()
 puerta_atrancada = PuertaAtrancada()
-
+"""
 Template_Diccionary = {
     "lanzallamas" : lanzallamas,
     "lacosa"     : la_cosa,
@@ -27,7 +27,13 @@ Template_Diccionary = {
     "whisky" : whisky,
     "puerta_atrancada" : puerta_atrancada
 }
+"""
 
+Template_Diccionary = {
+    "lanzallamas" : lanzallamas,
+    "lacosa"     : la_cosa,
+    "nada_de_barbacoas" : nada_de_barbacoas
+}
 
 def already_load(name):
     with db_session:

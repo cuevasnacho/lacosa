@@ -15,7 +15,7 @@ function Defensa({dataSocket, manoJugador, setManoJugador, socket})
 
     const backdrop = false;
     
-    const defensor_id = window.sessionStorage.getItem('user_id');
+    const defensor_id = parseInt(window.sessionStorage.getItem('user_id'));
 
     useEffect(() => {
         toggle();
@@ -28,14 +28,22 @@ function Defensa({dataSocket, manoJugador, setManoJugador, socket})
         if (defenseCardId === null) {
             alert("Hubo un error al obtener el id de la carta de defensa");
         }
+        try 
+        {
+            await httpRequest({
+                method: 'POST',
+                service: `defensa/${defenseCardId}/${defensor_id}/${attacker_id}/0`
+            });  
+            getHand(setManoJugador);
+            toggle();
+        } 
+        catch (error) 
+        {
+            alert(JSON.stringify(error));
+            //no_defense();
+            toggle();
+        }
 
-        await httpRequest({
-            method: 'POST',
-            service: `defensa/${defenseCardId}/${defensor_id}/${attacker_id}`
-        });
-
-        getHand(setManoJugador);
-        toggle();
     }
 
     function get_defense_card_id(defenseCardName, manoJugador) {
