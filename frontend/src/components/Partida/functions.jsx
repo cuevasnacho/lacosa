@@ -8,7 +8,6 @@ async function getHand(actualizarMano) {
       method: 'GET',
       service: `players/${idPlayer}/${idPartida}`,
     });
-    console.log(responseCards.cartas);
     actualizarMano(responseCards.cartas);
 }
 
@@ -82,7 +81,6 @@ async function playCard(carta, target, socket) {
   }
 
   const isover = response[0].end_game;
-  console.log(isover);
   const mensaje_isover = JSON.stringify({
     action : 'end_game',
     data : isover
@@ -97,7 +95,6 @@ async function playCard(carta, target, socket) {
 
 function arrangePlayers(jugadoresDesordenados) {
   const jugadores = sortPlayers(jugadoresDesordenados);
-  console.log(jugadores);
   let left,right,middle,player;
   const length = jugadores.length;
 
@@ -143,9 +140,9 @@ async function intercambiarDefensa(oponent_id, card_id) {
   const response = await httpRequest({
     method: 'GET',
     service: `intercambio/defensa/${player_id}/${oponent_id}/${card_id}`,
+    headers: { Accept: '*/*' },
   });
-  console.log(response);
-  return response.data;
+  return JSON.parse(response.data);
 }
 
 export { nextTurn, arrangePlayers, playCard, getHand, intercambiarDefensa };
