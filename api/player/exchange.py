@@ -103,8 +103,8 @@ async def exchange_defense(player_defense_id : int, attacker_id : int, attacker_
         player = Player[player_defense_id]
         attacker_card = Card[attacker_card]
         match_id = player.player_current_match_id.match_id
-    if defense[0]:
-        await iniciar_defensa(match_id,player_defense_id,defense[1],attacker_id,attacker_card.card_cardT.cardT_name)
+        if defense[0]:
+            await iniciar_defensa(match_id,player_defense_id,defense[1],attacker_id,attacker_card.card_cardT.cardT_name)
     return JSONResponse(content = {'data': defense[0]}, status_code = 200)
 
 #swap de cartas 
@@ -136,6 +136,7 @@ async def swap_cards(player_id : int, card1_id : int, oponent_id : int, card2_id
         content = "Cambio realizado"
         return JSONResponse(content = content, status_code = 200)
 
+@db_session
 async def quarentine_message(match_id,player,card,new_card):
     if player.player_quarentine_count > 0 :
         data = f"El jugador {player.player_name} intercambio {card}"
