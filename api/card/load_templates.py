@@ -18,13 +18,6 @@ puerta_atrancada = PuertaAtrancada()
 Template_Diccionary = {
     "lanzallamas" : lanzallamas,
     "lacosa"     : la_cosa,
-    "nada_de_barbacoas" : nada_de_barbacoas
-}
-
-""""
-Template_Diccionary = {
-    "lanzallamas" : lanzallamas,
-    "lacosa"     : la_cosa,
     "nada_de_barbacoas" : nada_de_barbacoas,
     "sospecha" : sospecha,
     "analisis" : analisis,
@@ -34,7 +27,7 @@ Template_Diccionary = {
     "whisky" : whisky,
     "puerta_atrancada" : puerta_atrancada
 }
-"""
+
 
 def already_load(name):
     with db_session:

@@ -69,6 +69,7 @@ function Partida () {
       switch (info.action) {
         case 'iniciar_turno':
           setStage(1);
+          getStatus();
           break;
 
         case 'forzar_jugada':
@@ -96,6 +97,7 @@ function Partida () {
         case 'fin_turno':
           setStage(0);
           nextTurn(idPartida, ws, username);
+          getStatus();
           break;
       }
     };

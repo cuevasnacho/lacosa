@@ -6,11 +6,8 @@ import CustomButton from '../Boton/CustomButton';
 
 function Defensa({dataSocket, manoJugador, setManoJugador, socket})
 {
-    console.log(dataSocket);
     const defense_card_list = dataSocket.card_to_defend;
-    console.log('Cartas para defenderse: '+ defense_card_list);
     const attacker = dataSocket.attacker_id;
-    console.log('atacante: '+ attacker);
     const attack_card_name = dataSocket.attack_card_name;
 
     const [modal, setModal] = useState(false);
@@ -24,11 +21,9 @@ function Defensa({dataSocket, manoJugador, setManoJugador, socket})
         toggle();
     }, []);
 
-    async function handle_defensa(defenseCardName, attacker_id)
+    async function handle_defensa(defenseCardName, attacker_id, manoJugador)
     {
         const defenseCardId = get_defense_card_id(defenseCardName, manoJugador);
-        console.log('defenseCardId:' + defenseCardId);
-        console.log('attacker:' + attacker_id);
         
         if (defenseCardId === null) {
             alert("Hubo un error al obtener el id de la carta de defensa");
@@ -44,13 +39,10 @@ function Defensa({dataSocket, manoJugador, setManoJugador, socket})
     }
 
     function get_defense_card_id(defenseCardName, manoJugador) {
-        for (const card of manoJugador) {
-            console.log('cardName: ' + card.cardName)
-            if (card.cardName === defenseCardName) {
-                return card.id;
-            }
-        }
+        const foundCard = manoJugador.find(card => card.cartaNombre === defenseCardName);
+        return foundCard.id;
     }
+      
 
     function no_defense() {
         const mensaje_no_defense = JSON.stringify({
@@ -62,7 +54,6 @@ function Defensa({dataSocket, manoJugador, setManoJugador, socket})
         toggle();
     }
 
-    //<CustomButton label={'Defenderse'} onClick={toggle}></CustomButton>
     return(
         <>
         <Modal isOpen={modal} toggle={toggle} backdrop={backdrop} onExit={no_defense} centered >
@@ -73,7 +64,7 @@ function Defensa({dataSocket, manoJugador, setManoJugador, socket})
                     {defense_card_list.map((card, index) => (
                         <li key={index}>
                             {card}
-                            <CustomButton onClick={() => handle_defensa(card, attacker)} label={'Usar'}/>
+                            <CustomButton onClick={() => handle_defensa(card, attacker, manoJugador)} label={'Usar'}/>
                         </li>))}
                 </ul>
             </ModalBody>
