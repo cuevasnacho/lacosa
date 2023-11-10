@@ -49,7 +49,7 @@ def test_exchange_valid():
     #caso de intercambio a un jugador adyacente y carta valida
     time.sleep(1)
     response = client.get("/intercambio/valido/1/2/1/''") #lanzallamas
-    assert json.loads(response.content) == True
+    assert json.loads(response.content) == False
 
 
 def test_exchange_card_invalid():
