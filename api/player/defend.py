@@ -8,7 +8,7 @@ from definitions import cards_subtypes
 from pydantic import BaseModel
 import json 
 from definitions import  cards_subtypes, card_position
-from api.messages import iniciar_intercambio
+from api.messages import iniciar_intercambio, fin_turno
 from api.player.steal_card import discard_to_deck
 
 router = APIRouter()
@@ -113,7 +113,7 @@ async def defend(defensor_id : int, card_id : int, attacker_id : int,exchange_ca
 
         steal_card_not_panic(defensor_id)
 
-        await iniciar_intercambio(match_id, attacker_id)
+        await fin_turno(match_id, attacker_id)
 
         return response_defense(atacker_username =attacker_name,
                                  defensor_username = defensor_name,
