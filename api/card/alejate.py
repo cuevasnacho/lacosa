@@ -18,11 +18,12 @@ def adjacent_players(player_cause_id,target_id):
          
     if cause == None or target== None:
         print("Error obteniendo a los jugadores")
+        return None
     player_counter = cause.player_lobby.lobby_pcount
     cause_position = cause.player_position
     target_position = target.player_position
     if (target.player_dead == True):
-        target_dead = True 
+        return (False,False) 
 
     left = (cause_position - 1) % player_counter 
     right = (cause_position + 1) % player_counter
@@ -35,8 +36,7 @@ def adjacent_players(player_cause_id,target_id):
         right = (right + 1) % player_counter
         player_right = Player.select (lambda p: p.player_current_match_id.match_id == match_id and p.player_position == right).first()
 
-    target_dead = True if target_dead else (right == target_position) 
-    return (left == target_position, target_dead)
+    return (left == target_position, right == target_position) 
 
 class card_template(ABC):
     def __init__(self,isPanic,alejate_type,effect,name) -> None:

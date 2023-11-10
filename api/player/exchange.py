@@ -88,9 +88,8 @@ async def exchange_valid(player_id : int, oponent_id : int, player_card_id : int
     oponent_position = adjacent_players(player_id,oponent_id) 
     is_card_valid = valid_card(player_card_id,player.player_role)
     is_oponent_valid = valid_oponent(player_id,oponent_id,player.player_role,oponent_position[0],oponent_position[1],player_card_id,motive)
-    
     if motive == "inicio_intercambio":
-        await sol_intercambio(player.player_current_match_id.match_id,player_id,player_card_id,motive,oponent_id) # falta el oponent id
+        await sol_intercambio(player.player_current_match_id.match_id,oponent_id,player_card_id,motive,player_id) # falta el oponent id
 
     exchange = is_card_valid and is_oponent_valid
     code = 200 if exchange else 401
@@ -104,8 +103,8 @@ async def exchange_defense(player_defense_id : int, attacker_id : int, attacker_
         player = Player[player_defense_id]
         attacker_card = Card[attacker_card]
         match_id = player.player_current_match_id.match_id
-        if defense[0]:
-            await iniciar_defensa(match_id,player_defense_id,defense[1],attacker_id,attacker_card.card_cardT.cardT_name)
+    if defense[0]:
+        await iniciar_defensa(match_id,player_defense_id,defense[1],attacker_id,attacker_card.card_cardT.cardT_name)
     return JSONResponse(content = {'data': defense[0]}, status_code = 200)
 
 #swap de cartas 
