@@ -53,12 +53,10 @@ def valid_oponent(player_id,oponent_id,role,oponent_at_left,oponent_at_right,car
     #carta no es seducion -> derecha o izq
     if motive != "seduccion":
         if not (oponent_at_left or oponent_at_right): #el jugador no es adyecente
-            print("entrp1")
             valid = valid and False 
 
         #caso puerta atrancada
         if ((not oponent.player_exchangeL) and oponent_at_left) or ((not oponent.player_exchangeR) and oponent_at_right):
-            print("entrp2")
             valid = valid and False    
 
     return valid
@@ -88,7 +86,6 @@ async def exchange_valid(player_id : int, oponent_id : int, player_card_id : int
             return JSONResponse(content = content, status_code = 404)
         
     oponent_position = adjacent_players(player_id,oponent_id) 
-    print(oponent_position)
     is_card_valid = valid_card(player_card_id,player.player_role)
     is_oponent_valid = valid_oponent(player_id,oponent_id,player.player_role,oponent_position[0],oponent_position[1],player_card_id,motive)
     

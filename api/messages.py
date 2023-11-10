@@ -91,7 +91,7 @@ async def iniciar_intercambio(match_id,player_id,motive,oponent_id):
     await manager_activo.send_data_to(content,match_id,player_id)
 
 async def sol_intercambio(match_id,player_id,card_id,motive,oponent_id):
-    #try:
+    try:
         content = { 'action' : 'sol_intercambio', 'data':{'card_id': card_id,'motive' : motive, 'oponent_id': oponent_id}}
         await manager_activo.send_data_to(content,match_id,player_id)
     except:
