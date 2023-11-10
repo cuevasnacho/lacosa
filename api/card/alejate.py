@@ -10,17 +10,19 @@ from abc import ABC, abstractmethod
 #chequa que el jugador sea alguno del costado
 @db_session
 def adjacent_players(player_cause_id,target_id):
+    target_dead = False
     cause = Player.get(player_id = player_cause_id)
     target = Player.get(player_id = target_id)
     match_id = cause.player_current_match_id.match_id
-    if cause == None or target== None:
-        return False
-    player_counter = cause.player_lobby.lobby_pcount
 
+         
+    if cause == None or target== None:
+        print("Error obteniendo a los jugadores")
+    player_counter = cause.player_lobby.lobby_pcount
     cause_position = cause.player_position
     target_position = target.player_position
     if (target.player_dead == True):
-        return False
+        target_dead = True 
 
     left = (cause_position - 1) % player_counter 
     right = (cause_position + 1) % player_counter
@@ -33,7 +35,8 @@ def adjacent_players(player_cause_id,target_id):
         right = (right + 1) % player_counter
         player_right = Player.select (lambda p: p.player_current_match_id.match_id == match_id and p.player_position == right).first()
 
-    return (left == target_position, right == target_position)
+    target_dead = True if target_dead else (right == target_position) 
+    return (left == target_position, target_dead)
 
 class card_template(ABC):
     def __init__(self,isPanic,alejate_type,effect,name) -> None:
@@ -372,6 +375,28 @@ class PuertaAtrancada(card_template):
             player_objective.player_exchangeL = False
             commit()
 
+          return []
+
+      def aplay_defense_effect(self,defensor_id, attacker_id):
+          return True
+
+      def fullfile_efect(self,target_id):
+          return True
+    
+aterrador = "COMPLETAR"
+class Aterrador(card_template):
+
+      def __init__(self):
+          super().__init__(False, cards_subtypes.OBSTACLE.value, aterrador, "aterrador")
+
+      #si no hay condiciones necesarias para jugar la carta, devuelve false o true
+      @db_session
+      def valid_play(self,player_cause_id,target_id):
+            pass
+
+      #se añade pĺayer_id para indicar el jugador que causo la jugada
+      @db_session
+      def aplicar_efecto(self, objective_id, player_cause_id):
           return []
 
       def aplay_defense_effect(self,defensor_id, attacker_id):
