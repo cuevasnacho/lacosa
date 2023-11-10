@@ -7,6 +7,5 @@ export async function intercambiar({carta, idJugador, socket}) {
     });
     const id_next_player = response.id_next;
 
-    const mensaje = JSON.stringify({action: 'intercambiar_carta', 
-        data: {}})
+    const mensaje = JSON.stringify({action: 'intercambiar_carta', data: {}})
 }

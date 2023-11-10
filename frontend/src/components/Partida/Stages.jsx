@@ -5,6 +5,8 @@ const Stages = {
     "jugar_carta": 3,
     "defensa": 4,
     "intercambio": 5,
+    "sol_intercambio": 6,
+    "res_intercambio": 7,
 };
 
 export default Stages;
