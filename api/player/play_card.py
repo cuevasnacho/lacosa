@@ -11,7 +11,7 @@ import json
 from typing import List
 from definitions import player_roles
 from api.match.match_websocket import manager
-from api.messages import iniciar_defensa, iniciar_intercambio,fin_turno,end_or_exchange
+from api.messages import iniciar_defensa, start_exchange_seduction,fin_turno
 from api.player.defend import discard_Card
 router = APIRouter()
 
@@ -146,6 +146,7 @@ async def play_card(player_id : int, card_id : int, oponent_id : int):
         response = apply_card_efect(card_id, oponent_id,player_id)
         valid_play = response[0]
         card_name = response[1]
+        print(card_name)
         end_game = is_end_game(card_id)
         match_id = get_match_id(player_id)
         if valid_play:
@@ -153,12 +154,17 @@ async def play_card(player_id : int, card_id : int, oponent_id : int):
                 defend_with = posible_response(card_id)
                 content = players_status_after_play_card(player_id,oponent_id,True,card_name,end_game,defend_with)
                 discard_Card(card_id)
-                await iniciar_defensa(match_id,oponent_id,defend_with,player_id,get_card_name(card_id))               
+                await iniciar_defensa(match_id,oponent_id,defend_with,player_id,get_card_name(card_id))   
+            elif card_name == ["seduccion"]:
+                discard_Card(card_id)
+                await start_exchange_seduction(match_id,player_id, oponent_id)
+                content = players_status_after_play_card(player_id,oponent_id,True,[],end_game,[])
             else:
                 content = players_status_after_play_card(player_id,oponent_id,False,card_name,end_game,[])
                 fullfile_efect(oponent_id,card_id)
                 discard_Card(card_id)
-                await end_or_exchange(match_id,player_id)
+                await fin_turno(match_id,player_id)
+
             return JSONResponse(content = content, status_code = 200)
         else:
             content = "Jugada invalida"
@@ -167,4 +173,3 @@ async def play_card(player_id : int, card_id : int, oponent_id : int):
         content = "No se cumplen las precondiciones"
         return JSONResponse(content = content, status_code = 401)
    
-
