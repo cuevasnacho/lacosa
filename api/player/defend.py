@@ -95,8 +95,8 @@ def validate_defense(id_card,defensor_id,attacker_id):
 
     return (True, card_template)
 
-@router.post("/defensa/{card_id}/{defensor_id}/{attacker_id}")
-async def defend(defensor_id : int, card_id : int, attacker_id : int):
+@router.post("/defensa/{card_id}/{defensor_id}/{attacker_id}/{exchange_card_id}}")
+async def defend(defensor_id : int, card_id : int, attacker_id : int,exchange_card_id : int)-> response_defense:
 
     is_valid = validate_defense(card_id,defensor_id,attacker_id)
 
