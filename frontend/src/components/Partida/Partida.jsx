@@ -19,10 +19,11 @@ function Partida () {
   const { idPartida } = useParams();
   const [websocket, setWebsocket] = useState(null);
   const [messages, setMessages] = useState([]);
-  const [jugadas,setJugadas]=useState([])
+  const [jugadas,setJugadas]=useState([]);
 
   const [stage, setStage] = useState(0);
   const [playerState, setPlayerState] = useState({});
+  const [isLaCosa, setIsLaCosa] = useState(false);
   const [socketData, setSocketData] = useState({});
   const [manoJugador, setManoJugador] = useState([]);   // Indica las cartas que tengo en la mano
   const [matchState, setMatchState] = useState([]); // username: string, id: int, esTurno: bool, posicion: int, eliminado: bool	
@@ -43,13 +44,18 @@ function Partida () {
   async function initializeGame() {
     getStatus();
     window.sessionStorage.setItem('match_id', idPartida);
-    getHand(setManoJugador);
+    const cards = await getHand(setManoJugador);
+    setIsLaCosa(cards.some(card => card.cartaNombre === 'lacosa'));
   }
 
   function toastStage(text) {
     toast.info(text, {
       position: toast.POSITION.TOP_LEFT,
     })
+  }
+
+  function declarar() {
+    websocket.send(JSON.stringify({action: 'end_game', data: true}))
   }
   
   useEffect (() => {
@@ -126,7 +132,7 @@ function Partida () {
       const info = JSON.parse(e.data);
       switch (info.action) {
         case 'message':
-          const message = JSON.parse(e.data).data;
+          const message = info.data;
           setMessages([...messages, message]);
           break;
           
@@ -174,7 +180,16 @@ function Partida () {
       {isOver && <Finalizar idpartida = {idPartida} idjugador={idPlayer}/>}
       <ToastContainer />
       {playerState.esTurno && (<div className={styles.tuTurno}/>)}
-      <div className={styles.detalleMesa}/>
+      <div className={styles.detalleMesa}>
+        { isLaCosa && 
+        (<button 
+          type='button' 
+          onClick={declarar}
+          className={styles.botonDeclarar}>
+            Declarar
+        </button>
+        )}
+      </div>
       <Mazo stage={stage} mano={manoJugador} actualizarMano={setManoJugador}/>
       <MazoDescarte mazoDescarteState={mazoDescarteState}/>
       <ManoJugador 
