@@ -5,6 +5,7 @@ from definitions import cards_subtypes, card_position
 from fastapi.responses import JSONResponse
 import random
 
+
 from abc import ABC, abstractmethod
 
 #chequa que el jugador sea alguno del costado
@@ -14,13 +15,13 @@ def adjacent_players(player_cause_id,target_id):
     target = Player.get(player_id = target_id)
     match_id = cause.player_current_match_id.match_id
     if cause == None or target== None:
-        return False
+        return None
     player_counter = cause.player_lobby.lobby_pcount
 
     cause_position = cause.player_position
     target_position = target.player_position
     if (target.player_dead == True):
-        return False
+        return (False,False)
 
     left = (cause_position - 1) % player_counter 
     right = (cause_position + 1) % player_counter
@@ -379,3 +380,101 @@ class PuertaAtrancada(card_template):
 
       def fullfile_efect(self,target_id):
           return True
+
+aterrador = "COMPLETAR"
+
+class Aterrador (card_template):
+
+    def __init__(self):
+        super().__init__(False, cards_subtypes.OBSTACLE.value, aterrador, "aterrador")
+
+
+    @db_session
+    def valid_play(self,player_cause_id,target_id):
+        pass
+
+    @db_session
+    def aplicar_efecto(self, objective_id, player_cause_id):
+        return []
+
+    def aplay_defense_effect(self,defensor_id, attacker_id):
+        return True
+
+    def fullfile_efect(self,target_id):
+        return True
+
+seduccion_effect = "Intercambia una carta con cualquier jugador que no este en cuarentena"
+
+class Seduccion(card_template):
+
+      def __init__(self):
+          super().__init__(False, cards_subtypes.ACTION.value, seduccion_effect, "seduccion")
+
+      @db_session
+      def valid_play(self,player_cause_id,target_id):
+            player_target = Player.get(player_id = target_id)
+            is_in_quarnt = player_target.player_quarentine_count
+            if (is_in_quarnt == 0):
+                valid = True
+            else:
+                valid = False 
+            return valid
+
+      @db_session
+      def aplicar_efecto(self, objective_id, player_cause_id):
+        get_player = Player.get(player_id = player_cause_id)
+        match_id = get_player.player_current_match_id.match_id
+        motive = "seduccion"
+        return [motive]
+
+      def aplay_defense_effect(self,defensor_id, attacker_id):
+          return True
+
+      def fullfile_efect(self,target_id):
+          return True
+
+
+hacha_effect = "retira el efecto de puerta atrancada o cuarentena"
+
+class Hacha(card_template):
+
+      def __init__(self):
+          super().__init__(False, cards_subtypes.ACTION.value, hacha_effect, "hacha")
+
+      @db_session
+      def valid_play(self,player_cause_id,target_id):
+            is_adjacent = adjacent_players(player_cause_id, target_id)
+            valid = is_adjacent[0] or is_adjacent[1]
+            is_self = player_cause_id == target_id
+            return valid
+
+      @db_session
+      def aplicar_efecto(self, objective_id, player_cause_id):
+        if objective_id == player_cause_id:
+            player_cause = Player.get(player_id=player_cause_id)
+            if (player_cause.player_quarentine_count > 0):
+                player_cause.player_quarentine_count = 0
+                commit()
+            else:
+                player_cause.player_exchangeL = True
+                player_cause. player_exchangeR = True
+                commit()
+        else:
+            player_cause = Player.get(player_id=player_cause_id)
+            player_objective = Player.get(player_id = objective_id)
+            if (player_objective.player_exchangeL or player_objective.player_exchangeR):
+                player_objective.player_quarentine_count = 0
+                commit()
+            else:
+                player_cause.player_exchangeL = True
+                player_cause. player_exchangeR = True
+                commit()
+        return []
+
+      def aplay_defense_effect(self,defensor_id, attacker_id):
+          return True
+
+      def fullfile_efect(self,target_id):
+          return True
+
+

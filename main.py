@@ -26,7 +26,7 @@ from api.match.match_websocket import router as match_websocket
 from api.lobby.leave_lobby import router as leave_lobby_router
 from api.match.end_match import router as match_result_router
 from api.player.defend import router as defend_router
-
+from api.player.exchange import router as exchange_router
 
 app = FastAPI()
 
@@ -66,4 +66,4 @@ app.include_router(match_websocket)
 app.include_router(leave_lobby_router)
 app.include_router(match_result_router)
 app.include_router(defend_router)
-
+app.include_router(exchange_router)
