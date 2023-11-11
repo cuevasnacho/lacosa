@@ -5,7 +5,6 @@ import styles from "./Jugadores.module.css";
 import puerta from "../../media/designs/puertaAtrancada.svg"
 
 function Jugadores({ jugadores,jugador }) {
-  console.log(jugadores);
   let left, middle, right;
   const length = jugadores.length;
   if (length < 4) {
