@@ -2,8 +2,10 @@
 import React from 'react';
 import Jugador from "./Jugador";
 import styles from "./Jugadores.module.css";
+import puerta from "../../media/designs/puertaAtrancada.svg"
 
-function Jugadores({ jugadores }) {
+function Jugadores({ jugadores,jugador}) {
+  console.log(jugadores);
   let left, middle, right;
   const length = jugadores.length;
   if (length < 4) {
@@ -26,9 +28,11 @@ function Jugadores({ jugadores }) {
       </div>
       <div className={styles.jugadorLeft} data-testid="left">
         <Jugador username={left.username} esTurno={left.esTurno} eliminado={left.eliminado}/>
+        {(jugador && !jugador.left )&& <img src={puerta}></img>}
       </div>
       <div className={styles.jugadorRight} data-testid="right">
         <Jugador username={right.username} esTurno={right.esTurno} eliminado={right.eliminado}/>
+        {(jugador && !jugador.right) && <img src={puerta}></img>}
       </div>
     </>
   );
