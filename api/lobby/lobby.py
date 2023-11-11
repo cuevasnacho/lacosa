@@ -27,23 +27,23 @@ class CreateLobby(BaseModel):
 @router.post("/lobbys")
 async def Crear_Lobby(new_lobby: CreateLobby):
     if len(new_lobby.lobby_name)>20:
-        message = "Nombe demasiado largo"
+        message = "Nombre demasiado largo"
         status_code = 406 # no acceptable
         return JSONResponse(content=message, status_code=status_code)
-    if len(new_lobby.lobby_password)>12:
+    if len(new_lobby.lobby_password)>20:
         message = "Contraseña demasiado larga"
         status_code = 406 # no acceptable
         return JSONResponse(content=message, status_code=status_code)
     if new_lobby.lobby_max>12:
-        message = "Maximo de players no permitido"
+        message = "Maximo de jugadores no permitido"
         status_code = 406 # no acceptable
         return JSONResponse(content=message, status_code=status_code)
     if new_lobby.lobby_min<4: #DECISION DE DISEÑO
-        message = "Minimo de players no permitido"
+        message = "Minimo de jugadores no permitido"
         status_code = 406 # no acceptable
         return JSONResponse(content=message, status_code=status_code)
     if new_lobby.lobby_min > new_lobby.lobby_max:
-        message = "Minimo y maximo de players no permitido"
+        message = "Minimo y maximo de jugadores no permitido"
         status_code = 406 # no acceptable
         return JSONResponse(content=message, status_code=status_code)
     try:

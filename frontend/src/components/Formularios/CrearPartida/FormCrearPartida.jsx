@@ -14,19 +14,19 @@ function FormCrearPartida() {
   } = useForm();
   
   const onSubmit = async (data) => {
-    let algonuevo = {
+    let lobby_info = {
       lobby_name: data.lobby_name,
       lobby_min: parseInt(data.lobby_min),
       lobby_max: parseInt(data.lobby_max),
+      lobby_password: data.lobby_password,
       player_id: HOST_ID
     }
-
     try 
     {      
       const response = await httpRequest({
         method: 'POST',
         service: 'lobbys/',
-        payload: algonuevo
+        payload: lobby_info
       });
 
       window.sessionStorage.setItem('Host', true);
