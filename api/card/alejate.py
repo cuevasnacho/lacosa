@@ -42,7 +42,7 @@ class card_template(ABC):
         self.effect = effect
         self.name = name
     @abstractmethod
-    def valid_play(player_cause_id,target_id): #si no hya condiciones necesarias para jugar la carta, devuelve false o true
+    def valid_play(player_cause_id,target_id): #si no hay condiciones necesarias para jugar la carta, devuelve false o true
         pass
 
     @abstractmethod
@@ -275,7 +275,7 @@ class VigilaTusEspaldas(card_template):
 masValeQueCorras_effect = "Cámbiate de sitio físicamente con cualquier jugador que no esté bajo los efectos de “Cuarentena”"
 
 class MasValeQueCorras(card_template):
-defensor
+
     def __init__(self):
         super().__init__(False,cards_subtypes.ACTION.value,masValeQueCorras_effect,"mas_vale_que_corras")
 
@@ -292,12 +292,12 @@ defensor
     #se añade pĺayer_id para indicar el jugador que causo la jugada
     @db_session
     def aplicar_efecto(self,objective_id,player_cause_id):
-        targetdefensor= Player.get(player_id = player_cause_id)
+        target = Player.get(player_id = player_cause_id)
 
         target_old_pos = target.player_position
         target.player_position = cause.player_position
         cause.player_position = target_old_pos
-        commitdefensor()
+        commit()
 
         return []
 
@@ -313,7 +313,7 @@ class Whisky(card_template):
 
       def __init__(self):
           super().__init__(False, cards_subtypes.ACTION.value, whisky_effect, "whisky")
-defensor
+
       #si no hay condiciones necesarias para jugar la carta, devuelve false o true
       @db_session
       def valid_play(self,player_cause_id,target_id):
@@ -335,11 +335,10 @@ defensor
       def fullfile_efect(self,target_id):
           return True
 
+
 puertaAtrancada_effect = "No se podra intercambiar, jugar ni robar al jugador que se aplica"
 
-
 class PuertaAtrancada(card_template):
-
       def __init__(self):
           super().__init__(False, cards_subtypes.OBSTACLE.value, puertaAtrancada_effect, "puerta_atrancada")
 
@@ -399,7 +398,7 @@ class Aterrador(card_template):
 
         atacante = Player.get(player_id = attacker_id)
 
-        return True 
+        return True
 
     def fullfile_efect(self, target_id):
         return True
