@@ -40,7 +40,7 @@ function Defensa({dataSocket, manoJugador, setManoJugador, socket})
         catch (error) 
         {
             alert(JSON.stringify(error));
-            //no_defense();
+            no_defense();
             toggle();
         }
 
@@ -57,14 +57,15 @@ function Defensa({dataSocket, manoJugador, setManoJugador, socket})
             action: 'no_defense', 
             data: {defensor_id: defensor_id, 
                     attack_card_name: attack_card_name}});
-                    
+        
         socket.send(mensaje_no_defense);
-        toggle();
+        alert("No defense");
+        //toggle();
     }
 
     return(
         <>
-        <Modal isOpen={modal} toggle={toggle} backdrop={backdrop} onExit={no_defense} centered >
+        <Modal isOpen={modal} toggle={toggle} backdrop={backdrop}  centered >
             <ModalHeader toggle={toggle}> Defensa</ModalHeader>
             <ModalBody>
                 Has sido atacado con {attack_card_name}, te podés defender con:

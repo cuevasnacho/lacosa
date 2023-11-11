@@ -97,7 +97,9 @@ function Partida () {
         case 'fin_turno':
           setStage(0);
           nextTurn(idPartida, ws, username);
-          getStatus();
+          setTimeout(() => {
+            getStatus();
+          }, 100);
           break;
       }
     };
@@ -154,7 +156,7 @@ function Partida () {
   return (
     <div className={styles.container}>
       {isOver && <Finalizar idpartida = {idPartida} idjugador={idPlayer}/>}
-      <ToastContainer />
+      <ToastContainer limit={5}/>
       {stage == 4 && <Defensa 
         dataSocket={defenseData} 
         manoJugador={manoJugador}

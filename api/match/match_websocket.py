@@ -19,6 +19,7 @@ async def follow_game(match_id):
     content = { 'action' : 'fin_turno', 'data':{}}
     match = Match[match_id]
     player_id = match.match_currentP
+    print("Entre a follow game")
     await manager_activo.send_data_to(content,match_id,player_id)
 
 @db_session
