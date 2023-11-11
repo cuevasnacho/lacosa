@@ -6,6 +6,7 @@ import React, { useEffect } from 'react';
 import JugadoresLobby from '../Lobby/JugadoresLobby.jsx';
 import Chat from '../Chat/Chat.jsx';
 import BotonAbandonar from '../AbandonarPartida/BotonAbandonar.jsx';
+import { ToastContainer, toast } from 'react-toastify';
 
 function Lobby() {
   const esHost = JSON.parse(window.sessionStorage.getItem('Host'));
@@ -33,7 +34,7 @@ function Lobby() {
 
     }
     else {
-      alert("La cantidad de jugadores no es la permitida");
+      toast.error('La cantidad de jugadores no es la permitida', {theme: 'colored'});
     }
   }
 
@@ -58,12 +59,11 @@ function Lobby() {
           break;
 
           case 'start_match':
-            console.log(info.data);
             window.location = `/partida/${info.data}`;
             break;
 
           case 'host_left':
-            alert('El host ha abandonado la partida');
+            toast('El host ha abandonado la partida.', )
             window.location = '/home';
             break;
 
@@ -82,8 +82,9 @@ function Lobby() {
     return () => ws.close();
   }, [messages]);
 
-      return(
+    return(
     <>
+    <ToastContainer limit={2}/>
       <div className={styles.container}>
         <div className={styles.jugadores}>
           <h1>La partida comenzara pronto</h1>   
