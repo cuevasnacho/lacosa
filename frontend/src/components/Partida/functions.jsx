@@ -9,6 +9,8 @@ async function getHand(actualizarMano) {
       service: `players/${idPlayer}/${idPartida}`,
     });
     actualizarMano(responseCards.cartas);
+
+    return responseCards.cartas;
 }
 
 function sortPlayers(jugadores) {
