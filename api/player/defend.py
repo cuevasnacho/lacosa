@@ -74,9 +74,9 @@ def validate_defense(id_card,defensor_id,attacker_id):
         messeage = "El id del atacante es invalido"
         response = JSONResponse(content = messeage, status_code = 404)
         return (False,response)
-    print(card.card_player)
+    print(card.card_player.player_id)
     print(defensor.player_id)
-    if card.card_player != defensor.player_id:
+    if card.card_player.player_id != defensor.player_id:
         messeage = "La carta no pertenece al defensor"
         response = JSONResponse(content = messeage, status_code = 406)
         return (False,response)
@@ -86,7 +86,7 @@ def validate_defense(id_card,defensor_id,attacker_id):
         response = JSONResponse(content = messeage, status_code = 406)
         return (False,response)
     
-    if card.card_cardT.cardT_cardT_subtype != cards_subtypes.DEFENSE.value:
+    if card.card_cardT.cardT_subtype != cards_subtypes.DEFENSE.value:
         messeage = "La carta indicada no es de defensa"
         response = JSONResponse(content = messeage, status_code = 406)
         return (False,response)
@@ -104,21 +104,23 @@ async def defend(card_id : int, defensor_id : int,  attacker_id : int,exchange_c
     if(is_valid[0]):
         card_to_use = is_valid[1]
         card_to_use.aplay_defense_effect(defensor_id, attacker_id,0)
+        with db_session :
+            card_name = (Card.get(card_id = card_id)).card_cardT.cardT_name
+            defensor_name = (Player.get(player_id = defensor_id)).player_name
+            attacker_name = (Player.get(player_id = attacker_id)).player_name
+            match_id = (Player.get(player_id = attacker_id)).player_current_match_id.match_id
+            
+        response = response_defense(atacker_username =attacker_name,
+                                 defensor_username = defensor_name,
+                                 card_name = card_name)  
 
-        card_name = (Card.get(card_id = card_id)).card_cardT.card_name
-        defensor_name = (Player.get(player_id = defensor_id)).player_name
-        attacker_name = (Player.get(player_id = attacker_id)).player_name
-        match_id = (Player.get(player_id = attacker_id)).player_current_match_id.match_id
-        
         discard_Card(card_id)
 
         steal_card_not_panic(defensor_id)
 
         await fin_turno(match_id, attacker_id)
 
-        return response_defense(atacker_username =attacker_name,
-                                 defensor_username = defensor_name,
-                                 card_name = card_name)    
+        return response
     else :
         return is_valid[1]
 
