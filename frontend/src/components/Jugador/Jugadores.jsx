@@ -17,8 +17,15 @@ function Jugadores({ jugadores }) {
     right = jugadores[length-2];
   }
 
+  const username = jugadores[length - 1] ? jugadores[length - 1].username : 'defaultUsername';
+
   return (
     <>
+      <div className={styles.nombre}>
+        <p>
+          {username}
+        </p>
+      </div>
       <div className={styles.jugadoresContainer} data-testid="middle">
         {middle.map((jugador, index) => (
           <Jugador key={index} username={jugador.username} esTurno={jugador.esTurno} eliminado={jugador.eliminado}/>
