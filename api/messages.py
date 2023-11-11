@@ -1,7 +1,7 @@
 from api.match.match_websocket import manager_activo
 from db.database import Player, Match
 from pony.orm import db_session
-from utilsfunctions import can_exchange, get_next_player_id
+from api.utilsfunctions import can_exchange, get_next_player_id
 
 
 
@@ -42,9 +42,9 @@ async def elegir_jugada(match_id,player_id):
     content = {'action' : 'elegir_jugada', 'data':{}} #forma de return para las cartas
     await manager_activo.send_data_to(content,match_id,player_id)
 
-async def iniciar_defensa(match_id,player_id,card_name,attacker_id,attack_card_name):
+async def iniciar_defensa(match_id,player_id,card_name,attacker_id,attack_card_name,motive):
     try:
-        data = {'card_to_defend' :card_name, 'attacker_id' : attacker_id, 'attack_card_name' : attack_card_name}
+        data = {'card_to_defend' :card_name, 'attacker_id' : attacker_id, 'attack_card_name' : attack_card_name,'motive': motive}
         content = { 'action' : 'iniciar_defensa', 'data' :data }
         await manager_activo.send_data_to(content,match_id,player_id)
     except:

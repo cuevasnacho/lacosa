@@ -6,7 +6,7 @@ from pony.orm import db_session
 from db.database import Match,Player
 from api.websocket import ConnectionManager
 from api.player.finalize_action import fullfile_action
-from utilsfunctions import can_exchange, get_next_player_id
+from api.utilsfunctions import can_exchange, get_next_player_id
 
 
 router = APIRouter()
@@ -16,12 +16,15 @@ manager = ConnectionManager()
 manager_activo = ConnectionManager()
 show_cards_to_all = ['whisky']
 
+@db_session
 async def follow_game(match_id):
+
     match = Match[match_id]
     player_id = match.match_currentP    
     motive = "inicio_intercambio"
     next_player_id = get_next_player_id(player_id, match_id)
     if can_exchange(next_player_id,match_id):
+        print("estoy por enviar un mensaje")
         content = { 'action' : 'iniciar_intercambio', 'data':{'motive' : motive, 'oponent_id': next_player_id}}
         await manager_activo.send_data_to(content,match_id,player_id)
     else:

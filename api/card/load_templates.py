@@ -17,7 +17,7 @@ puerta_atrancada = PuertaAtrancada()
 aterrador = Aterrador()
 hacha = Hacha()
 seduccion = Seduccion()
-
+"""
 Template_Diccionary = {
     "lanzallamas" : lanzallamas,
     "lacosa"     : la_cosa,
@@ -40,7 +40,6 @@ Template_Diccionary = {
     "lacosa"     : la_cosa,
     "nada_de_barbacoas" : nada_de_barbacoas
 }
-"""
 
 def already_load(name):
     with db_session:
