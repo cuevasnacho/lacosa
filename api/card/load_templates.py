@@ -33,8 +33,8 @@ Template_Diccionary = {
     "hacha" : hacha,
     "seduccion" : seduccion
 }
-"""
 
+"""
 Template_Diccionary = {
     "lanzallamas" : lanzallamas,
     "lacosa"     : la_cosa,

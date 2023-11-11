@@ -11,7 +11,13 @@ function Defensa({dataSocket, manoJugador, setManoJugador, socket})
     const attack_card_name = dataSocket.attack_card_name;
 
     const [modal, setModal] = useState(false);
-    const toggle = () => setModal(!modal);
+    const [closedByButton, setClosedByButton] = useState(false);
+
+    function toggle () 
+    {
+        setClosedByButton(false);
+        setModal(!modal);
+    }
 
     const backdrop = false;
     
@@ -59,13 +65,17 @@ function Defensa({dataSocket, manoJugador, setManoJugador, socket})
                     attack_card_name: attack_card_name}});
         
         socket.send(mensaje_no_defense);
-        alert("No defense");
-        //toggle();
     }
+
+    useEffect(() => {
+        if (!modal && closedByButton) {
+          no_defense();
+        }
+    }, [modal, closedByButton]);
 
     return(
         <>
-        <Modal isOpen={modal} toggle={toggle} backdrop={backdrop}  centered >
+        <Modal isOpen={modal} toggle={toggle} backdrop={backdrop} onClosed={no_defense} centered >
             <ModalHeader toggle={toggle}> Defensa</ModalHeader>
             <ModalBody>
                 Has sido atacado con {attack_card_name}, te podés defender con:
@@ -77,9 +87,6 @@ function Defensa({dataSocket, manoJugador, setManoJugador, socket})
                         </li>))}
                 </ul>
             </ModalBody>
-            <ModalFooter>
-                <CustomButton label={'No Defenderse'} onClick={no_defense}/>
-            </ModalFooter>
         </Modal></>
     );
 }
