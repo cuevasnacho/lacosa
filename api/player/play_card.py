@@ -11,13 +11,13 @@ import json
 from typing import List
 from definitions import player_roles
 from api.match.match_websocket import manager
-from api.messages import iniciar_defensa, start_exchange_seduction,fin_turno
+from api.messages import iniciar_defensa, start_exchange_seduction,fin_turno, end_or_exchange
 from api.player.defend import discard_Card
 router = APIRouter()
 
 
 @db_session
-def check_pre_conditions(id_player,id_card):
+def check_pre_conditions(id_player,id_card):    
     #jugador tiene la carta
     get_card = Card.get(card_id = id_card)
     player_has_card = get_card.card_player.player_id == id_player
@@ -146,7 +146,6 @@ async def play_card(player_id : int, card_id : int, oponent_id : int):
         response = apply_card_efect(card_id, oponent_id,player_id)
         valid_play = response[0]
         card_name = response[1]
-        print(card_name)
         end_game = is_end_game(card_id)
         match_id = get_match_id(player_id)
         if valid_play:
@@ -163,7 +162,7 @@ async def play_card(player_id : int, card_id : int, oponent_id : int):
                 content = players_status_after_play_card(player_id,oponent_id,False,card_name,end_game,[])
                 fullfile_efect(oponent_id,card_id)
                 discard_Card(card_id)
-                await fin_turno(match_id,player_id)
+                await end_or_exchange(match_id,player_id)
 
             return JSONResponse(content = content, status_code = 200)
         else:

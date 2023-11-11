@@ -15,13 +15,13 @@ def adjacent_players(player_cause_id,target_id):
     target = Player.get(player_id = target_id)
     match_id = cause.player_current_match_id.match_id
     if cause == None or target== None:
-        return False
+        return None
     player_counter = cause.player_lobby.lobby_pcount
 
     cause_position = cause.player_position
     target_position = target.player_position
     if (target.player_dead == True):
-        return False
+        return (False,False)
 
     left = (cause_position - 1) % player_counter 
     right = (cause_position + 1) % player_counter
@@ -380,6 +380,28 @@ class PuertaAtrancada(card_template):
 
       def fullfile_efect(self,target_id):
           return True
+
+aterrador = "COMPLETAR"
+
+class Aterrador (card_template):
+
+    def __init__(self):
+        super().__init__(False, cards_subtypes.OBSTACLE.value, aterrador, "aterrador")
+
+
+    @db_session
+    def valid_play(self,player_cause_id,target_id):
+        pass
+
+    @db_session
+    def aplicar_efecto(self, objective_id, player_cause_id):
+        return []
+
+    def aplay_defense_effect(self,defensor_id, attacker_id):
+        return True
+
+    def fullfile_efect(self,target_id):
+        return True
 
 seduccion_effect = "Intercambia una carta con cualquier jugador que no este en cuarentena"
 
