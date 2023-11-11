@@ -6,7 +6,7 @@ import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap
 import { playCard, getHand } from '../Partida/functions.jsx';
 import styles from './JugarCarta.module.css';
 
-function JugarCarta({carta, socket, jugadores, actualizar, mano, stage, actstage}) {
+function JugarCarta({carta, socket, jugadores, actualizar, mano, stage, actstage, data}) {
   const [dropdownm, setDropdown] = useState(false);
 
   function abrirCerrarMenu() {
@@ -37,7 +37,7 @@ function JugarCarta({carta, socket, jugadores, actualizar, mano, stage, actstage
     const player_id = JSON.parse(window.sessionStorage.getItem('user_id'));
     const response = await httpRequest({
       method: 'GET',
-      service: `intercambio/valido/${player_id}/${oponent_id}/${carta.id}/inicio_intercambio`,
+      service: `intercambio/valido/${player_id}/${oponent_id}/${carta.id}/${data.motive}`,
       headers: {Accept: '*/*',}
     });
     console.log(response);
