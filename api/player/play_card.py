@@ -172,24 +172,3 @@ async def play_card(player_id : int, card_id : int, oponent_id : int):
     else: 
         content = "No se cumplen las precondiciones"
         return JSONResponse(content = content, status_code = 401)
-   
-
-
-@router.put("/carta/panico/{player_id}/{card_id}/{oponent_id}")
-async def play_panic(player_id : int, card_id : int):
-    if check_pre_conditions(player_id, card_id):
-        response = apply_card_effect(card_id,oponent_id, player_id)
-        valid_play = response[0]
-        card_name = response[1]
-        if valid_play:
-            discard_Card(card_id)
-            message = "Okeey"
-            status_code = 200 # no acceptable
-            return JSONResponse(content=message, status_code=status_code)
-        else:
-            content = "Jugada invalida"
-            return JSONResponse(content = content, status_code = 401)
-
-    else:
-        content = "No se cumplen las precondiciones"
-        return JSONResponse(content = content, status_code = 401)
