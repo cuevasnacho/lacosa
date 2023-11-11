@@ -3,7 +3,7 @@ from api.player.player import get_jugador
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 from fastapi.responses import JSONResponse
 from pony.orm import db_session
-from db.database import Match
+from db.database import Match,Player
 from api.websocket import ConnectionManager
 from api.player.finalize_action import fullfile_action
 
@@ -13,6 +13,13 @@ manager = ConnectionManager()
 
 manager_activo = ConnectionManager()
 show_cards_to_all = ['whisky']
+
+@db_session
+async def follow_game(match_id):
+    content = { 'action' : 'fin_turno', 'data':{}}
+    match = Match[match_id]
+    player_id = match.match_currentP
+    await manager_activo.send_data_to(content,match_id,player_id)
 
 @db_session
 async def first_player(match_id):
@@ -60,6 +67,7 @@ async def match_websocket(websocket : WebSocket,match_id : int, player_id : int)
             elif ws['action'] == 'no_defense':
                 #data ={defensor_id, attack_card_name}
                 fullfile_action(ws['data']['defensor_id'], ws['data']['attack_card_name'])
+                await follow_game(match_id)
                 # ver si es nescesario enviar un mensaje
             
             elif ws['action'] == 'end_game':
