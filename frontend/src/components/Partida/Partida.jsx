@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { httpRequest } from '../../services/HttpService.js';
-import { arrangePlayers, nextTurn, getHand } from './functions.jsx';
+import { arrangePlayers, nextTurn, getHand, intercambiarDefensa } from './functions.jsx';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import styles from './Partida.module.css';
@@ -23,6 +23,7 @@ function Partida () {
 
   const [stage, setStage] = useState(0);
   const [playerState, setPlayerState] = useState({});
+  const [socketData, setSocketData] = useState({});
   const [manoJugador, setManoJugador] = useState([]);   // Indica las cartas que tengo en la mano
   const [matchState, setMatchState] = useState([]); // username: string, id: int, esTurno: bool, posicion: int, eliminado: bool	
   const [mazoDescarteState, setMazoDescarteState] = useState(2);  // Dice que carta se va a mostrar en el mazo de descarte
@@ -45,6 +46,11 @@ function Partida () {
     getHand(setManoJugador);
   }
 
+  function toastStage(text) {
+    toast.info(text, {
+      position: toast.POSITION.TOP_LEFT,
+    })
+  }
   
   useEffect (() => {
     const url_pasivo = `ws://localhost:8000/ws/match/pasivo/${idPartida}/${idPlayer}`;
@@ -63,34 +69,53 @@ function Partida () {
     // recieve message every start page
     ws_activo.onmessage = (e) => {
       const info = JSON.parse(e.data);
-      console.log(info.action);
       switch (info.action) {
         case 'iniciar_turno':
+          toastStage(info.action);
           setStage(1);
           break;
 
         case 'forzar_jugada':
+          toastStage(info.action);
           setStage(2);
           break;
 
         case 'elegir_jugada':
+          toastStage(info.action);
           setStage(3);
           break;
 
         case 'iniciar_defensa':
-          /* Como respuesta nos viene en data
-          una lista con las posibles cartas a usar*/
+          toastStage(info.action);
           setStage(4);
           break;
 
         case 'iniciar_intercambio':
+          toastStage(info.action);
+          setSocketData(info.data);
           setStage(5);
           break;
 
         case 'sol_intercambio':
+          toastStage(info.action);
+          setSocketData(info.data);
+          const oponent_id = parseInt(info.data.oponent_id);
+          const card_id = parseInt(info.data.card_id);
+          setStage(6);
+
+          intercambiarDefensa(oponent_id, card_id)
+            .then(canDefend => {
+              if (canDefend) {
+                // proceso de defensa
+              }
+              else {
+                setStage(7);
+              }
+            });
           break;
         
         case 'fin_turno':
+          toastStage(info.action);
           setStage(0);
           nextTurn(idPartida, ws, username);
           break;
@@ -107,7 +132,6 @@ function Partida () {
           
         case 'end_game':
           const respuesta = info.data;
-          console.log(respuesta);
           setIsOver(respuesta);
           break;
 
@@ -155,7 +179,9 @@ function Partida () {
       <MazoDescarte mazoDescarteState={mazoDescarteState}/>
       <ManoJugador 
         cartas={manoJugador} 
-        stage={stage} 
+        stage={stage}
+        actstage={setStage}
+        data={socketData}
         actualizar={setManoJugador} 
         socket={websocket} 
         jugadores={matchState}/>

@@ -4,7 +4,6 @@ import Jugador from "./Jugador";
 import styles from "./Jugadores.module.css";
 
 function Jugadores({ jugadores }) {
-  console.log(jugadores);
   let left, middle, right;
   const length = jugadores.length;
   if (length < 4) {
