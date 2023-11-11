@@ -1,9 +1,7 @@
 from api.match.match_websocket import manager_activo
-from db.database import Player
+from db.database import Player, Match
+from pony.orm import db_session
 
-
-def genrate_posible_play(player_id):
-    return True
 
 
 
