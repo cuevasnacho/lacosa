@@ -41,11 +41,11 @@ function UnirsePartida() {
                     <table>
                         <thead>
                             <tr>
-                                <th></th>
-                                <th>Nombre de Partida</th>
-                                <th>Host</th>
-                                <th>CantJug</th>
-                                <th></th>
+                                <th className="columna-publica"></th>
+                                <th className="columna-nombre-lobby">Nombre de Partida</th>
+                                <th className="columna-nombre-host">Host</th>
+                                <th className="columna-cantidad">CantJug</th>
+                                <th className="columna-unirse-lobby"></th>
                             </tr>
                         </thead>
                         <tbody> 
@@ -53,7 +53,10 @@ function UnirsePartida() {
                                 <TablaFila 
                                     key={index} elem={elem}
                                 ></TablaFila>)):
-                            (<tr><td colSpan="3">No hay partidas disponibles</td></tr>)
+                            (<tr>
+                                <td colSpan={4}/>
+                                <td>No hay partidas disponibles</td>
+                            </tr>)
                             }
                         </tbody>
                     </table> 
