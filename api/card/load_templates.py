@@ -15,6 +15,8 @@ mas_vale_que_corras = MasValeQueCorras()
 whisky = Whisky()
 puerta_atrancada = PuertaAtrancada()
 aterrador = Aterrador()
+hacha = Hacha()
+seduccion = Seduccion()
 
 Template_Diccionary = {
     "lanzallamas" : lanzallamas,
@@ -27,7 +29,9 @@ Template_Diccionary = {
     "mas_vale_que_corras" : mas_vale_que_corras,
     "whisky" : whisky,
     "puerta_atrancada" : puerta_atrancada,
-    "aterrador" : aterrador
+    "aterrador" : aterrador,
+    "hacha" : hacha,
+    "seduccion" : seduccion
 }
 
 def already_load(name):
