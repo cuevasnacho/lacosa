@@ -6,6 +6,8 @@ from pony.orm import db_session
 from db.database import Match,Player
 from api.websocket import ConnectionManager
 from api.player.finalize_action import fullfile_action
+from utilsfunctions import can_exchange, get_next_player_id
+
 
 router = APIRouter()
 
@@ -14,19 +16,24 @@ manager = ConnectionManager()
 manager_activo = ConnectionManager()
 show_cards_to_all = ['whisky']
 
-@db_session
 async def follow_game(match_id):
-    content = { 'action' : 'fin_turno', 'data':{}}
     match = Match[match_id]
-    player_id = match.match_currentP
-    print("Entre a follow game")
-    await manager_activo.send_data_to(content,match_id,player_id)
+    player_id = match.match_currentP    
+    motive = "inicio_intercambio"
+    next_player_id = get_next_player_id(player_id, match_id)
+    if can_exchange(next_player_id,match_id):
+        content = { 'action' : 'iniciar_intercambio', 'data':{'motive' : motive, 'oponent_id': next_player_id}}
+        await manager_activo.send_data_to(content,match_id,player_id)
+    else:
+        content = { 'action' : 'fin_turno', 'data':{}}
+        await manager_activo.send_data_to(content,match_id,player_id)
 
 @db_session
-async def first_player(match_id):
+async def first_player(match_id,connection_id):
     player_id = (Match.get(match_id = match_id)).match_currentP
-    content = {'action' : 'iniciar_turno','data' : {}}
-    await manager_activo.send_data_to(content, match_id, player_id)
+    if player_id == connection_id:
+        content = {'action' : 'iniciar_turno','data' : {}}
+        await manager_activo.send_data_to(content, match_id, player_id)
 
 @router.websocket("/ws/match/pasivo/{match_id}/{player_id}")
 async def match_websocket(websocket : WebSocket,match_id : int, player_id : int):  
@@ -66,7 +73,7 @@ async def match_websocket(websocket : WebSocket,match_id : int, player_id : int)
                 content_broadcast = {'action': 'play_defense', 'data': ws['data']}
                 await manager.broadcast(content_broadcast,match_id)
             elif ws['action'] == 'no_defense':
-                #data ={defensor_id, attack_card_name}
+                #data ={defensor_id, attack_card_name, defense_from_exchange}
                 fullfile_action(ws['data']['defensor_id'], ws['data']['attack_card_name'])
                 await follow_game(match_id)
                 # ver si es nescesario enviar un mensaje
@@ -88,7 +95,7 @@ async def match_websocket(websocket : WebSocket,match_id : int, player_id : int)
 async def match_websocket(websocket : WebSocket,match_id : int, player_id : int):  
     await manager_activo.connect(websocket,match_id,player_id)
     try:
-        await first_player(match_id)
+        await first_player(match_id,player_id)
         while True:
              ws = await websocket.receive_json()
 
