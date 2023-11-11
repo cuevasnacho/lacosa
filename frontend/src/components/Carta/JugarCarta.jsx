@@ -33,11 +33,11 @@ function JugarCarta({carta, socket, jugadores, actualizar, mano, stage, actstage
     }
   }
 
-  async function intercambiar(oponent_id) {
+  async function intercambiar() {
     const player_id = JSON.parse(window.sessionStorage.getItem('user_id'));
     const response = await httpRequest({
       method: 'GET',
-      service: `intercambio/valido/${player_id}/${oponent_id}/${carta.id}/${data.motive}`,
+      service: `intercambio/valido/${player_id}/${data.oponent_id}/${carta.id}/${data.motive}`,
       headers: {Accept: '*/*',}
     });
     console.log(response);
@@ -67,20 +67,9 @@ function JugarCarta({carta, socket, jugadores, actualizar, mano, stage, actstage
         </Dropdown>
       )}
       {(stage == 5) && (
-        <Dropdown isOpen={dropdownm} toggle={abrirCerrarMenu} direction="up">
-          <DropdownToggle caret>
-            Intercambiar
-          </DropdownToggle>
-          <DropdownMenu dark>
-            {jugadores.map((jugador, index) => (
-              <DropdownItem
-                key={index}
-                onClick={() => intercambiar(jugador.id)}>
-                {jugador.username}
-              </DropdownItem>
-            ))}
-          </DropdownMenu>
-        </Dropdown>
+        <button type='button' className={styles.botones} onClick={() => intercambiar()}>
+          Intercambiar
+        </button>
       )}
     </div>
     </>
