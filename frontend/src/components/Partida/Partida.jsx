@@ -119,6 +119,10 @@ function Partida () {
           setStage(0);
           nextTurn(idPartida, ws, username);
           break;
+
+        case 'cuarentena':
+          toastStage(info.data);
+          break;
       }
     };
     

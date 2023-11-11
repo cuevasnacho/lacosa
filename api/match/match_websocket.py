@@ -80,9 +80,7 @@ async def match_websocket(websocket : WebSocket,match_id : int, player_id : int)
 async def match_websocket(websocket : WebSocket,match_id : int, player_id : int):  
     await manager_activo.connect(websocket,match_id,player_id)
     try:
-        print("antes de enviar el mensaje")
         await first_player(match_id)
-        print("despues de enviar el mensaje")
         while True:
              ws = await websocket.receive_json()
 

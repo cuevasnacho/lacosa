@@ -57,6 +57,11 @@ async def discard_card(player_id : int, id_card : int):
             commit()
 
             player = Player[player_id]
+
+            if player.player_quarentine_count > 0:
+                player.player_quarentine_count = player.player_quarentine_count - 1
+                commit()
+                
             if player.player_quarentine_count > 0:
                 data = f"El jugador {player.player_name} descarto {card_to_update.card_cardT.cardT_name}"
                 await message_quarentine(player.player_current_match_id.match_id,data)

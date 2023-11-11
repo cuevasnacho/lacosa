@@ -60,10 +60,6 @@ async def next_player(id_match : int): #id del player que esta jugando ahora
                 next_player_obj = db_player.get(lambda next: next.player_position == next_player_pos and next.player_current_match_id.match_id  == id_match)
             next_player_id = next_player_obj.player_id
             fetch_match.match_currentP = next_player_id
-                
-        if next_player_obj.player_quarentine_count > 0:
-            next_player_obj.player_quarentine_count =- 1
-            commit()
-            
+                            
     await start_next_turn(id_match,next_player_id)
     return JSONResponse(content={"next_player" : next_player_id}, status_code=200)

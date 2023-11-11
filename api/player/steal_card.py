@@ -107,6 +107,7 @@ async def steal_card(player_id : int)-> carta_robada:
                                   id = card.card_id, 
                                   tipo = card.card_cardT.cardT_type)
 
+            
             if player.player_quarentine_count > 0:
                 data = f"El jugador {player.player_name} robo {card.card_cardT.cardT_name}"
                 await message_quarentine(match.match_id,data)
