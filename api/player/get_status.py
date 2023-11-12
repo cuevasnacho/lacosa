@@ -64,9 +64,10 @@ def generate_status_response(match_id,id_player):
                                    esTurno = (player_turn == player.player_id),
                                    posicion= player.player_position,
                                    eliminado = player.player_dead,
-                                    puerta_izq = player.player_exchangeL,
+                                   puerta_izq = player.player_exchangeL,
                                    puerta_der = player.player_exchangeR,
-                                   cuarentena = player.player_quarentine_count > 0)
+                                   cuarentena = player.player_quarentine_count > 0,
+                                   infected = player.player_role == player_roles.INFECTED.value)
             
         players_data.append(response)
     
