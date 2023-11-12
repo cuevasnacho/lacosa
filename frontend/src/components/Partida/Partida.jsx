@@ -198,7 +198,8 @@ function Partida () {
         manoJugador={manoJugador}
         setStage={setStage}
         setManoJugador={setManoJugador}
-        socket={websocket.current}/>}
+        socket={websocket.current}
+        setJugadas={setJugadas}/>}
       {playerState.esTurno && (<div className={styles.tuTurno}/>)}
       <div className={styles.detalleMesa}>
         { isLaCosa && 

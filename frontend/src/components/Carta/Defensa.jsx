@@ -4,7 +4,7 @@ import { httpRequest } from '../../services/HttpService';
 import { getHand } from '../Partida/functions';
 import CustomButton from '../Boton/CustomButton';
 
-function Defensa({dataSocket, manoJugador, setManoJugador, socket, setStage})
+function Defensa({dataSocket, manoJugador, setManoJugador, socket, setStage, setJugadas})
 {
     const motive = dataSocket.motive;
     const is_defense = motive === 'defensa';
@@ -44,6 +44,11 @@ function Defensa({dataSocket, manoJugador, setManoJugador, socket, setStage})
                 service: `defensa/${defenseCardId}/${defensor_id}/${attacker_id}/${attacker_card_id}`
             });  
             getHand(setManoJugador);
+            
+            const username = window.sessionStorage.getItem('username');
+            const msg = `${username} se defendió con ${defenseCardName}`;
+            setJugadas((prevJugadas) => [...prevJugadas, {msj: msg}])
+            
             toggle();
         } 
         catch (error) 
