@@ -18,7 +18,7 @@ aterrador = Aterrador()
 cuarentena = Cuarentena()
 hacha = Hacha()
 seduccion = Seduccion()
-
+"""
 Template_Diccionary = {
     "lanzallamas" : lanzallamas,
     "lacosa"     : la_cosa,
@@ -34,6 +34,13 @@ Template_Diccionary = {
     "cuarentena" : cuarentena,
     "hacha" : hacha,
     "seduccion" : seduccion
+}
+
+"""
+Template_Diccionary = {
+    "lanzallamas" : lanzallamas,
+    "lacosa"     : la_cosa,
+    "nada_de_barbacoas" : nada_de_barbacoas
 }
 
 def already_load(name):

@@ -12,6 +12,7 @@ import MazoDescarte from '../Mazo/MazoDescarte.jsx';
 import Chat from '../Chat/Chat.jsx';
 import Finalizar from '../FinalizarPartida/Finalizar.jsx';
 import LogPartida from '../LogPartida/LogPartida.jsx';
+import Defensa from '../Carta/Defensa.jsx';
 
 function Partida () {
   const idPlayer = JSON.parse(sessionStorage.getItem('user_id'));
@@ -29,6 +30,7 @@ function Partida () {
   const [matchState, setMatchState] = useState([]); // username: string, id: int, esTurno: bool, posicion: int, eliminado: bool	
   const [mazoDescarteState, setMazoDescarteState] = useState(2);  // Dice que carta se va a mostrar en el mazo de descarte
   const [isOver, setIsOver] = useState(false);
+  const [defenseData, setDefenseData] = useState(null);
 
   async function getStatus() {
     const responseStatus = await httpRequest({
@@ -81,6 +83,7 @@ function Partida () {
         case 'iniciar_turno':
           toastStage(info.action);
           setStage(1);
+          getStatus();
           break;
 
         case 'forzar_jugada':
@@ -96,6 +99,7 @@ function Partida () {
         case 'iniciar_defensa':
           toastStage(info.action);
           setStage(4);
+          setDefenseData(info.data);
           break;
 
         case 'iniciar_intercambio':
@@ -126,6 +130,9 @@ function Partida () {
           toastStage(info.action);
           setStage(0);
           nextTurn(idPartida, ws, username);
+          setTimeout(() => {
+            getStatus();
+          }, 100);
           break;
 
         case 'cuarentena':
@@ -192,10 +199,17 @@ function Partida () {
     return () => {ws.close(); ws_activo.close();}
   }, [messages,mazoDescarteState]);
 
+
   return (
     <div className={styles.container}>
       {isOver && <Finalizar idpartida = {idPartida} idjugador={idPlayer}/>}
-      <ToastContainer />
+      <ToastContainer limit={5}/>
+      {stage == 4 && <Defensa 
+        dataSocket={defenseData} 
+        manoJugador={manoJugador}
+        stage={stage} 
+        setManoJugador={setManoJugador}
+        socket={websocket}/>}
       {playerState.esTurno && (<div className={styles.tuTurno}/>)}
       <div className={styles.detalleMesa}>
         { isLaCosa && 

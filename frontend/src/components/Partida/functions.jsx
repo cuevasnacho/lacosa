@@ -3,14 +3,23 @@ import { httpRequest } from "../../services/HttpService";
 async function getHand(actualizarMano) {
     const idPartida = JSON.parse(window.sessionStorage.getItem('match_id'));
     const idPlayer = JSON.parse(window.sessionStorage.getItem('user_id'));
-
-    const responseCards = await httpRequest({
-      method: 'GET',
-      service: `players/${idPlayer}/${idPartida}`,
-    });
-    actualizarMano(responseCards.cartas);
-
-    return responseCards.cartas;
+   
+    try {
+      const responseCards = await httpRequest({
+        method: 'GET',
+        service: `players/${idPlayer}/${idPartida}`,
+      });
+      
+      if (responseCards.cartas ) {
+        setTimeout(() => {
+          actualizarMano(responseCards.cartas);
+        }, 100);
+      }
+    } 
+    catch (error) {
+      alert(error);
+    }
+    
 }
 
 function sortPlayers(jugadores) {

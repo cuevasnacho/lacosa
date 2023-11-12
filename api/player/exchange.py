@@ -115,7 +115,7 @@ async def exchange_defense(player_defense_id : int, attacker_id : int, attacker_
         attacker_card = Card[attacker_card]
         match_id = player.player_current_match_id.match_id
         if defense[0]:
-            await iniciar_defensa(match_id,player_defense_id,defense[1],attacker_id,attacker_card.card_cardT.cardT_name)
+            await iniciar_defensa(match_id,player_defense_id,defense[1],attacker_id,attacker_card.card_cardT.cardT_name,"intercambio")
     return JSONResponse(content = {'data': defense[0]}, status_code = 200)
 
 #swap de cartas 
