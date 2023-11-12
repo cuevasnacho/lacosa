@@ -4,7 +4,6 @@ from db.database import Player,Card,Match
 from definitions import cards_subtypes, card_position
 from fastapi.responses import JSONResponse
 import random
-from api.player.defend import steal_card_not_panic
 from abc import ABC, abstractmethod
 
 #chequa que el jugador sea alguno del costado
@@ -68,17 +67,17 @@ def get_card_not_panic(match_id):
         return deck_cards
 
 @db_session
-def exchange_card_not_panic(player_id):
+def exchange_card_not_panic(player_id,card_id):
     player = Player.get(player_id = player_id)
     match = player.player_current_match_id
+    selected_card = Card.get(card_id = card_id)
+
     card = get_card_not_panic(match.match_id)
-    if not card:
-        content = "No hay cartas asociadas a la partida"
-        return JSONResponse(content = content, status_code = 404)
 
     card.card_location = card_position.PLAYER.value
+    selected_card.card_location = card_position.DECK.value
+
     card.card_player = player
-    match.match_cardsCount -= 1
     commit()
 
 
@@ -599,7 +598,7 @@ class   CitaACiegas(card_template):
 
     @db_session
     def aplicar_efecto(self, objective_id, player_cause_id,card_id):
-        steal_card_not_panic(player_id)
+        steal_card_not_panic(player_id,card_id)
         return []
 
     @db_session

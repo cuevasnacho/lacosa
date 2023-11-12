@@ -36,7 +36,6 @@ Template_Diccionary = {
     "cuarentena" : cuarentena,
     "hacha" : hacha,
     "seduccion" : seduccion,
-    
     "cita_a_ciegas" : cita_a_ciegas
 }
 
