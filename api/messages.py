@@ -62,23 +62,23 @@ async def sol_intercambio(match_id,player_id,card_id,motive,oponent_id):
         print("Error en sol_intercambio")
         
 async def fin_turno(match_id,player_id):
-    try:
-        content = { 'action' : 'fin_turno', 'data':{}}
-        await manager_activo.send_data_to(content,match_id,player_id)
-    except:
-        print("Error en fin_turno")
+    #try:
+    content = { 'action' : 'fin_turno', 'data':{}}
+    await manager_activo.send_data_to(content,match_id,player_id)
+# except:
+    #     print("Error en fin_turno")
 
 
 async def show_cards_all(match_id,player_id,cards_to_show):
-    try:
-        content = {'action': 'show_cards', 'data': cards_to_show}
-        await manager.broadcast(content,match_id,player_id)
-    except:
-        print("Error en show_cards")
+    #try:
+    content = {'action': 'show_cards', 'data': cards_to_show}
+    await manager.broadcast(content,match_id,player_id)
+    # except:
+    #     print("Error en show_cards")
 
 async def show_cards_one(match_id,player_id,cards_to_show):
-    try:
-        content = {'action': 'show_cards', 'data': cards_to_show}
-        await manager.send_data_to(content,match_id,player_id)
-    except:
-        print("Error en show_cards")
+    #try:
+    content = {'action': 'show_cards', 'data': cards_to_show}
+    await manager.send_data_to(content,match_id,player_id)
+    # except:
+    #     print("Error en show_cards")

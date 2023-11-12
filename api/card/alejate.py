@@ -4,9 +4,6 @@ from db.database import Player,Card,Match
 from definitions import cards_subtypes, card_position
 from fastapi.responses import JSONResponse
 import random
-from messages import fin_turno,show_cards_one
-
-
 from abc import ABC, abstractmethod
 
 #chequa que el jugador sea alguno del costado
@@ -36,6 +33,22 @@ def adjacent_players(player_cause_id,target_id):
         player_right = Player.select (lambda p: p.player_current_match_id.match_id == match_id and p.player_position == right).first()
 
     return (left == target_position, right == target_position)
+
+@db_session
+def swap_doors(player_id_1,player_id_2):
+    p1 = Player[player_id_1]
+    p2 = Player[player_id_2]
+
+    aux_left = p1.player_exchangeL
+    aux_rigth = p1.player_exchangeR
+    
+    p1.player_exchangeL = p2.player_exchangeL
+    p1.player_exchangeR = p2.player_exchangeR
+    
+    p2.player_exchangeL = aux_left
+    p2.player_exchangeR = aux_rigth
+
+    commit()
 
 class card_template(ABC):
     def __init__(self,isPanic,alejate_type,effect,name) -> None:
@@ -79,8 +92,19 @@ class lanzallamas_T(card_template):
 
     @db_session
     def aplicar_efecto(self,objective_id,player_cause_id):
-        objective_player = Player.get(player_id = objective_id)
+        
+        objective_player = Player[objective_id]
+        cause_player = Player[player_cause_id]
+        
+        side = adjacent_players(player_cause_id,objective_id)
+        
+        if side[0]:
+            cause_player.player_exchangeL = objective_player.player_exchangeL 
+        elif side[1]:
+            cause_player.player_exchangeR = objective_player.player_exchangeR
+
         objective_player.player_dead = True
+
         commit()
         return []
         
@@ -137,8 +161,18 @@ class NadaDeBarbacoa(card_template):
 
     @db_session
     def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
-        objective_player = Player.get(player_id = defensor_id)
+        attacker = Player[attacker_id]
+        objective_player = Player[defensor_id]
+        
+        side = adjacent_players(attacker_id,defensor_id)
+        
+        if side[0]:
+            attacker.player_exchangeL = True 
+        elif side[1]:
+            attacker.player_exchangeR = True
+        
         objective_player.player_dead = False
+
         commit()
         return True
     
@@ -225,15 +259,18 @@ class CambioDeLugar(card_template):
         return valid and (not locked_door) 
 
     #se añade pĺayer_id para indicar el jugador que causo la jugada
-    @db_session
+    
     def aplicar_efecto(self,objective_id,player_cause_id): 
-        target = Player.get(player_id = objective_id)        
-        cause = Player.get(player_id = player_cause_id)
+        with db_session:    
+            target = Player.get(player_id = objective_id)        
+            cause = Player.get(player_id = player_cause_id)
 
-        target_old_pos = target.player_position
-        target.player_position = cause.player_position
-        cause.player_position = target_old_pos
-        commit()
+            target_old_pos = target.player_position
+            target.player_position = cause.player_position
+            cause.player_position = target_old_pos
+            commit()
+
+        swap_doors(objective_id,player_cause_id)
 
         return []
 
@@ -296,13 +333,16 @@ class MasValeQueCorras(card_template):
     #se añade pĺayer_id para indicar el jugador que causo la jugada
     @db_session
     def aplicar_efecto(self,objective_id,player_cause_id): 
-        target = Player.get(player_id = objective_id)        
-        cause = Player.get(player_id = player_cause_id)
+        with db_session:
+            target = Player.get(player_id = objective_id)        
+            cause = Player.get(player_id = player_cause_id)
 
-        target_old_pos = target.player_position
-        target.player_position = cause.player_position
-        cause.player_position = target_old_pos
-        commit()
+            target_old_pos = target.player_position
+            target.player_position = cause.player_position
+            cause.player_position = target_old_pos
+            commit()
+
+        swap_doors(objective_id,player_cause_id)
 
         return []
     
@@ -401,16 +441,10 @@ class Aterrador (card_template):
         return []
 
     @db_session
-    async def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
-        player = Player[defensor_id]
-        match_id = player.player_current_match_id
-        card = Card[card_id]
-        card_name = [card.card_cardT.cardT_name]
+    def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
+
+        return ["aterrador"]
         
-        await show_cards_one(match_id,defensor_id,card_name)
-
-        await fin_turno(match_id,attacker_id)
-
     def fullfile_efect(self,target_id):
         return True
 
@@ -532,10 +566,8 @@ class NoGracias(card_template):
 
     @db_session
     async def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
-        player = Player[defensor_id]
-        match_id = player.player_current_match_id
         
-        await fin_turno(match_id,attacker_id)
+        return ["no_gracias"]
 
     def fullfile_efect(self,target_id):
         return True

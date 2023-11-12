@@ -8,7 +8,7 @@ from definitions import cards_subtypes
 from pydantic import BaseModel
 import json 
 from definitions import  cards_subtypes, card_position
-from api.messages import iniciar_intercambio, fin_turno,end_or_exchange
+from api.messages import fin_turno,end_or_exchange, show_cards_one
 from api.player.steal_card import discard_to_deck
 
 router = APIRouter()
@@ -65,6 +65,28 @@ def steal_card_not_panic(player_id):
     card.card_player = player
     match.match_cardsCount -= 1
     commit()
+
+@db_session 
+async def aplay_effect(defensor_id, attacker_id,exchange_card_id,card_name):
+
+    if card_name == ["aterrador"]:
+        print("me defendi con aterrador")
+        
+        player = Player[defensor_id]
+        match_id = player.player_current_match_id
+        #card = Card[exchange_card_id]
+        #card_name = [card.card_cardT.cardT_name]
+        #await show_cards_one(match_id,defensor_id,card_name)
+        await fin_turno(match_id,attacker_id)
+    elif card_name == ["no_gracias"]:
+        print("me defendi con no gracia")
+        player = Player[defensor_id]
+        match_id = player.player_current_match_id
+
+        await fin_turno(match_id,attacker_id)
+
+    elif card_name == ["fallaste"]:
+        pass  
 
 @db_session
 def validate_defense(id_card,defensor_id,attacker_id):
@@ -123,16 +145,20 @@ async def defend(card_id : int, defensor_id : int,  attacker_id : int,exchange_c
                                  defensor_username = defensor_name,
                                  card_name = card_name)  
         
-        await card_to_use.aplay_defense_effect(defensor_id, attacker_id,exchange_card_id)
+        card_name  = card_to_use.aplay_defense_effect(defensor_id, attacker_id,exchange_card_id)
         
-        is_exchange = is_exchange(card_id)
+        defend_from_exchange = is_exchange(card_id)
+
+        if(defend_from_exchange):
+            await aplay_effect(defensor_id, attacker_id,exchange_card_id,card_name)
+        else : 
+            await end_or_exchange(match_id, attacker_id)
+
 
         discard_Card(card_id)
 
         steal_card_not_panic(defensor_id)
 
-        if(not is_exchange):
-            await end_or_exchange(match_id, attacker_id)
 
         return response
     else :

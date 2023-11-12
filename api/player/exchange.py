@@ -60,7 +60,7 @@ def valid_oponent(player_id,oponent_id,role,oponent_at_left,oponent_at_right,car
                 valid = valid and False 
     
     #carta no es seducion -> derecha o izq
-    if motive != "seduccion":
+    if motive != "seduccion" and motive != "seduccion_response":
         if not (oponent_at_left or oponent_at_right): #el jugador no es adyecente
             valid = valid and False 
 
@@ -98,8 +98,10 @@ async def exchange_valid(player_id : int, oponent_id : int, player_card_id : int
     is_card_valid = valid_card(player_card_id,player.player_role)
     is_oponent_valid = valid_oponent(player_id,oponent_id,player.player_role,oponent_position[0],oponent_position[1],player_card_id,motive)
     if motive == "inicio_intercambio":
+        motive = "response"
         await sol_intercambio(player.player_current_match_id.match_id,oponent_id,player_card_id,motive,player_id) # falta el oponent id
     if motive == "seduccion":
+        motive = "seduccion_response"
         await sol_intercambio(player.player_current_match_id.match_id,oponent_id,player_card_id,motive,player_id)
 
     exchange = is_card_valid and is_oponent_valid
