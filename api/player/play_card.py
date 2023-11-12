@@ -28,6 +28,17 @@ def check_pre_conditions(id_player,id_card):
     return (player_has_card and is_player_turn)
     
 @db_session
+def check_pre_conditions_panic(id_player,id_card):    
+    #jugador tiene la carta
+    get_card = Card.get(card_id = id_card)
+    player_has_card = get_card.card_player.player_id == id_player
+    #es el turno del jugador
+    get_player = Player.get(player_id = id_player)
+    get_match = Match.get(match_id = get_player.player_current_match_id.match_id)
+    is_player_turn = get_match.match_currentP == id_player
+    is_panic = get_card.card_cardT.cardT_type == True 
+    return (player_has_card and is_player_turn and is_panic)
+@db_session
 def can_player_defend_himself(id_player,id_card):
     #chequear que {id_player} tenga una carta de defensa que contrareste a {id_card} 
     card = Card.get(card_id = id_card)
@@ -176,7 +187,7 @@ async def play_card(player_id : int, card_id : int, oponent_id : int):
 
 @router.put("/carta/panico/{player_id}/{card_id}/{oponent_id}")
 async def play_panic(player_id : int, card_id : int):
-    if check_pre_conditions(player_id, card_id):
+    if check_pre_conditions_panic(player_id, card_id):
         response = apply_card_efect(card_id,oponent_id, player_id)
         valid_play = response[0]
         card_name = response[1]
