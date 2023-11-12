@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { httpRequest } from '../../services/HttpService.js';
 import { arrangePlayers, nextTurn, getHand, intercambiarDefensa } from './functions.jsx';
-import { ToastContainer, toast } from 'react-toastify';
+import { Flip, ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import styles from './Partida.module.css';
 import ManoJugador from '../ManoJugador/ManoJugador.jsx';
@@ -54,8 +54,8 @@ function Partida () {
   }
 
   function toastStage(text) {
-    toast.info(text, {
-      position: toast.POSITION.TOP_LEFT,
+    toast(text, {
+      position: toast.POSITION.TOP_LEFT, theme: 'dark'
     })
   }
 
@@ -110,9 +110,6 @@ function Partida () {
           setJugadas((prevJugadas) => [...prevJugadas, {msj: mensaje_cartas}]);
           break;
 
-        case 'notify_defense':
-          toast(`Podes defenderte de ${info.data.atacante_username} con ${info.data.card_defense_name}`);
-          break;
       }
     };
 
@@ -128,7 +125,7 @@ function Partida () {
       const info = JSON.parse(e.data);
       switch (info.action) {
         case 'iniciar_turno':
-          toastStage(info.action);
+          toastStage('Es tu turno!');
           setStage(1);
           getStatus();
           break;
@@ -139,26 +136,26 @@ function Partida () {
           break;
 
         case 'elegir_jugada':
-          toastStage(info.action);
+          toastStage('Jugá o descartá una carta');
           setStage(3);
           break;
 
         case 'iniciar_defensa':
-          toastStage(info.action);
+          toastStage('Podés defenderte');
           setStage(4);
           setDefenseData(info.data);
           getStatus();
           break;
 
         case 'iniciar_intercambio':
-          toastStage(info.action);
+          toastStage('Intercambiá una carta');
           setSocketData(info.data);
           setStage(5);
           getStatus();
           break;
 
         case 'sol_intercambio':
-          toastStage(info.action);
+          toastStage('Intercambiá una carta');
           setSocketData(info.data);
           const oponent_id = parseInt(info.data.oponent_id);
           const card_id = parseInt(info.data.card_id);
@@ -177,13 +174,13 @@ function Partida () {
           break;
         
         case 'fin_turno':
-          toastStage(info.action);
+          toastStage('Finalizo tu turno');
           setStage(0);
           nextTurn(idPartida, websocket.current, username);
           break;
 
         case 'cuarentena':
-          toastStage(info.data);
+          toastStage('Estás en cuarentena');
           break;
       }
     };
@@ -195,7 +192,7 @@ function Partida () {
   return (
     <div className={styles.container}>
       {isOver && <Finalizar idpartida = {idPartida} idjugador={idPlayer}/>}
-      <ToastContainer limit={5}/>
+      <ToastContainer limit={5} pauseOnFocusLoss={false} hideProgressBar autoClose={3000} pauseOnHover={false} transition={Flip}/>
       {stage == 4 && <Defensa 
         dataSocket={defenseData} 
         manoJugador={manoJugador}
