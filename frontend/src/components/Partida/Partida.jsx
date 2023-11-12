@@ -196,7 +196,7 @@ function Partida () {
       {stage == 4 && <Defensa 
         dataSocket={defenseData} 
         manoJugador={manoJugador}
-        stage={stage} 
+        setStage={setStage}
         setManoJugador={setManoJugador}
         socket={websocket.current}/>}
       {playerState.esTurno && (<div className={styles.tuTurno}/>)}

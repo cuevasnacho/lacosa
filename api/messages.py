@@ -42,9 +42,10 @@ async def elegir_jugada(match_id,player_id):
     content = {'action' : 'elegir_jugada', 'data':{}} #forma de return para las cartas
     await manager_activo.send_data_to(content,match_id,player_id)
 
-async def iniciar_defensa(match_id,player_id,card_name,attacker_id,attack_card_name,motive):
+async def iniciar_defensa(match_id,player_id,card_name,attacker_id,attack_card_name, attack_card_id, motive):
     try:
-        data = {'card_to_defend' :card_name, 'attacker_id' : attacker_id, 'attack_card_name' : attack_card_name,'motive': motive}
+        data = {'card_to_defend' :card_name, 'attacker_id' : attacker_id, 'attack_card_name' : attack_card_name,'motive': motive,
+                'attack_card_id': attack_card_id}
         content = { 'action' : 'iniciar_defensa', 'data' :data }
         await manager_activo.send_data_to(content,match_id,player_id)
     except:

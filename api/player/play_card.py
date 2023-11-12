@@ -153,7 +153,7 @@ async def play_card(player_id : int, card_id : int, oponent_id : int):
                 defend_with = posible_response(card_id)
                 content = players_status_after_play_card(player_id,oponent_id,True,card_name,end_game,defend_with)
                 discard_Card(card_id)
-                await iniciar_defensa(match_id,oponent_id,defend_with,player_id,get_card_name(card_id),"defensa")   
+                await iniciar_defensa(match_id,oponent_id,defend_with,player_id,get_card_name(card_id), card_id, "defensa")   
             elif card_name == ["seduccion"]:
                 discard_Card(card_id)
                 await start_exchange_seduction(match_id,player_id, oponent_id)

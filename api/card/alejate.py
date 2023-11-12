@@ -526,20 +526,22 @@ class Hacha(card_template):
             if (player_cause.player_quarentine_count > 0):
                 player_cause.player_quarentine_count = 0
                 commit()
-            else:
-                player_cause.player_exchangeL = True
-                player_cause. player_exchangeR = True
-                commit()
         else:
             player_cause = Player.get(player_id=player_cause_id)
             player_objective = Player.get(player_id = objective_id)
-            if (player_objective.player_exchangeL or player_objective.player_exchangeR):
+            if (player_objective.player_quarentine_count > 0):
                 player_objective.player_quarentine_count = 0
                 commit()
             else:
-                player_cause.player_exchangeL = True
-                player_cause. player_exchangeR = True
-                commit()
+                is_adyacent = adjacent_players(player_cause_id, objective_id)
+                if is_adyacent[0]:
+                    player_objective.player_exchangeL = True
+                    player_cause. player_exchangeR = True
+                    commit()
+                elif is_adyacent[1]:
+                    player_objective.player_exchangeR = True
+                    player_cause. player_exchangeL = True
+                    commit()
         return []
 
       def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
@@ -565,7 +567,7 @@ class NoGracias(card_template):
         return []
 
     @db_session
-    async def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
+    def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
 
         return ["no_gracias"]
 

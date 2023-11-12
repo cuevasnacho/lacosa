@@ -68,15 +68,14 @@ def steal_card_not_panic(player_id):
 
 @db_session 
 async def aplay_effect(defensor_id, attacker_id,exchange_card_id,card_name):
-
     if card_name == ["aterrador"]:
         print("me defendi con aterrador")
 
         player = Player[defensor_id]
         match_id = player.player_current_match_id
-        #card = Card[exchange_card_id]
-        #card_name = [card.card_cardT.cardT_name]
-        #await show_cards_one(match_id,defensor_id,card_name)
+        card = Card[exchange_card_id]
+        card_name = [card.card_cardT.cardT_name]
+        await show_cards_one(match_id,defensor_id,card_name)
         await fin_turno(match_id,attacker_id)
     elif card_name == ["no_gracias"]:
         print("me defendi con no gracia")
@@ -134,7 +133,6 @@ async def defend(card_id : int, defensor_id : int,  attacker_id : int,exchange_c
 
     if(is_valid[0]):
         card_to_use = is_valid[1]
-        card_to_use.aplay_defense_effect(defensor_id, attacker_id,0)
         with db_session :
             card_name = (Card.get(card_id = card_id)).card_cardT.cardT_name
             defensor_name = (Player.get(player_id = defensor_id)).player_name
@@ -149,15 +147,15 @@ async def defend(card_id : int, defensor_id : int,  attacker_id : int,exchange_c
 
 
         defend_from_exchange = is_exchange(card_id)
-
+        print("defend.py", defend_from_exchange)
         if(defend_from_exchange):
             await aplay_effect(defensor_id, attacker_id,exchange_card_id,card_name)
         else : 
             await end_or_exchange(match_id, attacker_id)
             
-        discard_Card(card_id)
+        #discard_Card(card_id)
 
-        steal_card_not_panic(defensor_id)
+        #steal_card_not_panic(defensor_id)
 
         await end_or_exchange(match_id, attacker_id)
 

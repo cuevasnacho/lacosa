@@ -36,8 +36,8 @@ def can_exchange(player_id, match_id):
     match = Match[match_id]
 
     if match.match_direction: # ronda va hacia la derecha
-        locked_door = not (player.player_exchangeL)
-    else: # ronda va hacia la izquierda
         locked_door = not (player.player_exchangeR)
+    else: # ronda va hacia la izquierda
+        locked_door = not (player.player_exchangeL)
 
     return not locked_door
