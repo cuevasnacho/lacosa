@@ -40,6 +40,7 @@ function Partida () {
     const jugadores = arrangePlayers(status.jugadores);
     setMatchState(jugadores);
     setPlayerState(status.jugador);
+    getHand(setManoJugador);
   }
 
   async function initializeGame() {
