@@ -60,7 +60,7 @@ def valid_oponent(player_id,oponent_id,role,oponent_at_left,oponent_at_right,car
                 valid = valid and False 
     
     #carta no es seducion -> derecha o izq
-    if motive != "seduccion" and motive != "seduccion_response":
+    if motive != "seduccion" and motive != "seduccion_response" and motive != "fallaste":
         if not (oponent_at_left or oponent_at_right): #el jugador no es adyecente
             valid = valid and False 
 
