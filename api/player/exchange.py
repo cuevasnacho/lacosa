@@ -10,6 +10,15 @@ from api.messages import message_quarentine,fin_turno,iniciar_defensa,sol_interc
 router = APIRouter()
 
 #POSIBLE ERROR ES QUE NO ESTEN CON LOS MISMOS NOMBRES
+
+@db_session
+async def quarentine_message(match_id,player,card,new_card):
+    if player.player_quarentine_count > 0 :
+        data = f"El jugador {player.player_name} intercambio {card}"
+        await message_quarentine(match_id,data)
+        data = f"El jugador {player.player_name} recibio {new_card}"
+        await message_quarentine(match_id,data)
+        
 @db_session
 def valid_card(card_id,role):
     if role == player_roles.THE_THING.value:
@@ -138,10 +147,3 @@ async def swap_cards(player_id : int, card1_id : int, oponent_id : int, card2_id
         content = "Cambio realizado"
         return JSONResponse(content = content, status_code = 200)
 
-@db_session
-async def quarentine_message(match_id,player,card,new_card):
-    if player.player_quarentine_count > 0 :
-        data = f"El jugador {player.player_name} intercambio {card}"
-        await message_quarentine(match_id,data)
-        data = f"El jugador {player.player_name} recibio {new_card}"
-        await message_quarentine(match_id,data)

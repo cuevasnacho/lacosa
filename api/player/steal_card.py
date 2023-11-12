@@ -5,6 +5,7 @@ from db.database import Match, Player, Card
 from pony.orm import db_session, commit ,select, ObjectNotFound
 from definitions import match_status , card_position
 from api.messages import forzar_jugada, elegir_jugada
+from api.messages import message_quarentine
 
 router = APIRouter()
 
@@ -105,6 +106,11 @@ async def steal_card(player_id : int)-> carta_robada:
             content = carta_robada(cartaNombre = card.card_cardT.cardT_name,
                                   id = card.card_id, 
                                   tipo = card.card_cardT.cardT_type)
+
+            
+            if player.player_quarentine_count > 0:
+                data = f"El jugador {player.player_name} robo {card.card_cardT.cardT_name}"
+                await message_quarentine(match.match_id,data)
 
             if (card.card_cardT.cardT_type):
                 await forzar_jugada(match.match_id, player_id, card.card_id)

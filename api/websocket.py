@@ -14,7 +14,6 @@ class ConnectionManager:
         self.active_connections[id].remove((player_id,websocket))
 
     async def send_data_to(self, data, id, player_id):
-        print(id in self.active_connections)
         if id in self.active_connections:
             for connection in self.active_connections[id]:
                 print(connection[0])

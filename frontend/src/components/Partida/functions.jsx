@@ -13,6 +13,7 @@ async function getHand(actualizarMano) {
       if (responseCards.cartas ) {
         setTimeout(() => {
           actualizarMano(responseCards.cartas);
+          return responseCards.cartas;
         }, 100);
       }
     } 
