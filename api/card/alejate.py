@@ -4,6 +4,7 @@ from db.database import Player,Card,Match
 from definitions import cards_subtypes, card_position
 from fastapi.responses import JSONResponse
 import random
+from api.player.defend import steal_card_not_panic
 from abc import ABC, abstractmethod
 
 #chequa que el jugador sea alguno del costado
@@ -550,24 +551,30 @@ class Hacha(card_template):
 
 no_gracias = "niegate a un ofrecimiento de intercambio de cartas"
 
-class NoGracias(card_template):
+
+
+
+cita_a_ciegas = "niegate a un ofrecimiento de intercambio de cartas"
+
+class   CitaACiegas(card_template):
 
     def __init__(self):
-        super().__init__(False, cards_subtypes.DEFENSE.value, no_gracias, "no_gracias")
+        super().__init__(True,None, cita_a_ciegas, "cita_a_ciegas")
 
 
     @db_session
     def valid_play(self,player_cause_id,target_id):
-        return False
+        return True
 
     @db_session
     def aplicar_efecto(self, objective_id, player_cause_id):
+        steal_card_not_panic(player_id)
         return []
 
     @db_session
     async def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
         
-        return ["no_gracias"]
+        return True
 
     def fullfile_efect(self,target_id):
         return True

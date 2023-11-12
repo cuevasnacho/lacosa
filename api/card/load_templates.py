@@ -18,7 +18,8 @@ aterrador = Aterrador()
 cuarentena = Cuarentena()
 hacha = Hacha()
 seduccion = Seduccion()
-no_gracias = NoGracias()
+
+cita_a_ciegas = CitaACiegas()
 
 Template_Diccionary = {
     "lanzallamas" : lanzallamas,
@@ -35,7 +36,8 @@ Template_Diccionary = {
     "cuarentena" : cuarentena,
     "hacha" : hacha,
     "seduccion" : seduccion,
-    "no_gracias" : no_gracias
+    
+    "cita_a_ciegas" : cita_a_ciegas
 }
 
 """
