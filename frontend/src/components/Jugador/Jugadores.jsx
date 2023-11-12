@@ -4,8 +4,7 @@ import Jugador from "./Jugador";
 import styles from "./Jugadores.module.css";
 import puerta from "../../media/designs/puertaAtrancada.svg"
 
-function Jugadores({ jugadores,jugador}) {
-  console.log(jugadores);
+function Jugadores({ jugadores,jugador }) {
   let left, middle, right;
   const length = jugadores.length;
   if (length < 4) {
@@ -27,12 +26,12 @@ function Jugadores({ jugadores,jugador}) {
         ))}
       </div>
       <div className={styles.jugadorLeft} data-testid="left">
-        <Jugador username={left.username} esTurno={left.esTurno} eliminado={left.eliminado}/>
-        {(jugador && !jugador.left )&& <img src={puerta}></img>}
+        <Jugador cuarentena={left.cuarentena } username={left.username} esTurno={left.esTurno} eliminado={left.eliminado}/>
+        {(jugador && !jugador.puerta_izq) && <img className={styles.puertaLeft} src={puerta}></img>}
       </div>
       <div className={styles.jugadorRight} data-testid="right">
-        <Jugador username={right.username} esTurno={right.esTurno} eliminado={right.eliminado}/>
-        {(jugador && !jugador.right) && <img src={puerta}></img>}
+        {(jugador && !jugador.puerta_der) && <img className={styles.puertaRight} src={puerta}></img>}
+        <Jugador cuarentena={right.cuarentena } username={right.username} esTurno={right.esTurno} eliminado={right.eliminado}/>
       </div>
     </>
   );
