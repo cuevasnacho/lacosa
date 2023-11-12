@@ -19,8 +19,8 @@ function Partida () {
   const { idPartida } = useParams();
   const [websocket, setWebsocket] = useState(null);
   const [messages, setMessages] = useState([]);
-  const [jugadas,setJugadas]=useState([]);
-
+  const [jugadas,setJugadas]=useState([])
+  const [jugador,setJugador] = useState({})
   const [stage, setStage] = useState(0);
   const [playerState, setPlayerState] = useState({});
   const [isLaCosa, setIsLaCosa] = useState(false);
@@ -36,6 +36,8 @@ function Partida () {
       service: `partida/status/${idPartida}/${idPlayer}`,
     });
     const status = responseStatus;
+    setJugador(status.jugador)
+    console.log({status})
     const jugadores = arrangePlayers(status.jugadores);
     setMatchState(jugadores);
     setPlayerState(status.jugador);
@@ -125,6 +127,10 @@ function Partida () {
           setStage(0);
           nextTurn(idPartida, ws, username);
           break;
+
+        case 'cuarentena':
+          toastStage(info.data);
+          break;
       }
     };
     
@@ -146,8 +152,19 @@ function Partida () {
           setMazoDescarteState(tipo_carta_descartada);
           getStatus();
           toast(`${info.data.player} jugó la carta ${info.data.card} sobre ${info.data.target}`, {theme: 'dark'});
-          jugada = {msj:`${info.data.player} jugó la carta ${info.data.card} sobre ${info.data.target}`};
-          receiveJugada(jugada);
+          jugada = {msj:`${info.data.player} jugó la carta ${info.data.card} sobre ${info.data.target}`}
+          receiveJugada(jugada)
+          let jugadores2=[
+            {id:5,right:false,left:true},
+            {id:6,right:true,left:false},
+            {id:7,right:true,left:true},
+            {id:8,right:true,left:true}
+          ]
+          for (let i = 0; i < jugadores2.length; i++) {
+            if(jugadores2[i].id === idPlayer){
+              setJugador(jugadores2[i])
+            }
+          }
           break;
 
         case 'next_turn':
@@ -173,7 +190,7 @@ function Partida () {
    
     // clean up function when we close page
     return () => {ws.close(); ws_activo.close();}
-  }, [messages]);
+  }, [messages,mazoDescarteState]);
 
   return (
     <div className={styles.container}>
@@ -200,7 +217,7 @@ function Partida () {
         actualizar={setManoJugador} 
         socket={websocket} 
         jugadores={matchState}/>
-      <Jugadores jugadores={matchState}/>
+      <Jugadores jugadores={matchState} jugador={jugador}/>
       <Chat ws={websocket} messages={messages}/>
       <LogPartida messages={jugadas}></LogPartida>
     </div>

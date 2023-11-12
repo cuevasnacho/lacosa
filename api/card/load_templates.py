@@ -15,6 +15,7 @@ mas_vale_que_corras = MasValeQueCorras()
 whisky = Whisky()
 puerta_atrancada = PuertaAtrancada()
 aterrador = Aterrador()
+cuarentena = Cuarentena()
 hacha = Hacha()
 seduccion = Seduccion()
 
@@ -30,6 +31,7 @@ Template_Diccionary = {
     "whisky" : whisky,
     "puerta_atrancada" : puerta_atrancada,
     "aterrador" : aterrador,
+    "cuarentena" : cuarentena
     "hacha" : hacha,
     "seduccion" : seduccion
 }
