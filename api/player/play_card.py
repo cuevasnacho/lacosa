@@ -174,7 +174,7 @@ async def play_card(player_id : int, card_id : int, oponent_id : int):
 
 
 
-@router.put("/carta/panico/{player_id}/{card_id}")
+@router.put("/carta/panico/{player_id}/{card_id}/{oponent_id}")
 async def play_panic(player_id : int, card_id : int):
     if check_pre_conditions(player_id, card_id):
         response = apply_card_efect(card_id,oponent_id, player_id)
