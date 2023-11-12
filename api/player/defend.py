@@ -41,6 +41,16 @@ def get_card_not_panic(match_id):
 
         return deck_cards
 
+@db_session
+def is_exchange(card_id):
+    response = []
+    defense_cards = ["aterrador","no_gracias","fallaste"]  
+    card = Card[card_id]
+    if card.card_cardT.cardT_name in defense_cards:
+        return True 
+
+    return False
+
 
 @db_session
 def steal_card_not_panic(player_id):
@@ -102,22 +112,27 @@ async def defend(card_id : int, defensor_id : int,  attacker_id : int,exchange_c
 
     if(is_valid[0]):
         card_to_use = is_valid[1]
-        card_to_use.aplay_defense_effect(defensor_id, attacker_id,0)
         with db_session :
             card_name = (Card.get(card_id = card_id)).card_cardT.cardT_name
             defensor_name = (Player.get(player_id = defensor_id)).player_name
             attacker_name = (Player.get(player_id = attacker_id)).player_name
             match_id = (Player.get(player_id = attacker_id)).player_current_match_id.match_id
             
+        
         response = response_defense(atacker_username =attacker_name,
                                  defensor_username = defensor_name,
                                  card_name = card_name)  
+        
+        await card_to_use.aplay_defense_effect(defensor_id, attacker_id,exchange_card_id)
+        
+        is_exchange = is_exchange(card_id)
 
         discard_Card(card_id)
 
         steal_card_not_panic(defensor_id)
 
-        await end_or_exchange(match_id, attacker_id)
+        if(not is_exchange):
+            await end_or_exchange(match_id, attacker_id)
 
         return response
     else :

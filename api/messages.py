@@ -1,4 +1,4 @@
-from api.match.match_websocket import manager_activo
+from api.match.match_websocket import manager_activo, manager
 from db.database import Player, Match
 from pony.orm import db_session
 from api.utilsfunctions import can_exchange, get_next_player_id
@@ -67,3 +67,18 @@ async def fin_turno(match_id,player_id):
         await manager_activo.send_data_to(content,match_id,player_id)
     except:
         print("Error en fin_turno")
+
+
+async def show_cards_all(match_id,player_id,cards_to_show):
+    try:
+        content = {'action': 'show_cards', 'data': cards_to_show}
+        await manager.broadcast(content,match_id,player_id)
+    except:
+        print("Error en show_cards")
+
+async def show_cards_one(match_id,player_id,cards_to_show):
+    try:
+        content = {'action': 'show_cards', 'data': cards_to_show}
+        await manager.send_data_to(content,match_id,player_id)
+    except:
+        print("Error en show_cards")

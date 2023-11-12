@@ -4,6 +4,7 @@ from db.database import Player,Card,Match
 from definitions import cards_subtypes, card_position
 from fastapi.responses import JSONResponse
 import random
+from messages import fin_turno,show_cards_one
 
 
 from abc import ABC, abstractmethod
@@ -377,30 +378,38 @@ class PuertaAtrancada(card_template):
 
           return []
 
-      def aplay_defense_effect(self,defensor_id, attacker_id):
+      def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
           return True
 
       def fullfile_efect(self,target_id):
           return True
 
-aterrador = "COMPLETAR"
+aterrador = "Niegate a un intercambio de cartas solicitado por un jugador o por el efecto de una carta. Mira la carta que te has negado a coger y devuélvesela a su dueño."
 
 class Aterrador (card_template):
 
     def __init__(self):
-        super().__init__(False, cards_subtypes.OBSTACLE.value, aterrador, "aterrador")
+        super().__init__(False, cards_subtypes.DEFENSE.value, aterrador, "aterrador")
 
 
     @db_session
     def valid_play(self,player_cause_id,target_id):
-        pass
+        return False
 
     @db_session
     def aplicar_efecto(self, objective_id, player_cause_id):
         return []
 
-    def aplay_defense_effect(self,defensor_id, attacker_id):
-        return True
+    @db_session
+    async def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
+        player = Player[defensor_id]
+        match_id = player.player_current_match_id
+        card = Card[card_id]
+        card_name = [card.card_cardT.cardT_name]
+        
+        await show_cards_one(match_id,defensor_id,card_name)
+
+        await fin_turno(match_id,attacker_id)
 
     def fullfile_efect(self,target_id):
         return True
@@ -429,7 +438,7 @@ class Seduccion(card_template):
         motive = "seduccion"
         return [motive]
 
-      def aplay_defense_effect(self,defensor_id, attacker_id):
+      def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
           return True
 
       def fullfile_efect(self,target_id):
@@ -455,7 +464,7 @@ class Cuarentena(card_template):
         commit()
         return []
 
-    def aplay_defense_effect(self,defensor_id, attacker_id):
+    def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
         return True
 
     def fullfile_efect(self,target_id):
@@ -498,8 +507,35 @@ class Hacha(card_template):
                 commit()
         return []
 
-      def aplay_defense_effect(self,defensor_id, attacker_id):
+      def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
           return True
 
       def fullfile_efect(self,target_id):
           return True
+
+
+no_gracias = "niegate a un ofrecimiento de intercambio de cartas"
+
+class NoGracias(card_template):
+
+    def __init__(self):
+        super().__init__(False, cards_subtypes.DEFENSE.value, no_gracias, "no_gracias")
+
+
+    @db_session
+    def valid_play(self,player_cause_id,target_id):
+        return False
+
+    @db_session
+    def aplicar_efecto(self, objective_id, player_cause_id):
+        return []
+
+    @db_session
+    async def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
+        player = Player[defensor_id]
+        match_id = player.player_current_match_id
+        
+        await fin_turno(match_id,attacker_id)
+
+    def fullfile_efect(self,target_id):
+        return True
