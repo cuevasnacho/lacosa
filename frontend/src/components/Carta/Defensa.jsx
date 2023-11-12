@@ -64,7 +64,7 @@ function Defensa({dataSocket, manoJugador, setManoJugador, socket})
                     attack_card_name: attack_card_name}});
         
         socket.send(mensaje_no_defense);
-        alert("No defense");
+        toggle();
     }
 
     return(

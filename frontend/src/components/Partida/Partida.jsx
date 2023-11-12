@@ -101,12 +101,14 @@ function Partida () {
           toastStage(info.action);
           setStage(4);
           setDefenseData(info.data);
+          getStatus();
           break;
 
         case 'iniciar_intercambio':
           toastStage(info.action);
           setSocketData(info.data);
           setStage(5);
+          getStatus();
           break;
 
         case 'sol_intercambio':
@@ -125,6 +127,7 @@ function Partida () {
                 setStage(7);
               }
             });
+          getStatus();
           break;
         
         case 'fin_turno':
@@ -188,10 +191,6 @@ function Partida () {
             console.log(cartas[i]);
           }
           toast(`${mensaje_cartas}`, {theme: 'dark'});
-          break;
-
-        case 'notify_defense':
-          toast(`Podes defenderte de ${info.data.atacante_username} con ${info.data.card_defense_name}`);
           break;
       }
     };
