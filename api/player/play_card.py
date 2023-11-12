@@ -181,7 +181,7 @@ async def play_panic(player_id : int, card_id : int):
         valid_play = response[0]
         card_name = response[1]
         if valid_play:
-            discard_Card(card_id)
+            #discard_Card(card_id) el descarte es personalizado para cada carta
             message = "Okeey"
             status_code = 200 # no acceptable
             return JSONResponse(content=message, status_code=status_code)
