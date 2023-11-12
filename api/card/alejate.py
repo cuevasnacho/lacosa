@@ -598,7 +598,7 @@ class   CitaACiegas(card_template):
 
     @db_session
     def aplicar_efecto(self, objective_id, player_cause_id,card_id):
-        steal_card_not_panic(player_id,card_id)
+        exchange_card_not_panic_card_not_panic(player_id,card_id)
         return []
 
     @db_session
