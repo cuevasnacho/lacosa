@@ -61,7 +61,3 @@ async def get_hand(player_id: int, match_id: int) -> hand:
     except ObjectNotFound as e: 
         content = str(e)
         return JSONResponse(content=content, status_code=404)
-
-    except Exception as e:
-        content = f"Error al acceder a los datos de {player_id}"
-        return JSONResponse(content = content, status_code = 410) #comportamiento inesperado
