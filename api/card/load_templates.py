@@ -31,7 +31,7 @@ Template_Diccionary = {
     "whisky" : whisky,
     "puerta_atrancada" : puerta_atrancada,
     "aterrador" : aterrador,
-    "cuarentena" : cuarentena
+    "cuarentena" : cuarentena,
     "hacha" : hacha,
     "seduccion" : seduccion
 }
