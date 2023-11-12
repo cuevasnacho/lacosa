@@ -55,7 +55,7 @@ def generate_status_response(match_id,id_player):
                                    eliminado = player.player_dead,
                                    puerta_izq = player.player_exchangeL,
                                    puerta_der = player.player_exchangeR,
-                                   cuarentena = player.player_quarentine_count != 0,
+                                   cuarentena = player.player_quarentine_count > 0,
                                    infected = player.player_role == player_roles.INFECTED.value)
             player_view = response.dict()
 
@@ -66,7 +66,7 @@ def generate_status_response(match_id,id_player):
                                    eliminado = player.player_dead,
                                     puerta_izq = player.player_exchangeL,
                                    puerta_der = player.player_exchangeR,
-                                   cuarentena = player.player_quarentine_count != 0)
+                                   cuarentena = player.player_quarentine_count > 0)
             
         players_data.append(response)
     
