@@ -36,6 +36,28 @@ def adjacent_players(player_cause_id,target_id):
 
     return (left == target_position, right == target_position)
 
+#devuelve una tupla de booleanos
+#[0]== True si alguno de los dos esta en cuarentena
+#[1] == True si hay una puerta entre medio de los dos
+@db_session
+def is_quarnt_or_door(player_id,target_id):
+    the_player = Player.get(player_id = player_id)
+    target_player = Player.get(player_id = target_id)
+
+    adyacente_res = adjacent_players(player_id,target_id)
+
+    if adyacente_res[0] == True:
+        is_door= the_player.player_exchangeL == False
+    if adyacente_res[1] == True:
+        is_door = the_player.player_exchangeR == False
+
+    in_quarantine = the_player.player_quarentine_count > 0
+    in_quarantine = target_player.player_quarentine_count > 0 or in_quarantine
+
+
+    return (in_quarantine, is_door)
+
+
 class card_template(ABC):
     def __init__(self,isPanic,alejate_type,effect,name) -> None:
         self.type = isPanic
@@ -214,12 +236,10 @@ class CambioDeLugar(card_template):
         is_adjacent = adjacent_players(player_cause_id, target_id)
         valid = is_adjacent[0] or is_adjacent[1]
 
-        someone_in_quarantine = False # cuando este implementada cuarentena modificar por un metodo
-                                        # que detecte si algun jugador esta en cuarentena    
+        quarentine_or_door_res= is_quarnt_or_door(player_cause_id,target_id)   
+        quarentine_or_door = quarentine_or_door_res[0] or quarentine_or_door_res[1]
 
-        locked_door = False # cuando este implementada puerta atrancada modificar por un metodo que detecte 
-                            # si hay una puerta atrancada en medio    
-        return valid and (not someone_in_quarantine) and (not locked_door) 
+        return valid and (not quarentine_or_door) 
 
     #se añade pĺayer_id para indicar el jugador que causo la jugada
     @db_session
@@ -285,10 +305,10 @@ class MasValeQueCorras(card_template):
     def valid_play(self,player_cause_id,target_id): 
         
 
-        someone_in_quarantine = False # cuando este implementada cuarentena modificar por un metodo
-                                        # que detecte si algun jugador esta en cuarentena    
+        quarentine_res= is_quarnt_or_door(player_cause_id,target_id)   
+        is_quarentine = quarentine_or_door_res[0]
 
-        return not someone_in_quarantine 
+        return not is_quarentine
 
     #se añade pĺayer_id para indicar el jugador que causo la jugada
     @db_session
