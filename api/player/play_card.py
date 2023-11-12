@@ -68,7 +68,7 @@ def apply_card_efect(card_id, oponent_id,player_id):
     name = get_card_name(card_id)
     card_tamplate = Template_Diccionary[name]
     if card_tamplate.valid_play(player_id,oponent_id):
-        content = card_tamplate.aplicar_efecto(oponent_id,player_id) 
+        content = card_tamplate.aplicar_efecto(oponent_id,player_id,card_id) 
         return (True,content)
     else:
         content = "No se puede realizar la jugada"
@@ -169,5 +169,26 @@ async def play_card(player_id : int, card_id : int, oponent_id : int):
             content = "Jugada invalida"
             return JSONResponse(content = content, status_code = 401)
     else: 
+        content = "No se cumplen las precondiciones"
+        return JSONResponse(content = content, status_code = 401)
+
+
+
+@router.put("/carta/panico/{player_id}/{card_id}")
+async def play_panic(player_id : int, card_id : int):
+    if check_pre_conditions(player_id, card_id):
+        response = apply_card_efect(card_id,oponent_id, player_id)
+        valid_play = response[0]
+        card_name = response[1]
+        if valid_play:
+            discard_Card(card_id)
+            message = "Okeey"
+            status_code = 200 # no acceptable
+            return JSONResponse(content=message, status_code=status_code)
+        else:
+            content = "Jugada invalida"
+            return JSONResponse(content = content, status_code = 401)
+
+    else:
         content = "No se cumplen las precondiciones"
         return JSONResponse(content = content, status_code = 401)
