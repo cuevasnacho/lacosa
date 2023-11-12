@@ -584,7 +584,7 @@ no_gracias = "niegate a un ofrecimiento de intercambio de cartas"
 
 
 
-cita_a_ciegas = "Roba una carta del mazo que no sea de panico"
+cita_a_ciegas = "Roba una carta del mazo que no sea de panico" #solo se juega sobre si mismo
 
 class   CitaACiegas(card_template):
 
