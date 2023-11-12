@@ -16,6 +16,8 @@ whisky = Whisky()
 puerta_atrancada = PuertaAtrancada()
 aterrador = Aterrador()
 cuarentena = Cuarentena()
+hacha = Hacha()
+seduccion = Seduccion()
 
 Template_Diccionary = {
     "lanzallamas" : lanzallamas,
@@ -30,6 +32,8 @@ Template_Diccionary = {
     "puerta_atrancada" : puerta_atrancada,
     "aterrador" : aterrador,
     "cuarentena" : cuarentena
+    "hacha" : hacha,
+    "seduccion" : seduccion
 }
 
 def already_load(name):
