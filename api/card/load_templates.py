@@ -23,7 +23,7 @@ seduccion = Seduccion()
 cita_a_ciegas = CitaACiegas()
 no_gracias = NoGracias()
 fallaste = Fallaste()
-"""
+
 
 Template_Diccionary = {
     "lanzallamas" : lanzallamas,
@@ -56,7 +56,7 @@ Template_Diccionary = {
     "aterrador": aterrador,
     "fallaste" : fallaste
 }
-
+"""
 
 
 def already_load(name):
