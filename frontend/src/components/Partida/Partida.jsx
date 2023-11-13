@@ -49,11 +49,21 @@ function Partida () {
         mostrar: 'infectado',
       }
     }
-    websocket.send(mensaje);
+    const respuesta = {
+      action: 'revelaciones',
+      data: true,
+    }
+    websocket.current.send(JSON.stringify(respuesta));
+    websocket.current.send(JSON.stringify(mensaje));
     setModalOpen(!modalOpen);
   }
 
   function noMostrar() {
+    const respuesta = {
+      action: 'revelaciones',
+      data: false,
+    }
+    websocket.current.send(JSON.stringify(respuesta));
     setModalOpen(!modalOpen);
   }
 
@@ -65,7 +75,12 @@ function Partida () {
         mostrar: manoJugador,
       }
     }
-    websocket.send(mensaje);
+    const respuesta = {
+      action: 'revelaciones',
+      data: {tieneInfectado},
+    }
+    websocket.current.send(JSON.stringify(mensaje));
+    websocket.current.send(JSON.stringify(respuesta));
     setModalOpen(!modalOpen);
   }
 
@@ -130,6 +145,10 @@ function Partida () {
           const jugada = `${info.data.player} jugó la carta ${info.data.card} sobre ${info.data.target}`;
           toast(jugada, {theme: 'dark'});
           setJugadas((prevJugadas) => [...prevJugadas, {msj: jugada}]);
+          break;
+
+        case 'revelaciones':
+          toggleModal();
           break;
 
         case 'next_turn':
