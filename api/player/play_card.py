@@ -163,7 +163,6 @@ async def play_card(player_id : int, card_id : int, oponent_id : int):
                 fullfile_efect(oponent_id,card_id)
                 discard_Card(card_id)
                 await end_or_exchange(match_id,player_id)
-
             return JSONResponse(content = content, status_code = 200)
         else:
             content = "Jugada invalida"
