@@ -1,87 +1,108 @@
-import { useState } from 'react';
-import { Modal, ModalHeader, ModalBody, Button, ModalFooter } from 'reactstrap';
+import {  useEffect, useState } from 'react';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { httpRequest } from '../../services/HttpService';
+import { getHand } from '../Partida/functions';
+import CustomButton from '../Boton/CustomButton';
 
-function Defensa({dataSocket, stage, manoJugador, setManoJugador, socket})
+function Defensa({dataSocket, manoJugador, setManoJugador, socket, setStage, setJugadas})
 {
+    const motive = dataSocket.motive;
+    const is_defense = motive === 'defensa';
+    const is_intercambio = motive === 'intercambio';
+
     const defense_card_list = dataSocket.card_to_defend;
     const attacker = dataSocket.attacker_id;
-    const attack_card_name = dataSocket.atack_card_name;
+    const attack_card_name = dataSocket.attack_card_name;
+    const attacker_card_id = dataSocket.attack_card_id;
 
-    const [modal, setModal] = useState(true);
-    const toggle = () => setModal(!modal);
-    
-    const defensor_id = window.sessionStorage.getItem('user_id');
-    let defenseCardId = null;
+    const [modal, setModal] = useState(false);
 
-    async function handleDefensa(defenseCardName, attacker_id)
+    function toggle () 
     {
-        defenseCardId = getDefenseCardId(defenseCardName, manoJugador);
+        setModal(!modal);
+    }
+
+    const backdrop = false;
+    
+    const defensor_id = parseInt(window.sessionStorage.getItem('user_id'));
+
+    useEffect(() => {
+        toggle();
+    }, []);
+
+    async function handle_defensa(defenseCardName, attacker_id, manoJugador)
+    {
+        const defenseCardId = get_defense_card_id(defenseCardName, manoJugador);
+        
         if (defenseCardId === null) {
             alert("Hubo un error al obtener el id de la carta de defensa");
         }
-
-        await httpRequest({
-            method: 'POST',
-            service: `defensa/${defenseCardId}/${defensor_id}/${attacker_id}`
-        });
-
-        const match_id = window.sessionStorage.getItem('match_id');
-        const nuevaMano = await httpRequest({
-            method: 'GET',
-            service: `players/${defensor_id}/${match_id}`
-        })
-
-        setManoJugador(nuevaMano.cartas)
-
-        toggle();
-    }
-
-    function getDefenseCardId(defenseCardName, manoJugador) {
-        for (const card of manoJugador) {
-            if (card.cardName === defenseCardName) {
-                return card.id;
-            }
+        try 
+        {
+            await httpRequest({
+                method: 'POST',
+                service: `defensa/${defenseCardId}/${defensor_id}/${attacker_id}/${attacker_card_id}`
+            });  
+            getHand(setManoJugador);
+            
+            const username = window.sessionStorage.getItem('username');
+            const msg = `${username} se defendió con ${defenseCardName}`;
+            setJugadas((prevJugadas) => [...prevJugadas, {msj: msg}])
+            
+            toggle();
+        } 
+        catch (error) 
+        {
+            alert(JSON.stringify(error));
+            no_defense();
+            toggle();
         }
+
     }
 
-    function noDefense() {
+    function get_defense_card_id(defenseCardName, manoJugador) {
+        const foundCard = manoJugador.find(card => card.cartaNombre === defenseCardName);
+        return foundCard.id;
+    }
+      
+
+    function no_defense() {
         const mensaje_no_defense = JSON.stringify({
             action: 'no_defense', 
             data: {defensor_id: defensor_id, 
                     attack_card_name: attack_card_name}});
-                    
+        
         socket.send(mensaje_no_defense);
         toggle();
-    }
 
-    if (stage != 4) 
-    {
-        return null;
+        if (is_intercambio) {
+            setStage(7);
+        }
     }
 
     return(
-        <Modal isOpen={modal} toggle={toggle} backdrop="static" onExit={noDefense}>
+        <>
+        <Modal isOpen={modal} toggle={toggle} backdrop={backdrop} centered >
             <ModalHeader toggle={toggle}> Defensa</ModalHeader>
             <ModalBody>
-                Has sido atacado con {attack_card_name}, te podés defender con:
+                {is_defense && (
+                    <p>Has sido atacado con {attack_card_name}, te podés defender con: </p>
+                )}
+                {is_intercambio && (
+                    <p>Te quieren intercambiar una carta, te podés defender con: </p>
+                )}
                 <ul>
-                    { defense_card_list.map((card, index) => (
+                    {defense_card_list.map((card, index) => (
                         <li key={index}>
                             {card}
-                            <Button onClick={() => handleDefensa(card, attacker)}>
-                                Usar
-                            </Button>
-                        </li>))
-                    }
+                            <CustomButton onClick={() => handle_defensa(card, attacker, manoJugador)} label={'Usar'}/>
+                        </li>))}
                 </ul>
             </ModalBody>
             <ModalFooter>
-                <Button color='secondary' onClick={noDefense}>
-                    No defenderse
-                </Button>
+                <CustomButton label={"No defenderse"} onClick={no_defense}></CustomButton>
             </ModalFooter>
-        </Modal>
+        </Modal></>
     );
 }
 

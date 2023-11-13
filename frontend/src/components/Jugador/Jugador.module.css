@@ -25,13 +25,28 @@
     font-size: 15px;
     color: white;
     text-align: center;
+    margin-left: 5px;
+    margin-right: 5px;
 }
 
 .turno {
     background: #008000; /* Cambia el color de fondo a verde si es el turno */
     box-shadow: 0px 0px 15px #008000;
+    color: #c1c1c1;
 }
 
 .eliminado {
     background: #7a0505; /* Cambia el color de fondo a rojo si esta eliminado */
+    color: #c1c1c1;
+}
+
+.cuarentenaTurno {
+    background: rgb(212, 224, 44);
+    color: black;
+    box-shadow: 0px 0px 15px #008000;
+}
+
+.cuarentena{
+    background: rgb(212, 224, 44);
+    color: black;
 }

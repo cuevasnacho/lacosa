@@ -1,14 +1,16 @@
 import { httpRequest } from "../../services/HttpService";
 
 async function getHand(actualizarMano) {
-    const idPartida = JSON.parse(window.sessionStorage.getItem('match_id'));
-    const idPlayer = JSON.parse(window.sessionStorage.getItem('user_id'));
+  const idPartida = JSON.parse(window.sessionStorage.getItem('match_id'));
+  const idPlayer = JSON.parse(window.sessionStorage.getItem('user_id'));
 
-    const responseCards = await httpRequest({
-      method: 'GET',
-      service: `players/${idPlayer}/${idPartida}`,
-    });
-    actualizarMano(responseCards.cartas);
+  const responseCards = await httpRequest({
+    method: 'GET',
+    service: `players/${idPlayer}/${idPartida}`,
+  });
+  actualizarMano(responseCards.cartas);
+
+  return responseCards.cartas;
 }
 
 function sortPlayers(jugadores) {
@@ -28,6 +30,17 @@ async function nextTurn(id_match, socket, actual_player_username) {
 
 function mod(i, n) {  // positive modulo
   return ((i % n) + n) % n;
+}
+
+async function playPanic(carta, target) {
+  const player_id = JSON.parse(sessionStorage.getItem('user_id'));
+  
+  let headers = { Accept: '*/*' };
+  await httpRequest({
+    headers : headers,
+    method: 'PUT',
+    service: `carta/panico/${player_id}/${carta.id}/${target.target_id}`,
+  });
 }
 
 async function playCard(carta, target, socket) {
@@ -62,23 +75,6 @@ async function playCard(carta, target, socket) {
 
   
   });
-
-  const se_puede_defender = response[1].player_defense;
-  const defensor_id = response[1].player_id;
-  const card_used_name = carta.cartaNombre;
-  const card_defense_name = response[1].card_name[0];
-
-  if (se_puede_defender) {
-    const notify_defense = JSON.stringify({action: 'notify_defense', 
-                                          data: 
-                                          {defensor_id: defensor_id,
-                                          attack_card_name: card_used_name,
-                                          atacante_id: player_id,
-                                          atacante_username: username,
-                                          card_defense_name: card_defense_name}});
-                                
-    socket.send(notify_defense);
-  }
 
   const isover = response[0].end_game;
   const mensaje_isover = JSON.stringify({
@@ -145,4 +141,4 @@ async function intercambiarDefensa(oponent_id, card_id) {
   return JSON.parse(response.data);
 }
 
-export { nextTurn, arrangePlayers, playCard, getHand, intercambiarDefensa };
+export { nextTurn, arrangePlayers, playCard, getHand, intercambiarDefensa, playPanic };

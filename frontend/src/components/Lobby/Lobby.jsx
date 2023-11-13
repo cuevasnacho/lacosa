@@ -1,8 +1,7 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { httpRequest } from '../../services/HttpService.js';
 import styles from './Lobby.module.css';
-import React, { useEffect } from 'react';
 import JugadoresLobby from '../Lobby/JugadoresLobby.jsx';
 import Chat from '../Chat/Chat.jsx';
 import BotonAbandonar from '../AbandonarPartida/BotonAbandonar.jsx';
@@ -19,7 +18,7 @@ function Lobby() {
 
   const [messages, setMessages] = useState([]);
   const [jugadores, setJugadores] = useState([]);
-  const [websocket, setWebsocket] = useState(null);
+  const websocket = useRef(null);
 
   async function iniciarPartida () {
     if (minJugadores <= jugadores.length && jugadores.length <= maxJugadores) {
@@ -29,9 +28,7 @@ function Lobby() {
       });
 
       const mensaje = JSON.stringify({action: 'start_match', match_id: response.match_id})
-      console.log(mensaje);
-      websocket.send(mensaje);
-
+      websocket.current.send(mensaje);
     }
     else {
       toast.error('La cantidad de jugadores no es la permitida', {theme: 'colored'});
@@ -43,44 +40,49 @@ function Lobby() {
     const url = `ws://localhost:8000/ws/lobbys/${idLobby}/${idPlayer}`;
     const ws = new WebSocket(url);
 
-    ws.onopen = (event) => {
+    ws.onopen = () => {
       const mensaje = JSON.stringify({action: 'lobby_players'});
       ws.send(mensaje);
     };
 
-    setWebsocket(ws);
     // recieve message every start page
     ws.onmessage = (e) => {
       const info = JSON.parse(e.data);
+      console.log(info.action);
       switch (info.action) {
         case 'lobby_players':
           setJugadores(info.data);
-          //console.log(parseInt(window.localStorage.getItem('new_host_id')))
           break;
 
-          case 'start_match':
-            window.location = `/partida/${info.data}`;
-            break;
+        case 'start_match':
+          console.log(info.data);
+          window.location = `/partida/${info.data}`;
+          break;
 
-          case 'host_left':
-            toast('El host ha abandonado la partida.', )
-            window.location = '/home';
-            break;
+        case 'host_left':
+          alert('El host ha abandonado la partida');
+          window.location = '/home';
+          break;
 
-          case 'player_left':
-            setJugadores(info.data);
-            break;
-    
+        case 'player_left':
+          setJugadores(info.data);
+          break;
+
         case 'message':
-          const message = JSON.parse(e.data).data;
-          setMessages([...messages, message]);
+          const message = info.data;
+          setMessages((prevMessages) => [...prevMessages, message]);
+          break;
+
+        default:
           break;
       }
-        };
+    };
+    
+    websocket.current = ws;
 
     //clean up function when we close page
     return () => ws.close();
-  }, [messages]);
+  }, []);
 
     return(
     <>
@@ -93,9 +95,9 @@ function Lobby() {
           { esHost && (
           <button className={styles.botonIniciar} type='button' onClick={iniciarPartida}>Iniciar Partida</button>
           )}
-          <BotonAbandonar idJugador={idPlayer} idLobby={idLobby} websocket={websocket}></BotonAbandonar>
+          <BotonAbandonar idJugador={idPlayer} idLobby={idLobby} websocket={websocket.current}></BotonAbandonar>
         </div>
-        <Chat ws={websocket} messages={messages} />
+        <Chat ws={websocket.current} messages={messages} />
       </div>
     </>
   );

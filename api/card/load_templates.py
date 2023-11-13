@@ -14,7 +14,16 @@ cambio_de_lugar = CambioDeLugar()
 mas_vale_que_corras = MasValeQueCorras()
 whisky = Whisky()
 puerta_atrancada = PuertaAtrancada()
+aqui_estoy_bien = AquiEstoyBien()
+infectado = Infectado()
 aterrador = Aterrador()
+cuarentena = Cuarentena()
+hacha = Hacha()
+seduccion = Seduccion()
+cita_a_ciegas = CitaACiegas()
+no_gracias = NoGracias()
+fallaste = Fallaste()
+
 
 Template_Diccionary = {
     "lanzallamas" : lanzallamas,
@@ -27,8 +36,28 @@ Template_Diccionary = {
     "mas_vale_que_corras" : mas_vale_que_corras,
     "whisky" : whisky,
     "puerta_atrancada" : puerta_atrancada,
-    "aterrador" : aterrador
+    "aterrador" : aterrador,
+    "aqui_estoy_bien" : aqui_estoy_bien,
+    "infectado" : infectado,
+    "cuarentena" : cuarentena,
+    "hacha" : hacha,
+    "seduccion" : seduccion,
+    "no_gracias" : no_gracias,
+    "cita_a_ciegas" : cita_a_ciegas,
+    "fallaste" : fallaste
 }
+"""
+Template_Diccionary = {
+    "lanzallamas" : lanzallamas,
+    "lacosa"     : la_cosa,
+    "nada_de_barbacoas" : nada_de_barbacoas,
+    "cita_a_ciegas" : cita_a_ciegas,
+    "no_gracias": no_gracias,
+    "aterrador": aterrador,
+    "fallaste" : fallaste
+}
+"""
+
 
 def already_load(name):
     with db_session:
