@@ -765,3 +765,28 @@ class   CitaACiegas(card_template):
 
     def fullfile_efect(self,target_id):
         return True
+    
+
+ups_effect = "Enseño mis cartas a todos los jugadores" # Ésta carta solo la puedo jugar sobre mí mismo
+
+class Ups(card_template):
+
+      def __init__(self):
+          super().__init__(True, cards_subtypes.PANIC.value, ups_effect, "ups")
+
+      #si no hay condiciones necesarias para jugar la carta, devuelve false o true
+      @db_session
+      def valid_play(self,player_cause_id,target_id):
+          return player_cause_id == target_id
+
+      #se añade pĺayer_id para indicar el jugador que causo la jugada
+      @db_session
+      def aplicar_efecto(self, objective_id, player_cause_id):
+
+          return ["ups"]
+
+      def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
+          return True
+
+      def fullfile_efect(self,target_id):
+          return True

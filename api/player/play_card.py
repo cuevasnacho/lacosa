@@ -11,7 +11,7 @@ import json
 from typing import List
 from definitions import player_roles
 from api.match.match_websocket import manager
-from api.messages import iniciar_defensa, start_exchange_seduction,fin_turno, end_or_exchange, pick_a_card
+from api.messages import iniciar_defensa, start_exchange_seduction,fin_turno, end_or_exchange, pick_a_card,show_cards_all
 from api.player.defend import discard_Card
 router = APIRouter()
 
@@ -209,6 +209,22 @@ def get_valid_card_names(player_id,match_id):
 
     return valid_cards
 
+@db_session
+def get_hand_card_names(player_id,match_id):
+        
+    hand = []
+    player = Player[player_id]
+
+    cards_related = list(orm.select(
+            (card)
+            for card in Card
+            if card.card_player.player_id == player.player_id and card.card_match == player.player_current_match_id))
+      
+    for card in cards_related:
+        hand.append(card.card_cardT.cardT_name)
+
+    return hand
+
 @db_session 
 async def aplay_effect_panic(player_id,card_name):
     
@@ -221,7 +237,13 @@ async def aplay_effect_panic(player_id,card_name):
         
         await pick_a_card(match_id,player_id,valid_cards)
 
-
+    elif card_name == ["ups"]:
+        player = Player[player_id]
+        match_id = player.player_current_match_id.match_id
+        hand = get_hand_card_names(player_id,match_id)
+        
+        await show_cards_all(match_id,player_id,hand)
+ 
 
 
 @router.put("/carta/panico/{player_id}/{card_id}/{oponent_id}")

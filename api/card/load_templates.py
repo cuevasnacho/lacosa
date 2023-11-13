@@ -23,8 +23,8 @@ seduccion = Seduccion()
 cita_a_ciegas = CitaACiegas()
 no_gracias = NoGracias()
 fallaste = Fallaste()
-
-
+ups = Ups()
+"""
 Template_Diccionary = {
     "lanzallamas" : lanzallamas,
     "lacosa"     : la_cosa,
@@ -44,7 +44,8 @@ Template_Diccionary = {
     "seduccion" : seduccion,
     "no_gracias" : no_gracias,
     "cita_a_ciegas" : cita_a_ciegas,
-    "fallaste" : fallaste
+    "fallaste" : fallaste,
+    "ups" : ups
 }
 """
 Template_Diccionary = {
@@ -54,9 +55,10 @@ Template_Diccionary = {
     "cita_a_ciegas" : cita_a_ciegas,
     "no_gracias": no_gracias,
     "aterrador": aterrador,
-    "fallaste" : fallaste
+    "fallaste" : fallaste,
+    "ups" : ups
 }
-"""
+
 
 
 def already_load(name):
