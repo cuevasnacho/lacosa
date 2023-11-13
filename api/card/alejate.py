@@ -86,6 +86,13 @@ class lanzallamas_T(card_template):
         valid = is_adjacent[0] or is_adjacent[1]
 
         player = Player[player_cause_id]
+
+        if is_adjacent[0]:#el objetivo esta a la izaquierda
+            valid = player.player_exchangeL and valid
+        elif is_adjacent[1]:#el objetivo esta a la derecha
+            valid = player.player_exchangeR and valid
+
+
         if player.player_quarentine_count > 0:
             return False
 
@@ -196,6 +203,13 @@ class Sospecha(card_template):
         is_adjacent = adjacent_players(player_cause_id, target_id)
         valid = is_adjacent[0] or is_adjacent[1]
         
+        player = Player[player_cause_id]
+
+        if is_adjacent[0]:#el objetivo esta a la izaquierda
+            valid = player.player_exchangeL and valid
+        elif is_adjacent[1]:#el objetivo esta a la derecha
+            valid = player.player_exchangeR and valid
+
         return valid
     
     @db_session
@@ -221,6 +235,13 @@ class Analisis(card_template):
     def valid_play(self, player_cause_id,target_id):
         is_adjacent = adjacent_players(player_cause_id, target_id)
         valid = is_adjacent[0] or is_adjacent[1]
+        player = Player[player_cause_id]
+
+        if is_adjacent[0]:#el objetivo esta a la izaquierda
+            valid = player.player_exchangeL and valid
+        elif is_adjacent[1]:#el objetivo esta a la derecha
+            valid = player.player_exchangeR and valid
+
         return valid
 
     @db_session
@@ -255,12 +276,19 @@ class CambioDeLugar(card_template):
         valid = is_adjacent[0] or is_adjacent[1]
 
         player = Player[player_cause_id]
+        target = Player[target_id]
         if player.player_quarentine_count > 0:
             return False
+        if target.player_quarentine_count > 0:
+            return False
 
-        locked_door = False # cuando este implementada puerta atrancada modificar por un metodo que detecte 
-                            # si hay una puerta atrancada en medio    
-        return valid and (not locked_door) 
+
+        if is_adjacent[0]:#el objetivo esta a la izaquierda
+            valid = player.player_exchangeL and valid
+        elif is_adjacent[1]:#el objetivo esta a la derecha
+            valid = player.player_exchangeR and valid
+               
+        return valid
 
     #se añade pĺayer_id para indicar el jugador que causo la jugada
     def aplicar_efecto(self,objective_id,player_cause_id): 
@@ -327,10 +355,14 @@ class MasValeQueCorras(card_template):
     def valid_play(self,player_cause_id,target_id): 
         
 
-        someone_in_quarantine = False # cuando este implementada cuarentena modificar por un metodo
-                                        # que detecte si algun jugador esta en cuarentena    
+        player = Player[player_cause_id]
+        target = Player[target_id]
+        if player.player_quarentine_count > 0:
+            return False
+        if target.player_quarentine_count > 0:
+            return False
 
-        return not someone_in_quarantine 
+        return True 
 
     #se añade pĺayer_id para indicar el jugador que causo la jugada
     def aplicar_efecto(self,objective_id,player_cause_id): 
@@ -400,9 +432,6 @@ class PuertaAtrancada(card_template):
       def aplicar_efecto(self, objective_id, player_cause_id):
           player_cause = Player.get(player_id=player_cause_id)
           player_objective = Player.get(player_id = objective_id)
-
-          cause_pos = player_cause.player_position
-          objective_pos = player_objective.player_position
 
           left_or_rigth = adjacent_players(player_cause_id, objective_id)
 
@@ -544,6 +573,13 @@ class Cuarentena(card_template):
     def valid_play(self,player_cause_id,target_id):
         is_adjacent = adjacent_players(player_cause_id,target_id)
         valid = is_adjacent[0] or is_adjacent[1]
+        player = Player[player_cause_id]
+
+        if is_adjacent[0]:#el objetivo esta a la izaquierda
+            valid = player.player_exchangeL and valid
+        elif is_adjacent[1]:#el objetivo esta a la derecha
+            valid = player.player_exchangeR and valid
+
         return valid 
     
     @db_session
@@ -572,7 +608,7 @@ class Hacha(card_template):
             is_adjacent = adjacent_players(player_cause_id, target_id)
             valid = is_adjacent[0] or is_adjacent[1]
             is_self = player_cause_id == target_id
-            return valid
+            return valid or is_self
 
       @db_session
       def aplicar_efecto(self, objective_id, player_cause_id):
@@ -625,6 +661,31 @@ class NoGracias(card_template):
     def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
 
         return ["no_gracias"]
+
+    def fullfile_efect(self,target_id):
+        return True
+
+fallaste_effect = """Niégate a un intercambio de cartas solicitado por un jugador o por el efecto de una carta. El siguiente jugador después de ti 
+debe intercambiar cartas en lugar de hacerlo tú. Si este jugador recibe una carta “¡Infectado!” durante el intercambio, no queda Infectado .Si hay “obstáculos” en el
+camino, como una “Puerta atrancada” o “Cuarentena”, no se produce ningún intercambio"""
+
+class Fallaste(card_template):
+
+    def __init__(self):
+        super().__init__(False, cards_subtypes.DEFENSE.value, fallaste_effect, "fallaste")
+
+    @db_session
+    def valid_play(self,player_cause_id,target_id):
+        return False
+
+    @db_session
+    def aplicar_efecto(self, objective_id, player_cause_id):
+        return []
+
+    @db_session
+    def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
+
+        return ["fallaste"]
 
     def fullfile_efect(self,target_id):
         return True
