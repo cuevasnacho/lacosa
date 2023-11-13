@@ -180,7 +180,11 @@ function Partida () {
           break;
 
         case 'cuarentena':
-          toastStage('Estás en cuarentena');
+          toastStage(info.data);
+          break;
+        
+        case 'solo_entre_nosotros':
+          toastStage(info.data);
           break;
       }
     };
