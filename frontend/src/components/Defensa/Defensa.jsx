@@ -2,6 +2,7 @@ import {  useEffect, useState } from 'react';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { httpRequest } from '../../services/HttpService';
 import { getHand } from '../Partida/functions';
+import styles from './Defensa.module.css';
 import CustomButton from '../Boton/CustomButton';
 
 function Defensa({dataSocket, manoJugador, setManoJugador, socket, setStage, setJugadas})
@@ -21,6 +22,13 @@ function Defensa({dataSocket, manoJugador, setManoJugador, socket, setStage, set
     {
         setModal(!modal);
     }
+
+    function string_formatter(input) {
+        return input.split('_')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+    }
+
 
     const backdrop = false;
     
@@ -82,24 +90,32 @@ function Defensa({dataSocket, manoJugador, setManoJugador, socket, setStage, set
 
     return(
         <>
-        <Modal isOpen={modal} toggle={toggle} backdrop={backdrop} centered >
-            <ModalHeader toggle={toggle}> Defensa</ModalHeader>
-            <ModalBody>
+        <Modal isOpen={modal} toggle={toggle} backdrop={backdrop} centered className={styles.container} >
+            <ModalHeader close={<></>} className={styles.header}> 
+                <div className={styles.encabezado}>
+                    Defensa
+                </div>
+            </ModalHeader>
+            <ModalBody className={styles.modalBody}>
                 {is_defense && (
                     <p>Has sido atacado con {attack_card_name}, te podés defender con: </p>
                 )}
                 {is_intercambio && (
                     <p>Te quieren intercambiar una carta, te podés defender con: </p>
                 )}
-                <ul>
-                    {defense_card_list.map((card, index) => (
-                        <li key={index}>
-                            {card}
-                            <CustomButton onClick={() => handle_defensa(card, attacker, manoJugador)} label={'Usar'}/>
-                        </li>))}
-                </ul>
+                <div className={styles.list}>
+                    <ul>
+                        {defense_card_list.map((card, index) => (
+                            <li key={index}>
+                                <div className={styles.nombreCarta}>
+                                    {string_formatter(card)}
+                                </div>
+                                <CustomButton onClick={() => handle_defensa(card, attacker, manoJugador)} label={'Usar'}/>
+                            </li>))}
+                    </ul>
+                </div>
             </ModalBody>
-            <ModalFooter>
+            <ModalFooter className={styles.footer}>
                 <CustomButton label={"No defenderse"} onClick={no_defense}></CustomButton>
             </ModalFooter>
         </Modal></>
