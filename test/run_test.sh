@@ -12,8 +12,14 @@ cd ..
 # Ejecuta pytest en todos los archivos .py
 pytest -v
 
-# Vuelve al directorio original
-cd "$current_dir"
-
 # Mueve nuevamente los archivos .py a la carpeta original
 mv *.py "$current_dir"
+
+# Vuelve a la carpeta de test
+cd "$current_dir"
+
+#Devuelve main y defintitions al directorio original
+mv main.py ..
+mv definitions.py ..
+
+
