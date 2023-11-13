@@ -48,7 +48,7 @@ export default function Finalizar({idpartida,idjugador}) {
                     <table>
                         <thead>
                             <tr>
-                                <th>Nombres de los jugadores</th>
+                                <th className="columna-finalizar-jugadores">Nombres de los jugadores</th>
                             </tr>
                         </thead>
                         <tbody> 

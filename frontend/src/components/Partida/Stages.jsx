@@ -7,6 +7,7 @@ const Stages = {
     "intercambio": 5,
     "sol_intercambio": 6,
     "res_intercambio": 7,
+    "cita_a_ciegas": 8,
 };
 
 export default Stages;

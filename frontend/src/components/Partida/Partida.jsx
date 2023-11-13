@@ -60,7 +60,8 @@ function Partida () {
   }
 
   function declarar() {
-    websocket.current.send(JSON.stringify({action: 'end_game', data: true}))
+    console.log('declarar');
+    websocket.current.send(JSON.stringify({action: 'end_game', data: true}));
   }
   
   useEffect (() => {
@@ -74,6 +75,7 @@ function Partida () {
 
     ws.onmessage = (e) => {
       const info = JSON.parse(e.data);
+      console.log(info);
       switch (info.action) {
         case 'message':
           const message = info.data;
@@ -123,6 +125,7 @@ function Partida () {
     // recieve message every start page
     ws_activo.onmessage = (e) => {
       const info = JSON.parse(e.data);
+      console.log(info);
       switch (info.action) {
         case 'iniciar_turno':
           toastStage('Es tu turno!');
@@ -181,6 +184,12 @@ function Partida () {
 
         case 'cuarentena':
           toastStage('Estás en cuarentena');
+          break;
+
+        case 'pick_a_card':
+          console.log(info.data);
+          setSocketData(info.data);
+          setStage(8);
           break;
       }
     };

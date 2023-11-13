@@ -12,6 +12,10 @@ import json
 from typing import List
 from definitions import player_roles
 
+
 def fullfile_action(defensor_id, attack_card_name):
     card_used = Template_Diccionary[attack_card_name]
     card_used.fullfile_efect(defensor_id)
+
+def cita_a_ciegas_fullfile(player_id,selected_card_id):
+    exchange_card_not_panic(player_id,selected_card_id)

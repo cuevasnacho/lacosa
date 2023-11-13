@@ -46,9 +46,8 @@ def valid_oponent(player_id,oponent_id,role,oponent_at_left,oponent_at_right,car
         player_hand = Card.select(lambda card : card.card_player.player_id == player_id and 
                                     card.card_cardT.cardT_name == "infectado") 
         infect_card = 0
-        for card in player_hand:
+        for card_infected in player_hand:
             infect_card += 1
-
         #no tengo mas de una carta infectado o no se la doy a la cosa
         if card.card_cardT.cardT_name == "infectado":
             if role == player_roles.INFECTED.value:
@@ -59,7 +58,6 @@ def valid_oponent(player_id,oponent_id,role,oponent_at_left,oponent_at_right,car
         if role == player_roles.HUMAN.value:
             if infect_card == 6:
                 valid = valid and False 
-    print(valid)
     #carta no es seducion -> derecha o izq
     if motive != "seduccion" and motive != "seduccion_response" and motive != "fallaste":
         if not (oponent_at_left or oponent_at_right): #el jugador no es adyecente
@@ -68,7 +66,6 @@ def valid_oponent(player_id,oponent_id,role,oponent_at_left,oponent_at_right,car
         #caso puerta atrancada
         if ((not oponent.player_exchangeR) and oponent_at_left) or ((not oponent.player_exchangeL) and oponent_at_right):
             valid = valid and False    
-    print(valid)
     return valid
 
 @db_session
@@ -106,7 +103,6 @@ async def exchange_valid(player_id : int, oponent_id : int, player_card_id : int
         await sol_intercambio(player.player_current_match_id.match_id,oponent_id,player_card_id,motive,player_id)
 
     exchange = is_card_valid and is_oponent_valid
-    print(is_card_valid, is_oponent_valid)
     code = 200 if exchange else 401
     return JSONResponse(content = exchange, status_code = code)
 
@@ -139,8 +135,11 @@ async def swap_cards(player_id : int, card1_id : int, oponent_id : int, card2_id
         player_card.card_player = oponent_id
         oponent_card.card_player = player_id
 
-        if player_card.card_cardT.cardT_name == "infectado" and motive != "fallaste":
+        if player_card.card_cardT.cardT_name == "infectado" and motive != "fallaste" and oponent.player_role != player_roles.THE_THING.value:
             oponent.player_role = player_roles.INFECTED.value        
+        if oponent_card.card_cardT.cardT_name == "infectado" and motive != "fallaste" and oponent.player_role != player_roles.THE_THING.value:
+            player.player_role = player_roles.INFECTED.value     
+
         commit()
 
         quarentine_message(match_id,player,player_card.card_cardT.cardT_name,oponent_card.card_cardT.cardT_name)

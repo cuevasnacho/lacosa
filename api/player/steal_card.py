@@ -4,8 +4,7 @@ from fastapi.responses import JSONResponse
 from db.database import Match, Player, Card
 from pony.orm import db_session, commit ,select, ObjectNotFound
 from definitions import match_status , card_position
-from api.messages import forzar_jugada, elegir_jugada
-from api.messages import message_quarentine
+from api.messages import forzar_jugada, elegir_jugada, message_quarentine
 
 router = APIRouter()
 
