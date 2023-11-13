@@ -14,6 +14,8 @@ cambio_de_lugar = CambioDeLugar()
 mas_vale_que_corras = MasValeQueCorras()
 whisky = Whisky()
 puerta_atrancada = PuertaAtrancada()
+aqui_estoy_bien = AquiEstoyBien()
+infectado = Infectado()
 aterrador = Aterrador()
 cuarentena = Cuarentena()
 hacha = Hacha()
@@ -32,6 +34,8 @@ Template_Diccionary = {
     "whisky" : whisky,
     "puerta_atrancada" : puerta_atrancada,
     "aterrador" : aterrador,
+    "aqui_estoy_bien" : aqui_estoy_bien,
+    "infectado" : infectado,
     "cuarentena" : cuarentena,
     "hacha" : hacha,
     "seduccion" : seduccion,

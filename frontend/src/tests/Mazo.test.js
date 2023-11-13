@@ -30,13 +30,15 @@ jest.mock('../components/Mazo/RobarCarta.jsx', () => ({
   robarCarta: jest.fn(),
 }));
 
+global.alert = jest.fn();
+
 describe('Mazo', () => {
   it('renders the Mazo button and handles click event when the length of mano is 4', () => {
-    const esTurno = true;
+    const stage = 1;
     const actualizarMano = jest.fn();
 
     const { getByTestId } = render(
-      <Mazo esTurno={esTurno} mano={mockCartas1} actualizarMano={actualizarMano} />
+      <Mazo stage={stage} mano={mockCartas1} actualizarMano={actualizarMano} />
     );
 
     const mazoButton = getByTestId('mazo');
@@ -47,14 +49,12 @@ describe('Mazo', () => {
     expect(robarCarta).toHaveBeenCalledWith(mockCartas1, actualizarMano);
   });
 
-  it('renders the Mazo button and shows an alert when the length of mano is greater than 4', () => {
-    const esTurno = true;
+  it('renders the Mazo button and do nothing when stage is != 1', () => {
+    const stage = 4;
     const actualizarMano = jest.fn();
 
-    window.alert = jest.fn(); // Mock the window.alert function
-
     const { getByTestId } = render(
-      <Mazo esTurno={esTurno} mano={mockCartas2} actualizarMano={actualizarMano} />
+      <Mazo stage={stage} mano={mockCartas1} actualizarMano={actualizarMano} />
     );
 
     const mazoButton = getByTestId('mazo');
@@ -62,15 +62,30 @@ describe('Mazo', () => {
     fireEvent.click(mazoButton);
 
     expect(robarCarta).toHaveBeenCalledTimes(0);
-    expect(window.alert).toHaveBeenCalledWith("No se puede robar mas cartas");
   });
 
-  it('renders the Mazo button and handles click event when the length of mano is less than 4', () => {
-    const esTurno = true;
+  it('renders the Mazo button and shows an alert when the length of mano is greater than 4', () => {
+    const stage = 1;
     const actualizarMano = jest.fn();
 
     const { getByTestId } = render(
-      <Mazo esTurno={esTurno} mano={mockCartas3} actualizarMano={actualizarMano} />
+      <Mazo stage={stage} mano={mockCartas2} actualizarMano={actualizarMano} />
+    );
+
+    const mazoButton = getByTestId('mazo');
+
+    fireEvent.click(mazoButton);
+
+    expect(robarCarta).toHaveBeenCalledTimes(0);
+    expect(alert).toHaveBeenCalledWith("No se puede robar mas cartas");
+  });
+
+  it('renders the Mazo button and handles click event when the length of mano is less than 4', () => {
+    const stage = 1;
+    const actualizarMano = jest.fn();
+
+    const { getByTestId } = render(
+      <Mazo stage={stage} mano={mockCartas3} actualizarMano={actualizarMano} />
     );
 
     const mazoButton = getByTestId('mazo');

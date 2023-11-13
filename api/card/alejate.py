@@ -423,6 +423,60 @@ class PuertaAtrancada(card_template):
 
       def fullfile_efect(self,target_id):
           return True
+      
+
+aquiEstoyBien_effect = "Sólo puedes jugar esta carta como respuesta a una carta “¡Cambio de lugar!” o “¡Más vale que corras!” para cancelar su efecto"
+
+class AquiEstoyBien(card_template):
+
+    def __init__(self):
+        super().__init__(False, cards_subtypes.DEFENSE.value, aquiEstoyBien_effect, "aqui_estoy_bien")
+
+    def valid_play(self, player_cause_id, target_id):
+        return True
+    
+    def aplicar_efecto(self, objective_id, player_cause_id):
+        return True
+    
+    def aplay_defense_effect(self, defensor_id, attacker_id,card_id):
+
+        with db_session:
+            target = Player.get(player_id = defensor_id)        
+            cause = Player.get(player_id = attacker_id)
+
+            target_old_pos = target.player_position
+            target.player_position = cause.player_position
+            cause.player_position = target_old_pos
+            commit()
+
+        swap_doors(defensor_id,attacker_id)
+        return True
+
+    
+    def fullfile_efect(self, target_id):
+        return True
+
+infectado_effect = "Si recibes esta carta de otro jugador quedas infectado y debes quedarte esta carrta hasta el final de la partida"
+
+class Infectado(card_template):
+    
+    def __init__(self):
+          super().__init__(False, cards_subtypes.INFECTION.value, infectado_effect, "infectado")
+
+      #si no hay condiciones necesarias para jugar la carta, devuelve false o true
+    def valid_play(self,player_cause_id,target_id):
+
+        return False
+
+    def aplicar_efecto(self, objective_id, player_cause_id):
+      return []
+
+    def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
+        return False
+    
+    def fullfile_efect(self,target_id):
+        return True
+    
 
 aterrador = "Niegate a un intercambio de cartas solicitado por un jugador o por el efecto de una carta. Mira la carta que te has negado a coger y devuélvesela a su dueño."
 
@@ -439,7 +493,7 @@ class Aterrador (card_template):
     @db_session
     def aplicar_efecto(self, objective_id, player_cause_id):
         return []
-
+    
     @db_session
     def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
 
@@ -505,6 +559,7 @@ class Cuarentena(card_template):
     def fullfile_efect(self,target_id):
         return True
 
+
 hacha_effect = "retira el efecto de puerta atrancada o cuarentena"
 
 class Hacha(card_template):
@@ -534,13 +589,13 @@ class Hacha(card_template):
                 commit()
             else:
                 is_adyacent = adjacent_players(player_cause_id, objective_id)
-                if is_adyacent[0]:
-                    player_objective.player_exchangeL = True
-                    player_cause. player_exchangeR = True
-                    commit()
-                elif is_adyacent[1]:
+                if is_adyacent[0]:#el jugador objetivo esta a la izaquierda
                     player_objective.player_exchangeR = True
                     player_cause. player_exchangeL = True
+                    commit()
+                elif is_adyacent[1]:#el jugador objetivo esta a la derecha
+                    player_objective.player_exchangeL = True
+                    player_cause. player_exchangeR = True
                     commit()
         return []
 
