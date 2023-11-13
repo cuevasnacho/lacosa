@@ -441,6 +441,10 @@ class Infectado(card_template):
 
     def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
         return False
+    
+    def fullfile_efect(self,target_id):
+        return True
+    
 
 aterrador = "Niegate a un intercambio de cartas solicitado por un jugador o por el efecto de una carta. Mira la carta que te has negado a coger y devuélvesela a su dueño."
 
