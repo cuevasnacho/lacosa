@@ -24,7 +24,7 @@ export default function TablaFila(elem) {
   }
 
   const unirPartida = async () => {
-    if (show_input) {
+    if (show_input || !is_private) {
     const user_id = window.sessionStorage.getItem('user_id');
     console.log(user_id);
     try {
