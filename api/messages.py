@@ -24,7 +24,6 @@ async def start_exchange_seduction(match_id,player_id,objective_id):
         print("Error start_exchange_seduction")
 
 
-
 def genrate_posible_play(player_id):
     return True
 
@@ -66,13 +65,17 @@ async def sol_intercambio(match_id,player_id,card_id,motive,oponent_id):
         await manager_activo.send_data_to(content,match_id,player_id)
     except:
         print("Error en sol_intercambio")
-        
+
 async def fin_turno(match_id,player_id):
     try:
         content = { 'action' : 'fin_turno', 'data':{}}
         await manager_activo.send_data_to(content,match_id,player_id)
     except:
         print("Error en fin_turno")
+
+async def revelaciones(match_id,player_id):
+    content = {'action' : 'revelaciones', 'data':{}}
+    await manager_activo.send_data_to(content, match_id, player_id)
 
 async def show_cards_all(match_id,player_id,cards_to_show):
     try:

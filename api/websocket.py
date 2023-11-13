@@ -9,7 +9,7 @@ class ConnectionManager:
         if id not in self.active_connections:
             self.active_connections[id] = []
         self.active_connections[id].append((player_id, websocket))
-        
+
     def disconnect(self, websocket : WebSocket,id,player_id):
         self.active_connections[id].remove((player_id,websocket))
 
@@ -23,5 +23,5 @@ class ConnectionManager:
     async def broadcast(self, data, id):
         if id in self.active_connections:
             for connection in self.active_connections[id]:
-                await connection[1].send_json(data)     
+                await connection[1].send_json(data)
 
