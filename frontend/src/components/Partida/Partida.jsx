@@ -193,13 +193,18 @@ function Partida () {
           break;
 
         case 'cuarentena':
-          toastStage('Estás en cuarentena');
+          toastStage(info.data);
           break;
 
         case 'pick_a_card':
-          console.log(info.data);
           setSocketData(info.data);
           setStage(8);
+          break;
+
+        case 'que_quede_entre_nosotros':
+          const followGame = {action: "follow_game"};
+          websocket.current.send(JSON.stringify(followGame));
+          toast(info.data);
           break;
       }
     };

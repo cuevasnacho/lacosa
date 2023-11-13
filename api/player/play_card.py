@@ -11,7 +11,7 @@ import json
 from typing import List
 from definitions import player_roles
 from api.match.match_websocket import manager
-from api.messages import iniciar_defensa, start_exchange_seduction,fin_turno, end_or_exchange, pick_a_card, revelaciones
+from api.messages import iniciar_defensa, start_exchange_seduction,fin_turno, end_or_exchange, pick_a_card, entre_nosotros, revelaciones
 from api.player.defend import discard_Card
 router = APIRouter()
 
@@ -205,11 +205,10 @@ def get_valid_card_names(player_id,match_id):
             elif infected_count > 1:
                 valid_cards.append(card.card_cardT.cardT_name)
             
-
     return valid_cards
 
 @db_session 
-async def aplay_effect_panic(player_id,card_name):
+async def aplay_effect_panic(player_id,card_name, oponent_id):
     player = Player[player_id]
     match_id = player.player_current_match_id.match_id
 
@@ -221,6 +220,15 @@ async def aplay_effect_panic(player_id,card_name):
 
     elif card_name == ["revelaciones"]:
         await revelaciones(match_id,player_id)
+    
+    elif card_name == ["que_quede_entre_nosotros"]:
+        cards = ""
+        player_cards = Card.select(lambda card : card.card_player.player_id == player_id)
+        for card in player_cards:
+            name = card.card_cardT.cardT_name
+            cards = cards + f", {name}"
+        data = f"El jugador {player.player_name} tiene las cartas {cards}"
+        await entre_nosotros(data, match_id, oponent_id)
 
 
 @router.put("/carta/panico/{player_id}/{card_id}/{oponent_id}")
@@ -231,7 +239,7 @@ async def play_panic(player_id : int, card_id : int,oponent_id : int):
         card_name = response[1]
         if valid_play:
             discard_Card(card_id)
-            await aplay_effect_panic(player_id,card_name)
+            await aplay_effect_panic(player_id,card_name,oponent_id)
             message = "Okeey"
             status_code = 200 # no acceptable
             return JSONResponse(content=message, status_code=status_code)

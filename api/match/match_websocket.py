@@ -101,12 +101,15 @@ async def match_websocket(websocket : WebSocket,match_id : int, player_id : int)
             elif ws['action'] == 'message':
                 content = {'action': 'message', 'data': ws['data']}
                 await manager.broadcast(content,match_id)
-
+            
             elif ws['action'] == 'revelaciones':
                 await next_stage_revelaciones(player_id, match_id, ws['data'])
 
             elif ws['action'] == 'pick_a_card':
                 cita_a_ciegas_fullfile(ws['data']['player_id'],ws['data']['selected_card_id'])
+                await follow_game(match_id)
+            
+            elif ws['action'] == 'follow_game':
                 await follow_game(match_id)
                 
         

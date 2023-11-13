@@ -23,6 +23,7 @@ seduccion = Seduccion()
 revelaciones = Revelaciones()
 cita_a_ciegas = CitaACiegas()
 no_gracias = NoGracias()
+que_quede_entre_nosotros = QueQuedeEntreNosotros()
 fallaste = Fallaste()
 
 """
@@ -54,6 +55,7 @@ Template_Diccionary = {
     "lanzallamas" : lanzallamas,
     "lacosa"     : la_cosa,
     "nada_de_barbacoas" : nada_de_barbacoas,
+    "que_quede_entre_nosotros" : que_quede_entre_nosotros,
     "cita_a_ciegas" : cita_a_ciegas,
     "infectado" : infectado,
     "revelaciones" : revelaciones
@@ -85,3 +87,4 @@ def load_templates():
     except Exception as e:
         print(f"Error durante la carga de las plantillas: {e}")
         return False  # Fallo
+    
