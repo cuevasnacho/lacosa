@@ -1,5 +1,6 @@
 import styles from "./Jugador.module.css";
 import Person from '@mui/icons-material/Person'
+import PersonOff from '@mui/icons-material/PersonOff'
 
 function Jugador({cuarentena, username, esTurno, eliminado }) {
     let jugadorClase;
@@ -12,7 +13,8 @@ function Jugador({cuarentena, username, esTurno, eliminado }) {
     return (
         <div className={styles.container}>
             <div className={jugadorClase}>
-                <Person fontSize="large" style={{ color: 'white' }} />
+                {eliminado && <PersonOff fontSize="large" style={{ color: 'white' }} />}
+                {!eliminado && <Person fontSize="large" style={{ color: 'white' }} />}
             </div>
             <p className={styles.nombre}> 
                 {username}

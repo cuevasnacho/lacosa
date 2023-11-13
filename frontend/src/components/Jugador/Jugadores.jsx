@@ -23,9 +23,6 @@ function Jugadores({ jugadores,jugador }) {
   return (
     <>
       <div className={styles.nombre}>
-        <p>
-          {username}
-        </p>
       </div>
       <div className={styles.jugadoresContainer} data-testid="middle">
         {middle.map((jugador, index) => (
