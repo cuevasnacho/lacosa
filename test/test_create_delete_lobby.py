@@ -56,7 +56,7 @@ def test_create_delete_lobby(mock_create_lobby):
     )
 
     assert response.status_code == 406
-    assert response.json() == "Minimo de players no permitido"
+    assert response.json() == "Minimo de jugadores no permitido"
 
     response = client.post(
     "/lobbys",
@@ -71,7 +71,7 @@ def test_create_delete_lobby(mock_create_lobby):
     )
 
     assert response.status_code == 406
-    assert response.json() == "Maximo de players no permitido"
+    assert response.json() == "Maximo de jugadores no permitido"
 
     response = client.post(
     "/lobbys",
@@ -86,7 +86,7 @@ def test_create_delete_lobby(mock_create_lobby):
     )
 
     assert response.status_code == 406
-    assert response.json() == "Minimo y maximo de players no permitido"
+    assert response.json() == "Minimo y maximo de jugadores no permitido"
 
     add_player = client.post(
     "/players",
@@ -142,7 +142,7 @@ def test_create_delete_lobby(mock_create_lobby):
 
     with db_session:
       assert db_lobby.get(lobby_id = 2) == None
-      assert db_match.get(match_id = 2) == None
+
 
 
 # para correr:

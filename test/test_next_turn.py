@@ -7,9 +7,12 @@ from db.database import Lobby as db_lobby
 from db.database import Player as db_player
 from definitions import match_status
 import pytest
+from load_match_env import load_match_enviroment
 
 
 client = TestClient(app)
+load_match_enviroment()
+
 @db_session
 def test_next_turn_ex1():
     the_match = db_match.get(lambda m: m.match_id == 1)

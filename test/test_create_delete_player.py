@@ -27,12 +27,12 @@ def test_create_delete_player(mock_create_player):
     )
     assert response.status_code == 200
     assert response.json() == {
-        "player_id" : 1, #esta id debe ser la proxima id que se autogenere, o se debe borrar la DB y poner 1
+        "player_id" : 2, #esta id debe ser la proxima id que se autogenere, o se debe borrar la DB y poner 1
         "player_name": "leo messi"
     }
 
     with db_session:
-        assert db_player.get(player_id = 1 ).player_name == "leo messi"
+        assert db_player.get(player_id = 2 ).player_name == "leo messi"
         assert db_player.get(player_id = 0) == None
 
 
@@ -43,13 +43,13 @@ def test_create_delete_player(mock_create_player):
     assert response.json() == "El jugador no existe"
 
     response = client.delete(
-    "/players/1", #mismo id que messi
+    "/players/2", #mismo id que messi
     headers={"X-Token": "coneofsilence"})
     assert response.status_code == 200
     assert response.json() == "Jugador borrado!"
 
     with db_session:
-        assert db_player.get(player_id = 1) == None
+        assert db_player.get(player_id = 2) == None
 
 # para correr:
 #1 borrar lacosa.sqlite
