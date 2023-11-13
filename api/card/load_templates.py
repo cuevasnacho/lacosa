@@ -26,7 +26,6 @@ no_gracias = NoGracias()
 que_quede_entre_nosotros = QueQuedeEntreNosotros()
 fallaste = Fallaste()
 
-"""
 Template_Diccionary = {
     "lanzallamas" : lanzallamas,
     "lacosa"     : la_cosa,
@@ -49,8 +48,8 @@ Template_Diccionary = {
     "cita_a_ciegas" : cita_a_ciegas,
     "fallaste" : fallaste
 }
-"""
 
+"""
 Template_Diccionary = {
     "lanzallamas" : lanzallamas,
     "lacosa"     : la_cosa,
@@ -61,6 +60,7 @@ Template_Diccionary = {
     "revelaciones" : revelaciones
 }
 
+"""
 
 def already_load(name):
     with db_session:
