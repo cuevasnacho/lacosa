@@ -596,3 +596,35 @@ class NoGracias(card_template):
 
     def fullfile_efect(self,target_id):
         return True
+    
+solo_entre_nosotros = "mostrar las cartas a un jugador adyacente"
+class SoloEntreNosotros(card_template):
+    def __init__(self):
+        super().__init__(True,10, solo_entre_nosotros, "solo_entre_nosotros")
+
+    @db_session
+    def valid_play(self,player_cause_id,target_id):
+        is_adjacent = adjacent_players(player_cause_id,target_id)
+        valid = is_adjacent[0] or is_adjacent[1]
+        return valid 
+
+    @db_session
+    def aplicar_efecto(self, objective_id, player_cause_id,card_id):
+        player = Player[player_cause_id]
+        cards = ""
+        player_cards = Card.select(lambda card : card.card_player.player_id == player_cause_id)
+        for card in player_cards:
+            name = card.card_cardT.cardT_name
+            cards = cards + f", {name}"
+        data = f"El jugador {player.player_name} tiene las cartas {cards}"
+        content = {'action' : "solo_entre_nosotros", 'data' : data}
+        #await manager_activo.send_data_to(content,player.player_current_match_id.match_id,objective_id)
+        #falta mandar el mensaje
+        return content
+
+    @db_session
+    async def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
+        return True
+
+    def fullfile_efect(self,target_id):
+        return True
