@@ -10,7 +10,7 @@ function App() {
   return (
     <Router>
       <Routes>
-          <Route index element={<DefensaMock />}/>
+          <Route index element={<Inicio />}/>
           <Route path='/home' element={<UnirsePartida />}/>
           <Route path='/crear' element={<FormCrearPartida />}/>
           <Route path='/lobby/:idLobby' element={<Lobby />}/>
