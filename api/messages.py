@@ -69,7 +69,7 @@ async def fin_turno(match_id,player_id):
         print("Error en fin_turno")
 
 async def revelaciones(match_id,player_id):
-    content = { 'action' : 'revelaciones', 'data':{}}
+    content = {'action' : 'revelaciones', 'data':{}}
     await manager_activo.send_data_to(content, match_id, player_id)
 
 async def show_cards_all(match_id,player_id,cards_to_show):

@@ -574,6 +574,7 @@ class Revelaciones(card_template):
 
       def fullfile_efect(self,target_id):
           return True
+
 no_gracias = "niegate a un ofrecimiento de intercambio de cartas"
 
 class NoGracias(card_template):

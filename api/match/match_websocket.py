@@ -24,7 +24,6 @@ async def follow_game(match_id):
     motive = "inicio_intercambio"
     next_player_id = get_next_player_id(player_id, match_id)
     if can_exchange(next_player_id,match_id):
-        print("estoy por enviar un mensaje")
         content = { 'action' : 'iniciar_intercambio', 'data':{'motive' : motive, 'oponent_id': next_player_id}}
         await manager_activo.send_data_to(content,match_id,player_id)
     else:
@@ -37,6 +36,21 @@ async def first_player(match_id,connection_id):
     if player_id == connection_id:
         content = {'action' : 'iniciar_turno','data' : {}}
         await manager_activo.send_data_to(content, match_id, player_id)
+
+async def next_stage_revelaciones(player_id, match_id, data):
+    if data == False:
+        content = {'action': 'revelaciones', 'data': {}}
+        id_next = get_next_player_id(player_id, match_id)
+        with db_session:
+            match = Match[match_id]
+            id_iniciador = match.match_currentP
+        if id_next != id_iniciador:
+            await manager.send_data_to(content, match_id, id_next)
+        else:
+            await follow_game(match_id)
+    else:
+        await follow_game(match_id)
+
 
 @router.websocket("/ws/match/pasivo/{match_id}/{player_id}")
 async def match_websocket(websocket : WebSocket,match_id : int, player_id : int):
@@ -90,9 +104,7 @@ async def match_websocket(websocket : WebSocket,match_id : int, player_id : int)
                 await manager.broadcast(content,match_id)
 
             elif ws['action'] == 'revelaciones':
-                if ws['data']['mostrar_infectado'] == False: #variable mostrar infectado: muestra si está infectado o no
-                    content = {'action': 'revelaciones', 'data': ws['data']['id_iniciador']}
-                    id_next = get_next_player_id(player_id, match_id)
+                await next_stage_revelaciones(player_id, match_id, ws['data'])
 
     except WebSocketDisconnect:
         manager.disconnect(websocket,match_id,player_id)
