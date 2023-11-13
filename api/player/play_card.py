@@ -5,7 +5,7 @@ from fastapi.responses import JSONResponse
 from api.card.load_templates import Template_Diccionary
 from api.card.alejate import *
 from pony import orm 
-from definitions import cards_subtypes
+from definitions import cards_subtypes, player_roles
 from pydantic import BaseModel
 import json 
 from typing import List
@@ -182,6 +182,45 @@ async def play_card(player_id : int, card_id : int, oponent_id : int):
         content = "No se cumplen las precondiciones"
         return JSONResponse(content = content, status_code = 401)
 
+@db_session
+def get_valid_card_names(player_id,match_id):
+    valid_cards= []
+
+    cards_related = list(orm.select(
+            (card)
+            for card in Card
+            if card.card_player.player_id == player.player_id and card.card_match == player.player_current_match_id))
+
+    infected_count = 0
+    for card in cards_related:
+        if card.card_cardT.cardT_name == "infectado":
+            infected_count  += 1
+    
+    for card in cards_related:
+        if card.card_cardT.cardT_name != "lacosa" and card.card_cardT.cardT_name != "infectado":
+            valid_cards.append(card.card_cardT.cardT_name).lower()
+        elif card.card_cardT.cardT_name == "infectado":
+            if player.player_role != player_roles.INFECTED.value:
+                valid_cards.append(card.card_cardT.cardT_name).lower()
+            elif infected_count > 1:
+                valid_cards.append(card.card_cardT.cardT_name).lower()
+            
+
+    return valid_cards
+
+@db_session 
+async def aplay_effect_panic(player_id,card_name):
+    
+    if card_name == ["cita_a_ciegas"]:
+
+        player = Player[player_id]
+        match_id = player.player_current_match_id.match_id
+        valid_cards = get_valid_card_names(player_id,match_id)
+
+        
+        await pick_a_card(match_id,player_id,valid_cards)
+
+
 
 
 @router.put("/carta/panico/{player_id}/{card_id}/{oponent_id}")
@@ -191,7 +230,8 @@ async def play_panic(player_id : int, card_id : int,oponent_id : int):
         valid_play = response[0]
         card_name = response[1]
         if valid_play:
-            #discard_Card(card_id) el descarte es personalizado para cada carta
+            discard_Card(card_id)
+            aplay_effect_panic(player_id,card_name)
             message = "Okeey"
             status_code = 200 # no acceptable
             return JSONResponse(content=message, status_code=status_code)

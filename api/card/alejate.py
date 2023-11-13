@@ -50,37 +50,6 @@ def swap_doors(player_id_1,player_id_2):
 
     commit()
 
-def get_card_not_panic(match_id):
-        deck_cards = Card.select(lambda c : c.card_match.match_id == match_id and
-                           c.card_location == card_position.DECK.value and not(c.card_cardT.cardT_type))
-
-        if not deck_cards:
-            discard_to_deck(match_id)
-            deck_cards = Card.select(lambda c : c.card_match.match_id == match_id and
-                           c.card_location == card_position.DECK.value and not(c.card_cardT.cardT_type))
-
-        if deck_cards :
-            card_steal = deck_cards.random(1)[0]
-            return card_steal
-
-
-        return deck_cards
-
-@db_session
-def exchange_card_not_panic(player_id,card_id):
-    player = Player.get(player_id = player_id)
-    match = player.player_current_match_id
-    selected_card = Card.get(card_id = card_id)
-
-    card = get_card_not_panic(match.match_id)
-
-    card.card_location = card_position.PLAYER.value
-    selected_card.card_location = card_position.DECK.value
-    selected_card.card_player = None
-
-    card.card_player = player
-    commit()
-
 
 class card_template(ABC):
     def __init__(self,isPanic,alejate_type,effect,name) -> None:
@@ -640,12 +609,12 @@ class   CitaACiegas(card_template):
 
     @db_session
     def valid_play(self,player_cause_id,target_id):
-        return True
+        valid = player_cause_id == target_id
+        return valid
 
     @db_session
     def aplicar_efecto(self, objective_id, player_cause_id,card_id):
-        exchange_card_not_panic(player_cause_id,card_id)
-        return []
+        return ["cita_a_ciegas"]
 
     @db_session
     async def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
