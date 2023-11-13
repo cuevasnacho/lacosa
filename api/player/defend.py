@@ -153,17 +153,7 @@ async def defend(card_id : int, defensor_id : int,  attacker_id : int,exchange_c
 
         if(defend_from_exchange):
             await aplay_effect(defensor_id, attacker_id,exchange_card_id,card_name)
-        else : 
-            await end_or_exchange(match_id, attacker_id)
 
-
-        card_name = card_to_use.aplay_defense_effect(defensor_id, attacker_id,exchange_card_id)
-
-
-        defend_from_exchange = is_exchange(card_id)
-        if(defend_from_exchange):
-            await aplay_effect(defensor_id, attacker_id,exchange_card_id,card_name)
-            
         discard_Card(card_id)
 
         steal_card_not_panic(defensor_id)
