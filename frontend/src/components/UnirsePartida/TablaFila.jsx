@@ -9,7 +9,7 @@ import { useState } from 'react'
 export default function TablaFila(elem) {
   const {lobby_id,lobby_name,host_name,is_private,number_of_players,max_players}=elem.elem;
   const [partidas,setPartidas] = useState([]);
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState("a");
   const [pass_visible, setPassVisibility] = useState(false);
   const [pass_type, setPassType] = useState("password");
   const [show_input, setInput] = useState(false);
