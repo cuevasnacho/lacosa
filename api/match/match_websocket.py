@@ -23,7 +23,7 @@ async def follow_game(match_id):
     player_id = match.match_currentP    
     motive = "inicio_intercambio"
     next_player_id = get_next_player_id(player_id, match_id)
-    if can_exchange(next_player_id,match_id):
+    if can_exchange(player_id,match_id):
         print("estoy por enviar un mensaje")
         content = { 'action' : 'iniciar_intercambio', 'data':{'motive' : motive, 'oponent_id': next_player_id}}
         await manager_activo.send_data_to(content,match_id,player_id)
