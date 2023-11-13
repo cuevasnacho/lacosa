@@ -46,9 +46,8 @@ def valid_oponent(player_id,oponent_id,role,oponent_at_left,oponent_at_right,car
         player_hand = Card.select(lambda card : card.card_player.player_id == player_id and 
                                     card.card_cardT.cardT_name == "infectado") 
         infect_card = 0
-        for card in player_hand:
+        for card_infected in player_hand:
             infect_card += 1
-
         #no tengo mas de una carta infectado o no se la doy a la cosa
         if card.card_cardT.cardT_name == "infectado":
             if role == player_roles.INFECTED.value:
@@ -136,8 +135,11 @@ async def swap_cards(player_id : int, card1_id : int, oponent_id : int, card2_id
         player_card.card_player = oponent_id
         oponent_card.card_player = player_id
 
-        if player_card.card_cardT.cardT_name == "infectado" and motive != "fallaste":
+        if player_card.card_cardT.cardT_name == "infectado" and motive != "fallaste" and oponent.player_role != player_roles.THE_THING.value:
             oponent.player_role = player_roles.INFECTED.value        
+        if oponent_card.card_cardT.cardT_name == "infectado" and motive != "fallaste" and oponent.player_role != player_roles.THE_THING.value:
+            player.player_role = player_roles.INFECTED.value     
+
         commit()
 
         quarentine_message(match_id,player,player_card.card_cardT.cardT_name,oponent_card.card_cardT.cardT_name)

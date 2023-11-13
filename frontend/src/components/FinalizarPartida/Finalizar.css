@@ -59,11 +59,11 @@
     margin-left: 1.5rem;
   }
 
-  th{
+  .columna-finalizar-jugadores {
     background-color: rgb(49, 58, 2);
     font-family: 'Creepster', cursive;
     font-size:17px;
-    width: 25%;
+    width: 100%;
   }
   td{
     color: write;

@@ -8,6 +8,56 @@ import random
 
 from abc import ABC, abstractmethod
 
+@db_session
+def discard_Card_cAc(card_id):
+    card = Card.get(card_id = card_id)
+    card.card_location = card_position.DISCARD.value
+    card.card_player = None 
+    commit()
+
+@db_session
+def discard_to_deck_cAc(match_id):
+    discard = list(Card.select(lambda c : c.card_match.match_id == match_id and
+                           c.card_location == card_position.DISCARD.value))
+    match = Match[match_id]
+    
+    for card in discard:
+        card.card_location = card_position.DECK.value
+        match.match_cardsCount += 1
+        commit()
+
+
+def get_card_not_panic_cAc(match_id):
+        deck_cards = Card.select(lambda c : c.card_match.match_id == match_id and
+                           c.card_location == card_position.DECK.value and not(c.card_cardT.cardT_type))
+
+        if not deck_cards:
+            discard_to_deck_cAc(match_id)
+            deck_cards = Card.select(lambda c : c.card_match.match_id == match_id and
+                           c.card_location == card_position.DECK.value and not(c.card_cardT.cardT_type))
+
+        if deck_cards :
+            card_steal = deck_cards.random(1)[0]
+            return card_steal
+
+
+        return deck_cards
+
+@db_session
+def exchange_card_not_panic(player_id,selected_card_id):
+    player = Player.get(player_id = player_id)
+    match = player.player_current_match_id
+    selected_card = Card.get(card_id = selected_card_id)
+
+    card = get_card_not_panic_cAc(match.match_id)
+
+    card.card_location = card_position.PLAYER.value
+    selected_card.card_location = card_position.DECK.value
+    selected_card.card_player = None
+
+    card.card_player = player
+    commit()
+
 #chequa que el jugador sea alguno del costado
 @db_session
 def adjacent_players(player_cause_id,target_id):
@@ -86,6 +136,13 @@ class lanzallamas_T(card_template):
         valid = is_adjacent[0] or is_adjacent[1]
 
         player = Player[player_cause_id]
+
+        if is_adjacent[0]:#el objetivo esta a la izaquierda
+            valid = player.player_exchangeL and valid
+        elif is_adjacent[1]:#el objetivo esta a la derecha
+            valid = player.player_exchangeR and valid
+
+
         if player.player_quarentine_count > 0:
             return False
 
@@ -195,6 +252,13 @@ class Sospecha(card_template):
 
         is_adjacent = adjacent_players(player_cause_id, target_id)
         valid = is_adjacent[0] or is_adjacent[1]
+        
+        player = Player[player_cause_id]
+
+        if is_adjacent[0]:#el objetivo esta a la izaquierda
+            valid = player.player_exchangeL and valid
+        elif is_adjacent[1]:#el objetivo esta a la derecha
+            valid = player.player_exchangeR and valid
 
         return valid
 
@@ -221,6 +285,13 @@ class Analisis(card_template):
     def valid_play(self, player_cause_id,target_id):
         is_adjacent = adjacent_players(player_cause_id, target_id)
         valid = is_adjacent[0] or is_adjacent[1]
+        player = Player[player_cause_id]
+
+        if is_adjacent[0]:#el objetivo esta a la izaquierda
+            valid = player.player_exchangeL and valid
+        elif is_adjacent[1]:#el objetivo esta a la derecha
+            valid = player.player_exchangeR and valid
+
         return valid
 
     @db_session
@@ -255,12 +326,19 @@ class CambioDeLugar(card_template):
         valid = is_adjacent[0] or is_adjacent[1]
 
         player = Player[player_cause_id]
+        target = Player[target_id]
         if player.player_quarentine_count > 0:
             return False
+        if target.player_quarentine_count > 0:
+            return False
 
-        locked_door = False # cuando este implementada puerta atrancada modificar por un metodo que detecte
-                            # si hay una puerta atrancada en medio
-        return valid and (not locked_door)
+
+        if is_adjacent[0]:#el objetivo esta a la izaquierda
+            valid = player.player_exchangeL and valid
+        elif is_adjacent[1]:#el objetivo esta a la derecha
+            valid = player.player_exchangeR and valid
+               
+        return valid
 
     #se añade pĺayer_id para indicar el jugador que causo la jugada
     def aplicar_efecto(self,objective_id,player_cause_id):
@@ -327,10 +405,14 @@ class MasValeQueCorras(card_template):
     def valid_play(self,player_cause_id,target_id):
 
 
-        someone_in_quarantine = False # cuando este implementada cuarentena modificar por un metodo
-                                        # que detecte si algun jugador esta en cuarentena
+        player = Player[player_cause_id]
+        target = Player[target_id]
+        if player.player_quarentine_count > 0:
+            return False
+        if target.player_quarentine_count > 0:
+            return False
 
-        return not someone_in_quarantine
+        return True 
 
     #se añade pĺayer_id para indicar el jugador que causo la jugada
     def aplicar_efecto(self,objective_id,player_cause_id):
@@ -401,9 +483,6 @@ class PuertaAtrancada(card_template):
           player_cause = Player.get(player_id=player_cause_id)
           player_objective = Player.get(player_id = objective_id)
 
-          cause_pos = player_cause.player_position
-          objective_pos = player_objective.player_position
-
           left_or_rigth = adjacent_players(player_cause_id, objective_id)
 
           if left_or_rigth[0]: #esta a la izquierda
@@ -423,6 +502,60 @@ class PuertaAtrancada(card_template):
 
       def fullfile_efect(self,target_id):
           return True
+      
+
+aquiEstoyBien_effect = "Sólo puedes jugar esta carta como respuesta a una carta “¡Cambio de lugar!” o “¡Más vale que corras!” para cancelar su efecto"
+
+class AquiEstoyBien(card_template):
+
+    def __init__(self):
+        super().__init__(False, cards_subtypes.DEFENSE.value, aquiEstoyBien_effect, "aqui_estoy_bien")
+
+    def valid_play(self, player_cause_id, target_id):
+        return True
+    
+    def aplicar_efecto(self, objective_id, player_cause_id):
+        return True
+    
+    def aplay_defense_effect(self, defensor_id, attacker_id,card_id):
+
+        with db_session:
+            target = Player.get(player_id = defensor_id)        
+            cause = Player.get(player_id = attacker_id)
+
+            target_old_pos = target.player_position
+            target.player_position = cause.player_position
+            cause.player_position = target_old_pos
+            commit()
+
+        swap_doors(defensor_id,attacker_id)
+        return True
+
+    
+    def fullfile_efect(self, target_id):
+        return True
+
+infectado_effect = "Si recibes esta carta de otro jugador quedas infectado y debes quedarte esta carrta hasta el final de la partida"
+
+class Infectado(card_template):
+    
+    def __init__(self):
+          super().__init__(False, cards_subtypes.INFECTION.value, infectado_effect, "infectado")
+
+      #si no hay condiciones necesarias para jugar la carta, devuelve false o true
+    def valid_play(self,player_cause_id,target_id):
+
+        return False
+
+    def aplicar_efecto(self, objective_id, player_cause_id):
+      return []
+
+    def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
+        return False
+    
+    def fullfile_efect(self,target_id):
+        return True
+    
 
 aterrador = "Niegate a un intercambio de cartas solicitado por un jugador o por el efecto de una carta. Mira la carta que te has negado a coger y devuélvesela a su dueño."
 
@@ -439,7 +572,7 @@ class Aterrador (card_template):
     @db_session
     def aplicar_efecto(self, objective_id, player_cause_id):
         return []
-
+    
     @db_session
     def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
 
@@ -490,8 +623,15 @@ class Cuarentena(card_template):
     def valid_play(self,player_cause_id,target_id):
         is_adjacent = adjacent_players(player_cause_id,target_id)
         valid = is_adjacent[0] or is_adjacent[1]
-        return valid
+        player = Player[player_cause_id]
 
+        if is_adjacent[0]:#el objetivo esta a la izaquierda
+            valid = player.player_exchangeL and valid
+        elif is_adjacent[1]:#el objetivo esta a la derecha
+            valid = player.player_exchangeR and valid
+
+        return valid 
+    
     @db_session
     def aplicar_efecto(self, objective_id, player_cause_id):
         objective_player = Player.get(player_id = objective_id)
@@ -505,6 +645,7 @@ class Cuarentena(card_template):
     def fullfile_efect(self,target_id):
         return True
 
+
 hacha_effect = "retira el efecto de puerta atrancada o cuarentena"
 
 class Hacha(card_template):
@@ -517,7 +658,7 @@ class Hacha(card_template):
             is_adjacent = adjacent_players(player_cause_id, target_id)
             valid = is_adjacent[0] or is_adjacent[1]
             is_self = player_cause_id == target_id
-            return valid
+            return valid or is_self
 
       @db_session
       def aplicar_efecto(self, objective_id, player_cause_id):
@@ -534,13 +675,13 @@ class Hacha(card_template):
                 commit()
             else:
                 is_adyacent = adjacent_players(player_cause_id, objective_id)
-                if is_adyacent[0]:
-                    player_objective.player_exchangeL = True
-                    player_cause. player_exchangeR = True
-                    commit()
-                elif is_adyacent[1]:
+                if is_adyacent[0]:#el jugador objetivo esta a la izaquierda
                     player_objective.player_exchangeR = True
                     player_cause. player_exchangeL = True
+                    commit()
+                elif is_adyacent[1]:#el jugador objetivo esta a la derecha
+                    player_objective.player_exchangeL = True
+                    player_cause. player_exchangeR = True
                     commit()
         return []
 
@@ -595,6 +736,57 @@ class NoGracias(card_template):
     def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
 
         return ["no_gracias"]
+
+    def fullfile_efect(self,target_id):
+        return True
+
+fallaste_effect = """Niégate a un intercambio de cartas solicitado por un jugador o por el efecto de una carta. El siguiente jugador después de ti 
+debe intercambiar cartas en lugar de hacerlo tú. Si este jugador recibe una carta “¡Infectado!” durante el intercambio, no queda Infectado .Si hay “obstáculos” en el
+camino, como una “Puerta atrancada” o “Cuarentena”, no se produce ningún intercambio"""
+
+class Fallaste(card_template):
+
+    def __init__(self):
+        super().__init__(False, cards_subtypes.DEFENSE.value, fallaste_effect, "fallaste")
+
+    @db_session
+    def valid_play(self,player_cause_id,target_id):
+        return False
+
+    @db_session
+    def aplicar_efecto(self, objective_id, player_cause_id):
+        return []
+
+    @db_session
+    def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
+
+        return ["fallaste"]
+
+    def fullfile_efect(self,target_id):
+        return True
+
+
+cita_a_ciegas = "Roba una carta del mazo que no sea de panico" #solo se juega sobre si mismo
+
+class   CitaACiegas(card_template):
+
+    def __init__(self):
+        super().__init__(True,cards_subtypes.PANIC.value, cita_a_ciegas, "cita_a_ciegas")
+
+
+    @db_session
+    def valid_play(self,player_cause_id,target_id):
+        valid = player_cause_id == target_id
+        return valid
+
+    @db_session
+    def aplicar_efecto(self, objective_id, player_cause_id,card_id):
+        return ["cita_a_ciegas"]
+
+    @db_session
+    async def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
+        
+        return True
 
     def fullfile_efect(self,target_id):
         return True

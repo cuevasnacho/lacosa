@@ -5,9 +5,8 @@ from fastapi.responses import JSONResponse
 from pony.orm import db_session
 from db.database import Match,Player
 from api.websocket import ConnectionManager
-from api.player.finalize_action import fullfile_action
+from api.player.finalize_action import fullfile_action, cita_a_ciegas_fullfile
 from api.utilsfunctions import can_exchange, get_next_player_id
-
 
 router = APIRouter()
 
@@ -23,7 +22,7 @@ async def follow_game(match_id):
     player_id = match.match_currentP
     motive = "inicio_intercambio"
     next_player_id = get_next_player_id(player_id, match_id)
-    if can_exchange(next_player_id,match_id):
+    if can_exchange(player_id,match_id):
         content = { 'action' : 'iniciar_intercambio', 'data':{'motive' : motive, 'oponent_id': next_player_id}}
         await manager_activo.send_data_to(content,match_id,player_id)
     else:
@@ -106,6 +105,11 @@ async def match_websocket(websocket : WebSocket,match_id : int, player_id : int)
             elif ws['action'] == 'revelaciones':
                 await next_stage_revelaciones(player_id, match_id, ws['data'])
 
+            elif ws['action'] == 'pick_a_card':
+                cita_a_ciegas_fullfile(ws['data']['player_id'],ws['data']['selected_card_id'])
+                await follow_game(match_id)
+                
+        
     except WebSocketDisconnect:
         manager.disconnect(websocket,match_id,player_id)
         content = "Websocket desconectado"
