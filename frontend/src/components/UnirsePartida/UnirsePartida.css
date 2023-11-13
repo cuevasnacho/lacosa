@@ -32,7 +32,6 @@
     max-height: 250px;
     overflow-y: scroll;
     border:0.1px solid #fff;
-    
   }
 
   .tabla-unirsePartida::-webkit-scrollbar{
@@ -42,6 +41,10 @@
   .tabla-unirsePartida::-webkit-scrollbar-thumb{
     background-color: rgba(255, 255, 255, .2);
     border-radius: 10px;
+  }
+
+  table {
+    width: 100%;
   }
 
   .titulo-tabla{
@@ -57,8 +60,28 @@
     background-color: rgba(41, 49, 29, 1);
     font-family: 'Creepster', cursive;
     font-size:17px;
-    width: 130px;
     text-align: center;
+  }
+
+  .columna-publica {
+    table-layout: fixed;
+    width: 5%;
+  }
+
+  .columna-nombre-lobby,
+  .columna-nombre-host {
+      table-layout: fixed;
+      width: 20%
+  }
+
+  .columna-cantidad {
+      table-layout: fixed;
+      width: 15%
+  }
+
+  .columna-unirse-lobby {
+      table-layout: fixed;
+      width: 40%
   }
 
   .contenedor-tabla{
