@@ -12,7 +12,8 @@ import MazoDescarte from '../Mazo/MazoDescarte.jsx';
 import Chat from '../Chat/Chat.jsx';
 import Finalizar from '../FinalizarPartida/Finalizar.jsx';
 import LogPartida from '../LogPartida/LogPartida.jsx';
-import Defensa from '../Carta/Defensa.jsx';
+import Defensa from '../Defensa/Defensa.jsx'
+import Revelaciones from '../Carta/Revelaciones.jsx';
 
 function Partida () {
   const idPlayer = JSON.parse(sessionStorage.getItem('user_id'));
@@ -27,10 +28,11 @@ function Partida () {
   const [isLaCosa, setIsLaCosa] = useState(false);
   const [socketData, setSocketData] = useState({});
   const [manoJugador, setManoJugador] = useState([]);   // Indica las cartas que tengo en la mano
-  const [matchState, setMatchState] = useState([]); // username: string, id: int, esTurno: bool, posicion: int, eliminado: bool	
+  const [matchState, setMatchState] = useState([]); // username: string, id: int, esTurno: bool, posicion: int, eliminado: bool
   const [mazoDescarteState, setMazoDescarteState] = useState(2);  // Dice que carta se va a mostrar en el mazo de descarte
   const [isOver, setIsOver] = useState(false);
   const [defenseData, setDefenseData] = useState(null);
+  const [revelaciones, setRevelaciones] = useState(false);
 
   async function getStatus() {
     const responseStatus = await httpRequest({
@@ -63,7 +65,7 @@ function Partida () {
     console.log('declarar');
     websocket.current.send(JSON.stringify({action: 'end_game', data: true}));
   }
-  
+
   useEffect (() => {
     const url_pasivo = `ws://localhost:8000/ws/match/pasivo/${idPartida}/${idPlayer}`;
     const ws = new WebSocket(url_pasivo);
@@ -97,11 +99,15 @@ function Partida () {
           setJugadas((prevJugadas) => [...prevJugadas, {msj: jugada}]);
           break;
 
+        case 'revelaciones':
+          setRevelaciones(true);
+          break;
+
         case 'next_turn':
           getStatus();
           toast(`Finalizo  el turno de ${info.data}`, {theme: 'dark'});
           break;
-        
+
         case 'show_cards':
           const cartas = info.data;
           let mensaje_cartas = "Cartas: ";
@@ -175,7 +181,11 @@ function Partida () {
             });
           getStatus();
           break;
-        
+
+        case 'revelaciones':
+          setRevelaciones(true);
+          break;
+
         case 'fin_turno':
           toastStage('Finalizo tu turno');
           setStage(0);
@@ -183,17 +193,22 @@ function Partida () {
           break;
 
         case 'cuarentena':
-          toastStage('Estás en cuarentena');
+          toastStage(info.data);
           break;
 
         case 'pick_a_card':
-          console.log(info.data);
           setSocketData(info.data);
           setStage(8);
           break;
+
+        case 'que_quede_entre_nosotros':
+          const followGame = {action: "follow_game"};
+          websocket.current.send(JSON.stringify(followGame));
+          toast(info.data);
+          break;
       }
     };
-   
+
     // clean up function when we close page
     return () => {ws_activo.close();}
   }, []);
@@ -201,9 +216,13 @@ function Partida () {
   return (
     <div className={styles.container}>
       {isOver && <Finalizar idpartida = {idPartida} idjugador={idPlayer}/>}
+      <Revelaciones 
+        manoJugador={manoJugador}
+        ws={websocket.current}
+        show={revelaciones}/>
       <ToastContainer limit={5} pauseOnFocusLoss={false} hideProgressBar autoClose={3000} pauseOnHover={false} transition={Flip}/>
-      {stage == 4 && <Defensa 
-        dataSocket={defenseData} 
+      {stage == 4 && <Defensa
+        dataSocket={defenseData}
         manoJugador={manoJugador}
         setStage={setStage}
         setManoJugador={setManoJugador}
@@ -211,9 +230,9 @@ function Partida () {
         setJugadas={setJugadas}/>}
       {playerState.esTurno && (<div className={styles.tuTurno}/>)}
       <div className={styles.detalleMesa}>
-        { isLaCosa && 
-        (<button 
-          type='button' 
+        { isLaCosa &&
+        (<button
+          type='button'
           onClick={declarar}
           className={styles.botonDeclarar}>
             Declarar
@@ -222,13 +241,13 @@ function Partida () {
       </div>
       <Mazo stage={stage} mano={manoJugador} actualizarMano={setManoJugador}/>
       <MazoDescarte mazoDescarteState={mazoDescarteState}/>
-      <ManoJugador 
-        cartas={manoJugador} 
+      <ManoJugador
+        cartas={manoJugador}
         stage={stage}
         actstage={setStage}
         data={socketData}
-        actualizar={setManoJugador} 
-        socket={websocket.current} 
+        actualizar={setManoJugador}
+        socket={websocket.current}
         jugadores={matchState}/>
       <Jugadores jugadores={matchState} jugador={jugador}/>
       <Chat ws={websocket.current} messages={messages}/>

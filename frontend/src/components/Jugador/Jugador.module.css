@@ -1,4 +1,12 @@
 /* Jugador.module.css */
+
+.container {
+    flex-direction: column;
+    align-items: center;
+    display: flex;
+    align-items: center;
+}
+
 .jugador {
     background: #3a3a3a;
     border-radius: 50%;
@@ -12,9 +20,13 @@
     transition: box-shadow 0.25s;
 }
 
-.jugador p {
+.nombre {
     margin: 0;
-    font-size: 12px;
+    font-size: 15px;
+    color: white;
+    text-align: center;
+    margin-left: 5px;
+    margin-right: 5px;
 }
 
 .turno {
