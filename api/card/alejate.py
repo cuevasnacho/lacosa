@@ -423,6 +423,38 @@ class PuertaAtrancada(card_template):
 
       def fullfile_efect(self,target_id):
           return True
+      
+
+aquiEstoyBien_effect = "Sólo puedes jugar esta carta como respuesta a una carta “¡Cambio de lugar!” o “¡Más vale que corras!” para cancelar su efecto"
+
+class AquiEstoyBien(card_template):
+
+    def __init__(self):
+        super().__init__(False, cards_subtypes.DEFENSE.value, aquiEstoyBien_effect, "aqui_estoy_bien")
+
+    def valid_play(self, player_cause_id, target_id):
+        return True
+    
+    def aplicar_efecto(self, objective_id, player_cause_id):
+        return True
+    
+    def aplay_defense_effect(self, defensor_id, attacker_id,card_id):
+
+        with db_session:
+            target = Player.get(player_id = defensor_id)        
+            cause = Player.get(player_id = attacker_id)
+
+            target_old_pos = target.player_position
+            target.player_position = cause.player_position
+            cause.player_position = target_old_pos
+            commit()
+
+        swap_doors(defensor_id,attacker_id)
+        return True
+
+    
+    def fullfile_efect(self, target_id):
+        return True
 
 infectado_effect = "Si recibes esta carta de otro jugador quedas infectado y debes quedarte esta carrta hasta el final de la partida"
 
