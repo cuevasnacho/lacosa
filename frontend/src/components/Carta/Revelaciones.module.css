@@ -1,0 +1,29 @@
+.modalDiv {
+    z-index: 3;
+}
+
+.modalWindow {
+    text-align: center;
+    color: white;
+    position: relative;
+    top: 25%;
+}
+
+.modalBody {
+    background-color: #121212;
+}
+
+.modalBody h4 {
+    text-align: center;
+    padding: 35px;
+}
+
+.divBotonModal {
+    display: flex;
+    justify-content: space-evenly;
+    margin: 10px 0;
+}
+
+.botonModal {
+    height: 50px;
+}
