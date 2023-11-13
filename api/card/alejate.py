@@ -781,7 +781,7 @@ class Ups(card_template):
 
       #se añade pĺayer_id para indicar el jugador que causo la jugada
       @db_session
-      def aplicar_efecto(self, objective_id, player_cause_id):
+      def aplicar_efecto(self, objective_id, player_cause_id,card_id):
 
           return ["ups"]
 

@@ -77,9 +77,9 @@ async def fin_turno(match_id,player_id):
 async def show_cards_all(match_id,player_id,cards_to_show):
     try:
         content = {'action': 'show_cards', 'data': cards_to_show}
-        await manager.broadcast(content,match_id,player_id)
+        await manager.broadcast(content,match_id)
     except:
-         print("Error en show_cards")
+        print("Error en show_cards")
 
 async def show_cards_one(match_id,player_id,cards_to_show):
     try:
