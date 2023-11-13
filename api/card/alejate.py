@@ -438,22 +438,20 @@ class AquiEstoyBien(card_template):
     def aplicar_efecto(self, objective_id, player_cause_id):
         return True
     
-    def aplay_defense_effect(self, defensor_id, attacker_id):
-        objective_player = Player.get(player_id = defensor_id)
-        attacker_player = Player.get(player_id = attacker_id)
+    def aplay_defense_effect(self, defensor_id, attacker_id,card_id):
 
-        position_objective = objective_player.player_position
-        position_att = attacker_player.player_position
+        with db_session:
+            target = Player.get(player_id = defensor_id)        
+            cause = Player.get(player_id = attacker_id)
 
-        #swap
-        temp = position_objective
-        position_objective = position_att
-        position_att = position_objective
+            target_old_pos = target.player_position
+            target.player_position = cause.player_position
+            cause.player_position = target_old_pos
+            commit()
 
-        swap_doors(objective_player, attacker_player)
-        commit()
-
+        swap_doors(defensor_id,attacker_id)
         return True
+
     
     def fullfile_efect(self, target_id):
         return True
