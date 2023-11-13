@@ -40,30 +40,24 @@ def get_Hand(player):
 
 @router.get("/players/{player_id}/{match_id}")
 async def get_hand(player_id: int, match_id: int) -> hand:
-    #try :
-    player = get_jugador(player_id)
+    try :
+        player = get_jugador(player_id)
 
-    if player.player_current_match_id == match_id :
-        message = "El jugador no pertenece a la partida indicada"
-        status_code = 406 # no acceptable
-        return JSONResponse(content=message, status_code=status_code)
-    
-    match = get_match(match_id)
+        if player.player_current_match_id == match_id :
+            message = "El jugador no pertenece a la partida indicada"
+            status_code = 406 # no acceptable
+            return JSONResponse(content=message, status_code=status_code)
+        
+        match = get_match(match_id)
 
-    if match.match_status != match_status.INITIALIZED.value:
-        message = "El jugador no pertenece a una partida iniciada"
-        status_code = 406 # no acceptable
-        return JSONResponse(content=message, status_code=status_code)
+        if match.match_status != match_status.INITIALIZED.value:
+            message = "El jugador no pertenece a una partida iniciada"
+            status_code = 406 # no acceptable
+            return JSONResponse(content=message, status_code=status_code)
 
-    player_hand = get_Hand(player)
+        player_hand = get_Hand(player)
 
-    return hand(cartas =player_hand)
-    '''
+        return hand(cartas =player_hand)
     except ObjectNotFound as e: 
         content = str(e)
         return JSONResponse(content=content, status_code=404)
-
-    except Exception as e:
-        content = f"Error al acceder a los datos de {player_id}"
-        return JSONResponse(content = content, status_code = 410) #comportamiento inesperado
-    '''

@@ -10,11 +10,14 @@ from pydantic import BaseModel
 import json 
 from typing import List
 from definitions import player_roles
-
+from api.match.match_websocket import manager
+from api.messages import iniciar_defensa, start_exchange_seduction,fin_turno, end_or_exchange
+from api.player.defend import discard_Card
 router = APIRouter()
 
+
 @db_session
-def check_pre_conditions(id_player,id_card):
+def check_pre_conditions(id_player,id_card):    
     #jugador tiene la carta
     get_card = Card.get(card_id = id_card)
     player_has_card = get_card.card_player.player_id == id_player
@@ -49,6 +52,11 @@ def can_player_defend_himself(id_player,id_card):
         return defense
     else:
         return False #CAMBIAR POR FALSE
+
+@db_session
+def get_match_id(player_id):
+    player = Player.get(player_id = player_id)
+    return player.player_current_match_id.match_id
 
 @db_session
 def get_card_name(id_card):
@@ -91,7 +99,10 @@ def posible_response(card_id):
 
 @db_session
 def fullfile_efect(target_id,id_card):
-    return True
+    card_name = (Card.get(card_id = id_card)).card_cardT.cardT_name 
+    card_used = Template_Diccionary[card_name]
+    card_used.fullfile_efect(target_id)
+
 
 @db_session
 def players_status_after_play_card(id_player,oponent_id,defense,cards_names,is_end_game,defense_with):
@@ -129,7 +140,6 @@ def is_end_game(id_card):
         response = humans_alive
     return response
 
-
 @router.put("/carta/jugar/{player_id}/{card_id}/{oponent_id}")
 async def play_card(player_id : int, card_id : int, oponent_id : int):
     if check_pre_conditions(player_id, card_id):
@@ -137,13 +147,23 @@ async def play_card(player_id : int, card_id : int, oponent_id : int):
         valid_play = response[0]
         card_name = response[1]
         end_game = is_end_game(card_id)
+        match_id = get_match_id(player_id)
         if valid_play:
             if can_player_defend_himself(oponent_id,card_id) and oponent_id != player_id:
                 defend_with = posible_response(card_id)
-                content = players_status_after_play_card(player_id,oponent_id,True,card_name,end_game,defend_with)                
+                content = players_status_after_play_card(player_id,oponent_id,True,card_name,end_game,defend_with)
+                discard_Card(card_id)
+                await iniciar_defensa(match_id,oponent_id,defend_with,player_id,get_card_name(card_id), card_id, "defensa")   
+            elif card_name == ["seduccion"]:
+                discard_Card(card_id)
+                await start_exchange_seduction(match_id,player_id, oponent_id)
+                content = players_status_after_play_card(player_id,oponent_id,True,[],end_game,[])
             else:
                 content = players_status_after_play_card(player_id,oponent_id,False,card_name,end_game,[])
                 fullfile_efect(oponent_id,card_id)
+                discard_Card(card_id)
+                await end_or_exchange(match_id,player_id)
+
             return JSONResponse(content = content, status_code = 200)
         else:
             content = "Jugada invalida"
@@ -151,5 +171,3 @@ async def play_card(player_id : int, card_id : int, oponent_id : int):
     else: 
         content = "No se cumplen las precondiciones"
         return JSONResponse(content = content, status_code = 401)
-   
-

@@ -5,6 +5,7 @@ from definitions import cards_subtypes, card_position
 from fastapi.responses import JSONResponse
 import random
 
+
 from abc import ABC, abstractmethod
 
 #chequa que el jugador sea alguno del costado
@@ -14,13 +15,13 @@ def adjacent_players(player_cause_id,target_id):
     target = Player.get(player_id = target_id)
     match_id = cause.player_current_match_id.match_id
     if cause == None or target== None:
-        return False
+        return None
     player_counter = cause.player_lobby.lobby_pcount
 
     cause_position = cause.player_position
     target_position = target.player_position
     if (target.player_dead == True):
-        return False
+        return (False,False)
 
     left = (cause_position - 1) % player_counter 
     right = (cause_position + 1) % player_counter
@@ -34,6 +35,22 @@ def adjacent_players(player_cause_id,target_id):
         player_right = Player.select (lambda p: p.player_current_match_id.match_id == match_id and p.player_position == right).first()
 
     return (left == target_position, right == target_position)
+
+@db_session
+def swap_doors(player_id_1,player_id_2):
+    p1 = Player[player_id_1]
+    p2 = Player[player_id_2]
+
+    aux_left = p1.player_exchangeL
+    aux_rigth = p1.player_exchangeR
+
+    p1.player_exchangeL = p2.player_exchangeL
+    p1.player_exchangeR = p2.player_exchangeR
+
+    p2.player_exchangeL = aux_left
+    p2.player_exchangeR = aux_rigth
+
+    commit()
 
 class card_template(ABC):
     def __init__(self,isPanic,alejate_type,effect,name) -> None:
@@ -50,7 +67,7 @@ class card_template(ABC):
         pass
 
     @abstractmethod
-    def aplay_defense_effect(defensor_id, attacker_id):
+    def aplay_defense_effect(defensor_id, attacker_id,card_id):
         pass
 
     @abstractmethod
@@ -68,24 +85,38 @@ class lanzallamas_T(card_template):
         is_adjacent = adjacent_players(player_cause_id, target_id)
         valid = is_adjacent[0] or is_adjacent[1]
 
-        # cuando se implemente cuarentena remplazar que revice si el player_cause esta en cuarentena
-        in_quarantine = False 
+        player = Player[player_cause_id]
+        if player.player_quarentine_count > 0:
+            return False
 
-        return valid and (not in_quarantine)
+        return valid
     
 
     @db_session
     def aplicar_efecto(self,objective_id,player_cause_id):
         objective_player = Player.get(player_id = objective_id)
+
+        objective_player = Player[objective_id]
+        cause_player = Player[player_cause_id]
+
+        side = adjacent_players(player_cause_id,objective_id)
+
+        if side[0]:
+            cause_player.player_exchangeL = objective_player.player_exchangeL 
+        elif side[1]:
+            cause_player.player_exchangeR = objective_player.player_exchangeR
+
         objective_player.player_dead = True
+
         commit()
         return []
         
-    def aplay_defense_effect(self,defensor_id, attacker_id):
+    def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
         return True
     
     @db_session
     def fullfile_efect(self,target_id):
+        
         target = Player.get(player_id = target_id)
 
         target_hand = list(target.player_cards)
@@ -95,7 +126,6 @@ class lanzallamas_T(card_template):
             card.card_player = None
 
         commit()
-    
         return True
 
 cosa_Effect = "something"
@@ -111,7 +141,7 @@ class laCosa_T(card_template):
     def aplicar_efecto(self,objective_id,player_cause_id):
         return []
 
-    def aplay_defense_effect(self,defensor_id, attacker_id):
+    def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
         pass
     
     def fullfile_efect(self,target_id):
@@ -133,9 +163,20 @@ class NadaDeBarbacoa(card_template):
         return []
 
     @db_session
-    def aplay_defense_effect(self,defensor_id, attacker_id):
+    def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
         objective_player = Player.get(player_id = defensor_id)
+        attacker = Player[attacker_id]
+        objective_player = Player[defensor_id]
+
+        side = adjacent_players(attacker_id,defensor_id)
+
+        if side[0]:
+            attacker.player_exchangeL = True 
+        elif side[1]:
+            attacker.player_exchangeR = True
+
         objective_player.player_dead = False
+
         commit()
         return True
     
@@ -163,7 +204,7 @@ class Sospecha(card_template):
         deck_cards = Card.select(lambda c : c.card_player.player_id == target_id).random(1)[0]
         return [deck_cards.card_cardT.cardT_name]
     
-    def aplay_defense_effect(self,defensor_id, attacker_id):
+    def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
         return True
     
     def fullfile_efect(self,target_id):
@@ -191,7 +232,7 @@ class Analisis(card_template):
             target_hand.append(cards.card_cardT.cardT_name)
         return target_hand
         
-    def aplay_defense_effect(self,defensor_id, attacker_id):
+    def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
         return True
     
     def fullfile_efect(self,target_id):
@@ -213,27 +254,29 @@ class CambioDeLugar(card_template):
         is_adjacent = adjacent_players(player_cause_id, target_id)
         valid = is_adjacent[0] or is_adjacent[1]
 
-        someone_in_quarantine = False # cuando este implementada cuarentena modificar por un metodo
-                                        # que detecte si algun jugador esta en cuarentena    
+        player = Player[player_cause_id]
+        if player.player_quarentine_count > 0:
+            return False
 
         locked_door = False # cuando este implementada puerta atrancada modificar por un metodo que detecte 
                             # si hay una puerta atrancada en medio    
-        return valid and (not someone_in_quarantine) and (not locked_door) 
+        return valid and (not locked_door) 
 
     #se añade pĺayer_id para indicar el jugador que causo la jugada
-    @db_session
     def aplicar_efecto(self,objective_id,player_cause_id): 
-        target = Player.get(player_id = objective_id)        
-        cause = Player.get(player_id = player_cause_id)
+        with db_session:
+            target = Player.get(player_id = objective_id)        
+            cause = Player.get(player_id = player_cause_id)
 
-        target_old_pos = target.player_position
-        target.player_position = cause.player_position
-        cause.player_position = target_old_pos
-        commit()
+            target_old_pos = target.player_position
+            target.player_position = cause.player_position
+            cause.player_position = target_old_pos
+            commit()
 
+        swap_doors(objective_id,player_cause_id)
         return []
 
-    def aplay_defense_effect(self,defensor_id, attacker_id):
+    def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
         return True
     
     def fullfile_efect(self,target_id):
@@ -266,7 +309,7 @@ class VigilaTusEspaldas(card_template):
 
         return []
 
-    def aplay_defense_effect(self,defensor_id, attacker_id):
+    def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
         return True
     
     def fullfile_efect(self,target_id):
@@ -290,19 +333,20 @@ class MasValeQueCorras(card_template):
         return not someone_in_quarantine 
 
     #se añade pĺayer_id para indicar el jugador que causo la jugada
-    @db_session
     def aplicar_efecto(self,objective_id,player_cause_id): 
-        target = Player.get(player_id = objective_id)        
-        cause = Player.get(player_id = player_cause_id)
+        with db_session:
+            target = Player.get(player_id = objective_id)        
+            cause = Player.get(player_id = player_cause_id)
 
-        target_old_pos = target.player_position
-        target.player_position = cause.player_position
-        cause.player_position = target_old_pos
-        commit()
+            target_old_pos = target.player_position
+            target.player_position = cause.player_position
+            cause.player_position = target_old_pos
+            commit()
 
+        swap_doors(objective_id,player_cause_id)
         return []
     
-    def aplay_defense_effect(self,defensor_id, attacker_id):
+    def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
         return True
     
     def fullfile_efect(self,target_id):
@@ -330,7 +374,7 @@ class Whisky(card_template):
 
           return revealed_cards
 
-      def aplay_defense_effect(self,defensor_id, attacker_id):
+      def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
           return True
 
       def fullfile_efect(self,target_id):
@@ -392,13 +436,159 @@ class Infectado(card_template):
 
         return False
 
-      #se añade pĺayer_id para indicar el jugador que causo la jugada
+    def aplicar_efecto(self, objective_id, player_cause_id):
+      return []
+
+    def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
+        return False
+
+aterrador = "Niegate a un intercambio de cartas solicitado por un jugador o por el efecto de una carta. Mira la carta que te has negado a coger y devuélvesela a su dueño."
+
+class Aterrador (card_template):
+
+    def __init__(self):
+        super().__init__(False, cards_subtypes.DEFENSE.value, aterrador, "aterrador")
+
+
+    @db_session
+    def valid_play(self,player_cause_id,target_id):
+        return False
+
+    @db_session
+    def aplicar_efecto(self, objective_id, player_cause_id):
+        return []
+    
+    @db_session
+    def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
+
+        return ["aterrador"]
+
+    def fullfile_efect(self,target_id):
+        return True
+    
+
+seduccion_effect = "Intercambia una carta con cualquier jugador que no este en cuarentena"
+
+class Seduccion(card_template):
+
+      def __init__(self):
+          super().__init__(False, cards_subtypes.ACTION.value, seduccion_effect, "seduccion")
+
+      @db_session
+      def valid_play(self,player_cause_id,target_id):
+            player_target = Player.get(player_id = target_id)
+            is_in_quarnt = player_target.player_quarentine_count
+            if (is_in_quarnt == 0):
+                valid = True
+            else:
+                valid = False 
+            return valid
+
+      @db_session
+      def aplicar_efecto(self, objective_id, player_cause_id):
+        get_player = Player.get(player_id = player_cause_id)
+        match_id = get_player.player_current_match_id.match_id
+        motive = "seduccion"
+        return [motive]
+
+      def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
+          return True
+
+      def fullfile_efect(self,target_id):
+          return True
+
+    
+cuarentena = "No se podra intercambiar, jugar ni robar al jugador que se aplica"
+class Cuarentena(card_template):
+
+    def __init__(self):
+        super().__init__(False, cards_subtypes.OBSTACLE.value, cuarentena, "cuarentena")
+
+    @db_session
+    def valid_play(self,player_cause_id,target_id):
+        is_adjacent = adjacent_players(player_cause_id,target_id)
+        valid = is_adjacent[0] or is_adjacent[1]
+        return valid 
+    
+    @db_session
+    def aplicar_efecto(self, objective_id, player_cause_id):
+        objective_player = Player.get(player_id = objective_id)
+        objective_player.player_quarentine_count = 2
+        commit()
+        return []
+
+    def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
+        return True
+
+    def fullfile_efect(self,target_id):
+        return True
+
+
+hacha_effect = "retira el efecto de puerta atrancada o cuarentena"
+
+class Hacha(card_template):
+
+      def __init__(self):
+          super().__init__(False, cards_subtypes.ACTION.value, hacha_effect, "hacha")
+
+      @db_session
+      def valid_play(self,player_cause_id,target_id):
+            is_adjacent = adjacent_players(player_cause_id, target_id)
+            valid = is_adjacent[0] or is_adjacent[1]
+            is_self = player_cause_id == target_id
+            return valid
+
+      @db_session
+      def aplicar_efecto(self, objective_id, player_cause_id):
+        if objective_id == player_cause_id:
+            player_cause = Player.get(player_id=player_cause_id)
+            if (player_cause.player_quarentine_count > 0):
+                player_cause.player_quarentine_count = 0
+                commit()
+        else:
+            player_cause = Player.get(player_id=player_cause_id)
+            player_objective = Player.get(player_id = objective_id)
+            if (player_objective.player_quarentine_count > 0):
+                player_objective.player_quarentine_count = 0
+                commit()
+            else:
+                is_adyacent = adjacent_players(player_cause_id, objective_id)
+                if is_adyacent[0]:
+                    player_objective.player_exchangeL = True
+                    player_cause. player_exchangeR = True
+                    commit()
+                elif is_adyacent[1]:
+                    player_objective.player_exchangeR = True
+                    player_cause. player_exchangeL = True
+                    commit()
+        return []
+
+      def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
+          return True
+
+      def fullfile_efect(self,target_id):
+          return True
+
+no_gracias = "niegate a un ofrecimiento de intercambio de cartas"
+
+class NoGracias(card_template):
+
+    def __init__(self):
+        super().__init__(False, cards_subtypes.DEFENSE.value, no_gracias, "no_gracias")
+
+
+    @db_session
+    def valid_play(self,player_cause_id,target_id):
+        return False
+
     @db_session
     def aplicar_efecto(self, objective_id, player_cause_id):
         return []
 
-    def aplay_defense_effect(self,defensor_id, attacker_id):
-        return True
+    @db_session
+    def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
+
+        return ["no_gracias"]
 
     def fullfile_efect(self,target_id):
         return True
