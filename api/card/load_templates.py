@@ -14,12 +14,13 @@ cambio_de_lugar = CambioDeLugar()
 mas_vale_que_corras = MasValeQueCorras()
 whisky = Whisky()
 puerta_atrancada = PuertaAtrancada()
+infectado = Infectado()
 aterrador = Aterrador()
 cuarentena = Cuarentena()
 hacha = Hacha()
 seduccion = Seduccion()
-
 cita_a_ciegas = CitaACiegas()
+no_gracias = NoGracias()
 
 Template_Diccionary = {
     "lanzallamas" : lanzallamas,
@@ -33,17 +34,20 @@ Template_Diccionary = {
     "whisky" : whisky,
     "puerta_atrancada" : puerta_atrancada,
     "aterrador" : aterrador,
+    "infectado" : infectado,
     "cuarentena" : cuarentena,
     "hacha" : hacha,
     "seduccion" : seduccion,
+    "no_gracias" : no_gracias,
     "cita_a_ciegas" : cita_a_ciegas
 }
-
 """
 Template_Diccionary = {
     "lanzallamas" : lanzallamas,
     "lacosa"     : la_cosa,
-    "nada_de_barbacoas" : nada_de_barbacoas
+    "nada_de_barbacoas" : nada_de_barbacoas,
+    "no_gracias": no_gracias,
+    "aterrador": aterrador
 }
 """
 

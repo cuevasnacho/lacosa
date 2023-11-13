@@ -30,8 +30,8 @@ def get_match_id(lobby_id):
     match = Match.select(lambda match: match.match_id == lobby.lobby_match.match_id).first()
     return match
 
-@router.put("/lobbys/{lobby_id}/{player_id}")
-async def unirse_lobby(lobby_id : int, player_id : int):
+@router.put("/lobbys/{lobby_id}/{player_id}/{password}")
+async def unirse_lobby(lobby_id : int, player_id : int, password : str):
     try:
         lobby = get_lobby(lobby_id)
     except ObjectNotFound:
@@ -43,6 +43,12 @@ async def unirse_lobby(lobby_id : int, player_id : int):
         message = "El lobby esta lleno"
         status_code = 406
         return JSONResponse(content=message, status_code=status_code)
+    
+    if lobby.lobby_password != None:
+        if password != lobby.lobby_password :
+            message = "Contraseña incorrecta"
+            status_code = 406
+            return JSONResponse(content=message, status_code=status_code)
 
     with db_session:
         #cambiar esto del jugador
@@ -52,5 +58,5 @@ async def unirse_lobby(lobby_id : int, player_id : int):
         #cambiar estado lobby
         lobby_update(lobby_id, match_id)
         commit()
-    return JSONResponse(content=f"jugador {player_id} estas en la partida {lobby_id}", status_code=200)
+        return JSONResponse(content=f"jugador {player_id} estas en la partida {lobby_id}", status_code=200)
 #en db_session, vez de hacer un db_player, tomo el id del jugador y modifico los campos que quiero

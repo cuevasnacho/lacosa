@@ -1,5 +1,4 @@
 from api.match.end_match import match_result 
-from unittest.mock import MagicMock
 from unittest.mock import patch
 from fastapi.testclient import TestClient
 from main import app 
@@ -7,7 +6,6 @@ import os
 import subprocess
 import time 
 import json
-
 client = TestClient(app)
 
 def set_env(file):
@@ -23,9 +21,7 @@ def set_env(file):
     time.sleep(0.1)
 
     with open(file_entrys, 'r') as file:
-    # Itera sobre cada línea del archivo
         for line in file:
-            # Procesa la línea, por ejemplo, imprimiéndola en la consola
             command = get_into_database + " " + line.strip() 
             print(command)
             subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
@@ -50,7 +46,7 @@ def test_end_match_case2():
             assert json.loads(response.content) == response2
 
 #gano los humanos
-response3 = {'jugadores' : ["luca"], 'ganadores' : "Humanos"}
+response3 = {'jugadores' : ["luca"], 'ganadores' : "Los humanos"}
 def test_end_match_case3():
         set_env("db/test_end_match_case3.txt")
         with patch('api.match.end_match.match_result'):     

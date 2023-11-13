@@ -42,12 +42,12 @@ def valid_oponent(player_id,oponent_id,role,oponent_at_left,oponent_at_right,car
     valid = True
 
     if role != player_roles.THE_THING.value:
+        
         player_hand = Card.select(lambda card : card.card_player.player_id == player_id and 
                                     card.card_cardT.cardT_name == "infectado") 
         infect_card = 0
-        for card in player_hand:
+        for card_infected in player_hand:
             infect_card += 1
-
         #no tengo mas de una carta infectado o no se la doy a la cosa
         if card.card_cardT.cardT_name == "infectado":
             if role == player_roles.INFECTED.value:
@@ -58,16 +58,14 @@ def valid_oponent(player_id,oponent_id,role,oponent_at_left,oponent_at_right,car
         if role == player_roles.HUMAN.value:
             if infect_card == 6:
                 valid = valid and False 
-    
     #carta no es seducion -> derecha o izq
-    if motive != "seduccion" and motive != "seduccion_response":
+    if motive != "seduccion" and motive != "seduccion_response" and motive != "fallaste":
         if not (oponent_at_left or oponent_at_right): #el jugador no es adyecente
             valid = valid and False 
 
         #caso puerta atrancada
-        if ((not oponent.player_exchangeL) and oponent_at_left) or ((not oponent.player_exchangeR) and oponent_at_right):
+        if ((not oponent.player_exchangeR) and oponent_at_left) or ((not oponent.player_exchangeL) and oponent_at_right):
             valid = valid and False    
-
     return valid
 
 @db_session
@@ -109,15 +107,15 @@ async def exchange_valid(player_id : int, oponent_id : int, player_card_id : int
     return JSONResponse(content = exchange, status_code = code)
 
 #encargado solamente de chequear si se puede defender
-@router.get("/intercambio/defensa/{player_defense_id}/{attacker_id}/{attacker_card}")
-async def exchange_defense(player_defense_id : int, attacker_id : int, attacker_card : int): 
+@router.get("/intercambio/defensa/{player_defense_id}/{attacker_id}/{attacker_card_id}")
+async def exchange_defense(player_defense_id : int, attacker_id : int, attacker_card_id : int): 
     defense = have_defense_card(player_defense_id)
     with db_session:
         player = Player[player_defense_id]
-        attacker_card = Card[attacker_card]
+        attacker_card = Card[attacker_card_id]
         match_id = player.player_current_match_id.match_id
         if defense[0]:
-            await iniciar_defensa(match_id,player_defense_id,defense[1],attacker_id,attacker_card.card_cardT.cardT_name,"intercambio")
+            await iniciar_defensa(match_id,player_defense_id,defense[1],attacker_id,attacker_card.card_cardT.cardT_name, attacker_card_id, "intercambio")
     return JSONResponse(content = {'data': defense[0]}, status_code = 200)
 
 #swap de cartas 
@@ -137,8 +135,11 @@ async def swap_cards(player_id : int, card1_id : int, oponent_id : int, card2_id
         player_card.card_player = oponent_id
         oponent_card.card_player = player_id
 
-        if player_card.card_cardT.cardT_name == "infectado" and motive != "fallaste":
+        if player_card.card_cardT.cardT_name == "infectado" and motive != "fallaste" and oponent.player_role != player_roles.THE_THING.value:
             oponent.player_role = player_roles.INFECTED.value        
+        if oponent_card.card_cardT.cardT_name == "infectado" and motive != "fallaste" and oponent.player_role != player_roles.THE_THING.value:
+            player.player_role = player_roles.INFECTED.value     
+
         commit()
 
         quarentine_message(match_id,player,player_card.card_cardT.cardT_name,oponent_card.card_cardT.cardT_name)
