@@ -12,7 +12,7 @@ import MazoDescarte from '../Mazo/MazoDescarte.jsx';
 import Chat from '../Chat/Chat.jsx';
 import Finalizar from '../FinalizarPartida/Finalizar.jsx';
 import LogPartida from '../LogPartida/LogPartida.jsx';
-import Defensa from '../Carta/Defensa.jsx';
+import Defensa from '../Defensa/Defensa.jsx'
 import Revelaciones from '../Carta/Revelaciones.jsx';
 
 function Partida () {
