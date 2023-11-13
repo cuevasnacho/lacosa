@@ -20,14 +20,14 @@ function JugarCarta({carta, socket, jugadores, actualizar, mano, stage, actstage
         target_id: target_id,
         target_username: target_username,
       }
-      if (stage == 3) // alejate
-        playCard(carta, target, socket);
-      else            // panico
-        playPanic(carta, target);
-      
-      setTimeout(() => {
+      if (stage == 3) { // alejate
+        await playCard(carta, target, socket)
         getHand(actualizar);
-      }, 100);
+      }
+      else {            // panico
+        await playPanic(carta, target);
+        getHand(actualizar);
+      }
 
     }
     else

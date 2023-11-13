@@ -11,7 +11,7 @@ import json
 from typing import List
 from definitions import player_roles
 from api.match.match_websocket import manager
-from api.messages import iniciar_defensa, start_exchange_seduction,fin_turno, end_or_exchange
+from api.messages import iniciar_defensa, start_exchange_seduction,fin_turno, end_or_exchange, pick_a_card
 from api.player.defend import discard_Card
 router = APIRouter()
 
@@ -211,7 +211,7 @@ def get_valid_card_names(player_id,match_id):
 @db_session 
 async def aplay_effect_panic(player_id,card_name):
     
-    if card_name == ["cita_a_ciegas"]:
+    if card_name == "cita_a_ciegas":
 
         player = Player[player_id]
         match_id = player.player_current_match_id.match_id

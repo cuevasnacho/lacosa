@@ -5,9 +5,8 @@ from fastapi.responses import JSONResponse
 from pony.orm import db_session
 from db.database import Match,Player
 from api.websocket import ConnectionManager
-from api.player.finalize_action import fullfile_action
+from api.player.finalize_action import fullfile_action, cita_a_ciegas_fullfile
 from api.utilsfunctions import can_exchange, get_next_player_id
-
 
 router = APIRouter()
 
