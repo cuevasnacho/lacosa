@@ -76,6 +76,7 @@ def exchange_card_not_panic(player_id,card_id):
 
     card.card_location = card_position.PLAYER.value
     selected_card.card_location = card_position.DECK.value
+    selected_card.card_player = None
 
     card.card_player = player
     commit()
@@ -589,7 +590,7 @@ cita_a_ciegas = "Roba una carta del mazo que no sea de panico" #solo se juega so
 class   CitaACiegas(card_template):
 
     def __init__(self):
-        super().__init__(True,None, cita_a_ciegas, "cita_a_ciegas")
+        super().__init__(True,cards_subtypes.PANIC.value, cita_a_ciegas, "cita_a_ciegas")
 
 
     @db_session
@@ -598,7 +599,7 @@ class   CitaACiegas(card_template):
 
     @db_session
     def aplicar_efecto(self, objective_id, player_cause_id,card_id):
-        exchange_card_not_panic(player_id,card_id)
+        exchange_card_not_panic(player_cause_id,card_id)
         return []
 
     @db_session
