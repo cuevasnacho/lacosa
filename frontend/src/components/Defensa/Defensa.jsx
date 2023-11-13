@@ -97,20 +97,24 @@ function Defensa({dataSocket, manoJugador, setManoJugador, socket, setStage, set
                 </div>
             </ModalHeader>
             <ModalBody className={styles.modalBody}>
-                {is_defense && (
-                    <p>Has sido atacado con {attack_card_name}, te podés defender con: </p>
-                )}
-                {is_intercambio && (
-                    <p>Te quieren intercambiar una carta, te podés defender con: </p>
-                )}
+                <div className={styles.subtitulo}>
+                    {is_defense && (
+                        <p>Has sido atacado con {attack_card_name}, te podés defender con: </p>
+                    )}
+                    {is_intercambio && (
+                        <p>Te quieren intercambiar una carta, te podés defender con: </p>
+                    )}
+                </div>
                 <div className={styles.list}>
                     <ul>
                         {defense_card_list.map((card, index) => (
-                            <li key={index}>
-                                <div className={styles.nombreCarta}>
+                            <li key={index} >
+                                <div className={styles.nombreCarta} data-testid="nombreCarta">
                                     {string_formatter(card)}
                                 </div>
-                                <CustomButton onClick={() => handle_defensa(card, attacker, manoJugador)} label={'Usar'}/>
+                                <div className={styles.boton}>
+                                    <CustomButton onClick={() => handle_defensa(card, attacker, manoJugador)} label={'Usar'}/>
+                                </div>
                             </li>))}
                     </ul>
                 </div>

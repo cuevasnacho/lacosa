@@ -5,30 +5,43 @@
     background-color: #161616;
     color: white;
     text-shadow: 3px;
-    display: flex;
+    flex-direction: row;
+    background-image: url("../../media/designs/lobbyBack.jpg");
+    background-size: 2000px;
+    border: 0 none;
+    outline: none;
+    border-left: 0 none;
 }
 
 .header {
     background-color: #161616;
-    color: white;
-    
+    color: rgb(225, 253, 63);
+    text-align: center;
+    background-image: url("../../media/designs/lobbyBack.jpg");
+    background-size: 1230px;
+    display: flex;
+    border-bottom: 0 none;
+    border-left: 0 none;
 }
 
 .encabezado {
     font-family: 'Creepster', cursive;
     font-size: 40px;
-    display: flex;
-    text-align: center;
+    text-shadow: 15px;
 }
 
 .list {
-    display: inline-block;
+    display: flex;
 }
 
 .nombreCarta {
-    margin-right: 5px;
+    margin-right: 10px; /* Adjust the margin as needed */
 }
 
 .footer {
     background-color: #161616;
+    background-image: url("../../media/designs/lobbyBack.jpg");
+    background-size: 900px;
+    border-top: 0 none;
+    border-left: 0 none;
 }
