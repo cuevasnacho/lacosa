@@ -35,9 +35,11 @@ def card_belong_player(player_id, card_id):
 
 @db_session
 async def next_phase(player_id):
-    match_id = (Player.get(player_id = player_id)).player_current_match_id.match_id
-    await end_or_exchange(match_id,player_id)
-    
+    try : 
+        match_id = (Player.get(player_id = player_id)).player_current_match_id.match_id
+        await end_or_exchange(match_id,player_id)
+    except:
+        print("Error en socket next_phase")
 
 @router.put("/carta/descartar/{player_id}/{id_card}")
 async def discard_card(player_id : int, id_card : int):
