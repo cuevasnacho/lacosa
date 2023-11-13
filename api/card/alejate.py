@@ -450,6 +450,7 @@ class AquiEstoyBien(card_template):
         position_objective = position_att
         position_att = position_objective
 
+        swap_doors(objective_player, attacker_player)
         commit()
 
         return True
