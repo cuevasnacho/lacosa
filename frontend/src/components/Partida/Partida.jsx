@@ -1,4 +1,3 @@
-import { Modal, ModalBody } from 'reactstrap';
 import { useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { httpRequest } from '../../services/HttpService.js';
@@ -14,6 +13,7 @@ import Chat from '../Chat/Chat.jsx';
 import Finalizar from '../FinalizarPartida/Finalizar.jsx';
 import LogPartida from '../LogPartida/LogPartida.jsx';
 import Defensa from '../Carta/Defensa.jsx';
+import Revelaciones from '../Carta/Revelaciones.jsx';
 
 function Partida () {
   const idPlayer = JSON.parse(sessionStorage.getItem('user_id'));
@@ -32,57 +32,7 @@ function Partida () {
   const [mazoDescarteState, setMazoDescarteState] = useState(2);  // Dice que carta se va a mostrar en el mazo de descarte
   const [isOver, setIsOver] = useState(false);
   const [defenseData, setDefenseData] = useState(null);
-
-  const [modalOpen, setModalOpen] = useState(false);
-  const [tieneInfectado, setTieneInfectado] = useState(false);
-
-  function toggleModal() {
-    setTieneInfectado(manoJugador.some(card => card.cartaNombre === 'infectado'));
-    setModalOpen(!modalOpen);
-  }
-
-  function mostrarInfectado() {
-    const mensaje = {
-      action: 'show_cards',
-      data: {
-        card: 'whisky',
-        mostrar: 'infectado',
-      }
-    }
-    const respuesta = {
-      action: 'revelaciones',
-      data: true,
-    }
-    websocket.current.send(JSON.stringify(respuesta));
-    websocket.current.send(JSON.stringify(mensaje));
-    setModalOpen(!modalOpen);
-  }
-
-  function noMostrar() {
-    const respuesta = {
-      action: 'revelaciones',
-      data: false,
-    }
-    websocket.current.send(JSON.stringify(respuesta));
-    setModalOpen(!modalOpen);
-  }
-
-  function mostrarMano() {
-    const mensaje = {
-      action: 'show_cards',
-      data: {
-        card: 'whisky',
-        mostrar: manoJugador,
-      }
-    }
-    const respuesta = {
-      action: 'revelaciones',
-      data: {tieneInfectado},
-    }
-    websocket.current.send(JSON.stringify(mensaje));
-    websocket.current.send(JSON.stringify(respuesta));
-    setModalOpen(!modalOpen);
-  }
+  const [revelaciones, setRevelaciones] = useState(false);
 
   async function getStatus() {
     const responseStatus = await httpRequest({
@@ -148,7 +98,7 @@ function Partida () {
           break;
 
         case 'revelaciones':
-          toggleModal();
+          setRevelaciones(true);
           break;
 
         case 'next_turn':
@@ -230,7 +180,7 @@ function Partida () {
           break;
 
         case 'revelaciones':
-          toggleModal();
+          setRevelaciones(true);
           break;
 
         case 'fin_turno':
@@ -252,27 +202,10 @@ function Partida () {
   return (
     <div className={styles.container}>
       {isOver && <Finalizar idpartida = {idPartida} idjugador={idPlayer}/>}
-      <div className={styles.modalDiv}>
-        <button type='button' onClick={toggleModal}>Abrir Modal</button>
-        <Modal isOpen={modalOpen} toggle={toggleModal} backdrop={false} className={styles.modalWindow}>
-          <ModalBody className={styles.modalBody}>
-            <h4>
-              Se jugo una carta de Revelaciones, ¿Desea mostrar su mano?
-            </h4>
-            <div className={styles.divBotonModal}>
-              <button type='button' onClick={mostrarMano} className={styles.botonModal}>Mostrar mano</button>
-              <button type='button' onClick={noMostrar} className={styles.botonModal}>No mostrar</button>
-              { tieneInfectado && (
-              <button
-                type='button'
-                onClick={mostrarInfectado}
-                className={styles.botonModal}>
-                  Mostrar infectado
-              </button>)}
-            </div>
-          </ModalBody>
-        </Modal>
-      </div>
+      <Revelaciones 
+        manoJugador={manoJugador}
+        ws={websocket.current}
+        show={revelaciones}/>
       <ToastContainer limit={5} pauseOnFocusLoss={false} hideProgressBar autoClose={3000} pauseOnHover={false} transition={Flip}/>
       {stage == 4 && <Defensa
         dataSocket={defenseData}
