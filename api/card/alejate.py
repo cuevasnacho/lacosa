@@ -557,13 +557,13 @@ class Hacha(card_template):
                 commit()
             else:
                 is_adyacent = adjacent_players(player_cause_id, objective_id)
-                if is_adyacent[0]:
-                    player_objective.player_exchangeL = True
-                    player_cause. player_exchangeR = True
-                    commit()
-                elif is_adyacent[1]:
+                if is_adyacent[0]:#el jugador objetivo esta a la izaquierda
                     player_objective.player_exchangeR = True
                     player_cause. player_exchangeL = True
+                    commit()
+                elif is_adyacent[1]:#el jugador objetivo esta a la derecha
+                    player_objective.player_exchangeL = True
+                    player_cause. player_exchangeR = True
                     commit()
         return []
 
