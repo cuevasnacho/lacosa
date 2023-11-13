@@ -58,8 +58,7 @@ def can_player_defend_himself(id_player,id_card):
                 defense = True
             if (card.card_cardT.cardT_name == "cambio_de_lugar" and cards.card_cardT.cardT_name == "aqui_estoy_bien"):
                 defense = True
-            #HAY QUE AGREGAR TODAS LAS CONVINACIONES DE CARTA ATAQUE-CARTA DEFENSA POSIBLES
-            #elif (....) 
+
         return defense
     else:
         return False #CAMBIAR POR FALSE

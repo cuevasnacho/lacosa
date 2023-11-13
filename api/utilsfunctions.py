@@ -40,4 +40,8 @@ def can_exchange(player_id, match_id):
     else: # ronda va hacia la izquierda
         locked_door = not (player.player_exchangeL)
 
-    return not locked_door
+    next_player_id = get_next_player_id(player_id,match_id)
+    next_player = Player[next_player_id]
+    in_quarentine = next_player.player_quarentine_count > 0
+
+    return not locked_door and not in_quarentine
