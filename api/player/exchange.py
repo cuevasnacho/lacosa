@@ -59,7 +59,6 @@ def valid_oponent(player_id,oponent_id,role,oponent_at_left,oponent_at_right,car
         if role == player_roles.HUMAN.value:
             if infect_card == 6:
                 valid = valid and False 
-    print(valid)
     #carta no es seducion -> derecha o izq
     if motive != "seduccion" and motive != "seduccion_response" and motive != "fallaste":
         if not (oponent_at_left or oponent_at_right): #el jugador no es adyecente
@@ -68,7 +67,6 @@ def valid_oponent(player_id,oponent_id,role,oponent_at_left,oponent_at_right,car
         #caso puerta atrancada
         if ((not oponent.player_exchangeR) and oponent_at_left) or ((not oponent.player_exchangeL) and oponent_at_right):
             valid = valid and False    
-    print(valid)
     return valid
 
 @db_session
@@ -106,7 +104,6 @@ async def exchange_valid(player_id : int, oponent_id : int, player_card_id : int
         await sol_intercambio(player.player_current_match_id.match_id,oponent_id,player_card_id,motive,player_id)
 
     exchange = is_card_valid and is_oponent_valid
-    print(is_card_valid, is_oponent_valid)
     code = 200 if exchange else 401
     return JSONResponse(content = exchange, status_code = code)
 
