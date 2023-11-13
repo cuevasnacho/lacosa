@@ -6,16 +6,23 @@ from api.utilsfunctions import can_exchange, get_next_player_id
 
 
 async def end_or_exchange(match_id,player_id):
-    motive = "inicio_intercambio"
-    next_player_id = get_next_player_id(player_id, match_id)
-    if can_exchange(player_id,match_id):
-        await iniciar_intercambio(match_id,player_id,motive,next_player_id)
-    else:
-        await fin_turno(match_id, player_id)
+    try:
+        motive = "inicio_intercambio"
+        next_player_id = get_next_player_id(player_id, match_id)
+        if can_exchange(player_id,match_id):
+            await iniciar_intercambio(match_id,player_id,motive,next_player_id)
+        else:
+            await fin_turno(match_id, player_id)
+    except:
+        print("Error en end_or_exchange")
 
 async def start_exchange_seduction(match_id,player_id,objective_id):
-    motive = "seduccion"
-    await iniciar_intercambio(match_id,player_id,motive,objective_id)
+    try :
+        motive = "seduccion"
+        await iniciar_intercambio(match_id,player_id,motive,objective_id)
+    except: 
+        print("Error start_exchange_seduction")
+
 
 
 def genrate_posible_play(player_id):

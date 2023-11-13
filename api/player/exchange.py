@@ -138,6 +138,9 @@ async def swap_cards(player_id : int, card1_id : int, oponent_id : int, card2_id
 
         if player_card.card_cardT.cardT_name == "infectado" and motive != "fallaste":
             oponent.player_role = player_roles.INFECTED.value        
+        if oponent_card.card_cardT.cardT_name == "infectado" and motive != "fallaste":
+            player.player_role = player_roles.INFECTED.value     
+             
         commit()
 
         quarentine_message(match_id,player,player_card.card_cardT.cardT_name,oponent_card.card_cardT.cardT_name)

@@ -4,6 +4,8 @@
 "insert into Lobby (lobby_id,lobby_name,lobby_max,lobby_min,lobby_password,lobby_pcount,lobby_match) VALUES (1,'l1',6,5,'ok',1,1);"
 "insert into CardTemplate (cardT_id,cardT_subtype,cardT_type,cardT_effect,cardT_name) VALUES(1,2,2,'lanzallamas','lanzallamas');"
 "insert into CardTemplate (cardT_id,cardT_subtype,cardT_type,cardT_effect,cardT_name) VALUES(2,3,3,'nada_de_barbacoas','nada_de_barbacoas');"
-"insert into Player (player_id, player_name, player_ingame, player_position, player_exchangeR, player_exchangeL, player_role, player_dead, player_isHost, player_lobby, player_current_match_id) VALUES (2,'tomas',True,0,0,0,0,False,True,1,1);"
-"insert into Player (player_id, player_name, player_ingame, player_position, player_exchangeR, player_exchangeL, player_role, player_dead, player_isHost, player_lobby, player_current_match_id) VALUES (1,'nacho',True,0,0,0,0,False,False,1,1);"
-"insert into Player (player_id, player_name, player_ingame, player_position, player_exchangeR, player_exchangeL, player_role, player_dead, player_isHost, player_lobby, player_current_match_id) VALUES (3,'luca',True,0,0,0,0,False,False,1,1);"
+"insert into Player (player_id, player_name, player_ingame, player_position, player_exchangeR, player_exchangeL, player_role, player_dead, player_isHost, player_lobby, player_current_match_id,player_quarentine_count) VALUES (2,'tomas',True,0,0,0,0,False,True,1,1,0);"
+"insert into Player (player_id, player_name, player_ingame, player_position, player_exchangeR, player_exchangeL, player_role, player_dead, player_isHost, player_lobby, player_current_match_id,player_quarentine_count) VALUES (1,'nacho',True,0,0,0,0,False,False,1,1,0);"
+"insert into Player (player_id, player_name, player_ingame, player_position, player_exchangeR, player_exchangeL, player_role, player_dead, player_isHost, player_lobby, player_current_match_id,player_quarentine_count) VALUES (3,'luca',True,0,0,0,0,False,False,1,1,0);"
+"insert into Player (player_id, player_name, player_ingame, player_position, player_exchangeR, player_exchangeL, player_role, player_dead, player_isHost, player_lobby, player_current_match_id,player_quarentine_count) VALUES (4,'asdadasd',True,0,0,0,1,False,False,1,1,0);"
+
