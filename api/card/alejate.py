@@ -15,6 +15,17 @@ def discard_Card_cAc(card_id):
     card.card_player = None 
     commit()
 
+@db_session
+def discard_to_deck_cAc(match_id):
+    discard = list(Card.select(lambda c : c.card_match.match_id == match_id and
+                           c.card_location == card_position.DISCARD.value))
+    match = Match[match_id]
+    
+    for card in discard:
+        card.card_location = card_position.DECK.value
+        match.match_cardsCount += 1
+        commit()
+
 
 def get_card_not_panic_cAc(match_id):
         deck_cards = Card.select(lambda c : c.card_match.match_id == match_id and
