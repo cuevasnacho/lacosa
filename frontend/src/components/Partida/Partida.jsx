@@ -158,6 +158,10 @@ function Partida () {
               }
             });
           break;
+
+        case 'revelaciones':
+          toggleModal();
+          break;
         
         case 'fin_turno':
           toastStage(info.action);
@@ -243,7 +247,8 @@ function Partida () {
             <div className={styles.divBotonModal}>
               <button type='button' onClick={mostrarMano} className={styles.botonModal}>Mostrar mano</button>
               <button type='button' onClick={noMostrar} className={styles.botonModal}>No mostrar</button>
-              { tieneInfectado && (<button 
+              { tieneInfectado && (
+              <button 
                 type='button' 
                 onClick={mostrarInfectado} 
                 className={styles.botonModal}>
