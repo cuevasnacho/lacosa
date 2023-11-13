@@ -87,3 +87,10 @@ async def show_cards_one(match_id,player_id,cards_to_show):
         await manager.send_data_to(content,match_id,player_id)
     except:
         print("Error en show_cards")
+
+async def pick_a_card(match_id,player_id,valid_cards):
+    try:
+        content = {'action': 'pick_a_card', 'data': valid_cards}
+        await manager_activo.send_data_to(content,match_id,player_id)
+    except:
+        print("error en seleccionar carta")

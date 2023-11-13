@@ -20,6 +20,7 @@ class cards_subtypes(Enum):
     ACTION = 2
     DEFENSE = 3
     OBSTACLE = 4
+    PANIC = 5
 
 class player_status(Enum):
     WAITING = 1

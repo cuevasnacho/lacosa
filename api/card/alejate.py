@@ -8,6 +8,56 @@ import random
 
 from abc import ABC, abstractmethod
 
+@db_session
+def discard_Card_cAc(card_id):
+    card = Card.get(card_id = card_id)
+    card.card_location = card_position.DISCARD.value
+    card.card_player = None 
+    commit()
+
+@db_session
+def discard_to_deck_cAc(match_id):
+    discard = list(Card.select(lambda c : c.card_match.match_id == match_id and
+                           c.card_location == card_position.DISCARD.value))
+    match = Match[match_id]
+    
+    for card in discard:
+        card.card_location = card_position.DECK.value
+        match.match_cardsCount += 1
+        commit()
+
+
+def get_card_not_panic_cAc(match_id):
+        deck_cards = Card.select(lambda c : c.card_match.match_id == match_id and
+                           c.card_location == card_position.DECK.value and not(c.card_cardT.cardT_type))
+
+        if not deck_cards:
+            discard_to_deck_cAc(match_id)
+            deck_cards = Card.select(lambda c : c.card_match.match_id == match_id and
+                           c.card_location == card_position.DECK.value and not(c.card_cardT.cardT_type))
+
+        if deck_cards :
+            card_steal = deck_cards.random(1)[0]
+            return card_steal
+
+
+        return deck_cards
+
+@db_session
+def exchange_card_not_panic(player_id,selected_card_id):
+    player = Player.get(player_id = player_id)
+    match = player.player_current_match_id
+    selected_card = Card.get(card_id = selected_card_id)
+
+    card = get_card_not_panic_cAc(match.match_id)
+
+    card.card_location = card_position.PLAYER.value
+    selected_card.card_location = card_position.DECK.value
+    selected_card.card_player = None
+
+    card.card_player = player
+    commit()
+
 #chequa que el jugador sea alguno del costado
 @db_session
 def adjacent_players(player_cause_id,target_id):
@@ -686,6 +736,32 @@ class Fallaste(card_template):
     def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
 
         return ["fallaste"]
+
+    def fullfile_efect(self,target_id):
+        return True
+
+
+cita_a_ciegas = "Roba una carta del mazo que no sea de panico" #solo se juega sobre si mismo
+
+class   CitaACiegas(card_template):
+
+    def __init__(self):
+        super().__init__(True,cards_subtypes.PANIC.value, cita_a_ciegas, "cita_a_ciegas")
+
+
+    @db_session
+    def valid_play(self,player_cause_id,target_id):
+        valid = player_cause_id == target_id
+        return valid
+
+    @db_session
+    def aplicar_efecto(self, objective_id, player_cause_id,card_id):
+        return ["cita_a_ciegas"]
+
+    @db_session
+    async def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
+        
+        return True
 
     def fullfile_efect(self,target_id):
         return True
