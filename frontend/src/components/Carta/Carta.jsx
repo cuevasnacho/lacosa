@@ -29,6 +29,7 @@ function Carta({ carta, stage, actstage, data, actualizar, mano, socket, jugador
     }
 
     function intCitaCiegas() {
+        const player_id = JSON.parse(window.sessionStorage.getItem('user_id'));
         const mensaje = {
             action: "pick_a_card",
             data: {
@@ -79,7 +80,7 @@ function Carta({ carta, stage, actstage, data, actualizar, mano, socket, jugador
                     Intercambiar
                 </button>
             )}
-            {(isHover && stage == 8 && carta.cartaNombre != 'lacosa') && (
+            {(isHover && stage == 8 && data.some((card) => card == carta.cartaNombre)) && (
                 <button type='button' className={styles.botones} onClick={intCitaCiegas}>
                     Intercambiar
                 </button>

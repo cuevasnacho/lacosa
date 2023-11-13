@@ -188,7 +188,7 @@ function Partida () {
 
         case 'pick_a_card':
           console.log(info.data);
-          setManoJugador(info.data);
+          setSocketData(info.data);
           setStage(8);
           break;
       }
