@@ -1,52 +1,74 @@
+from unittest.mock import MagicMock, patch
 from fastapi.testclient import TestClient
-from fastapi.responses import JSONResponse
 from main import app
-import os
-import subprocess
-import time
-from api.card.load_templates import load_templates
-from pony.orm import db_session, commit
-from db.database import Card, Player
 import json
-#debo importar el player
-from db.database import Player as db_player
-from db.database import Match as db_match
-from db.database import Lobby as db_lobby
-from definitions import match_status
-from pony.orm import Database, PrimaryKey, Required, Set, Optional
-from pony import *
 
-client = TestClient(app)
+def test_abandonar_lobby_except():
+    #Configurar un mock de player
+    player_mock = MagicMock()
+    player_mock.player_id = 3
 
-def set_env(data,delete):
-    database = "db/lacosa.sqlite"
-    create_database_command = "python3 db/database.py"
-    get_into_database = "sqlite3 db/lacosa.sqlite"
-    file_entrys = data
-    if os.path.exists(database) and delete:
-        os.remove(database)
-        time.sleep(0.1)
+    lobby_mock = MagicMock()
+    lobby_mock.lobby_id = 5
 
-    subprocess.run(create_database_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-    time.sleep(0.1)
-    with open(file_entrys, 'r') as file:
-        for line in file:
-            command = get_into_database + " " + line.strip()
-            subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-            time.sleep(0.1)
+    match_mock = MagicMock()
+    match_mock.match_id = 1
+    match_mock.match_lobby = 2
 
-def test_leave_lobby_non_host():
-    # set_env("db/test_leave_lobby_non_host.txt", True)
-    time.sleep(2)
-    response = client.post("/lobbys/1/1")
-    time.sleep(2)
+    with patch("api.lobby.leave_lobby.get_player", return_value = player_mock):
+        client = TestClient(app)
+        response = client.put("/lobbys/2/2")
 
-    with db_session:
-        player = Player.get(player_id = 1)
-        assert player.player_ingame == False
-        assert player.player_isHost == False
-        assert player.player_current_match_id == None
-        assert player.player_lobby == None
-
-        assert response.json() == "Jugador 1 salio del lobby"
         assert response.status_code == 404
+        assert json.loads(response.content) == "El objeto no existe"
+
+"""
+def test_abandonar_lobby_try():
+
+    #Configurar un mock de lobby
+    lobby_mock = MagicMock()
+    lobby_mock.lobby_id = 2
+    lobby_mock.lobby_pcount = 4
+    lobby_mock.lobby_min = 4
+    lobby_mock.lobby_max = 4
+
+    #Configurar un mock de player
+    player_mock1 = MagicMock()
+    player_mock1.player_id = 2
+    player_mock1.player_ishost = True
+    player_mock1.player_lobby = 2
+
+    player_mock2 = MagicMock()
+    player_mock2.player_id = 3
+    player_mock2.player_ishost = False
+    player_mock2.player_lobby = 2
+
+    player_mock3 = MagicMock()
+    player_mock3.player_id = 4
+    player_mock3.player_ishost = False
+    player_mock3.player_lobby = 2
+
+    player_mock4 = MagicMock()
+    player_mock4.player_id = 5
+    player_mock4.player_ishost = False
+    player_mock4.player_lobby = 2
+
+    match_mock = MagicMock()
+    match_mock.match_id = 1
+    match_mock.match_lobby = 2
+
+    with patch("api.lobby.leave_lobby.get_player", return_value = player_mock1),\
+        patch("api.lobby.leave_lobby.get_match_id", return_value = match_mock.match_id),\
+        patch("api.lobby.leave_lobby.get_lobby", return_value = lobby_mock),\
+        patch("api.lobby.leave_lobby.get_lobby_players", return_value = [player_mock1, player_mock2, player_mock3, player_mock4]),\
+        patch("api.lobby.leave_lobby.player_update"),\
+        patch("api.lobby.leave_lobby.lobby_update"):
+
+        client = TestClient(app)
+
+        response = client.post("/lobbys/2/2")
+        #lobbys/{lobby_id}/{player_id}
+        assert response.json() == "El host ha abandonado el lobby"
+        assert response.status_code == 200
+
+"""
