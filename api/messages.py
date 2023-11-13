@@ -94,3 +94,12 @@ async def pick_a_card(match_id,player_id,valid_cards):
         await manager_activo.send_data_to(content,match_id,player_id)
     except:
         print("error en seleccionar carta")
+
+async def entre_nosotros(data, match_id, objective_id):
+    try:
+        content = {'action' : "que_quede_entre_nosotros", 'data' : data}
+        print(content)
+        print(objective_id)
+        await manager_activo.send_data_to(content,match_id,objective_id)
+    except:
+        print("Error en que quede entre nosotros")

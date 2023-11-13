@@ -21,6 +21,7 @@ hacha = Hacha()
 seduccion = Seduccion()
 cita_a_ciegas = CitaACiegas()
 no_gracias = NoGracias()
+que_quede_entre_nosotros = QueQuedeEntreNosotros()
 """
 Template_Diccionary = {
     "lanzallamas" : lanzallamas,
@@ -39,14 +40,14 @@ Template_Diccionary = {
     "hacha" : hacha,
     "seduccion" : seduccion,
     "no_gracias" : no_gracias,
-    "cita_a_ciegas" : cita_a_ciegas
+    "cita_a_ciegas" : cita_a_ciegas,
 }
 """
 Template_Diccionary = {
     "lanzallamas" : lanzallamas,
     "lacosa"     : la_cosa,
     "nada_de_barbacoas" : nada_de_barbacoas,
-    "cita_a_ciegas" : cita_a_ciegas
+    "que_quede_entre_nosotros" : que_quede_entre_nosotros,
 }
 
 

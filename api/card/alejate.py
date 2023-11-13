@@ -685,3 +685,25 @@ class   CitaACiegas(card_template):
 
     def fullfile_efect(self,target_id):
         return True
+
+que_quede_entre_nosotros = "mostrar las cartas a un jugador adyacente"
+class QueQuedeEntreNosotros(card_template):
+    def __init__(self):
+        super().__init__(True, cards_subtypes.PANIC.value, que_quede_entre_nosotros, "que_quede_entre_nosotros")
+
+    @db_session
+    def valid_play(self,player_cause_id,target_id):
+        is_adjacent = adjacent_players(player_cause_id,target_id)
+        valid = is_adjacent[0] or is_adjacent[1]
+        return valid 
+
+    @db_session
+    def aplicar_efecto(self, objective_id, player_cause_id,card_id):
+        return ["que_quede_entre_nosotros"]
+
+    @db_session
+    async def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
+        return True
+
+    def fullfile_efect(self,target_id):
+        return True
