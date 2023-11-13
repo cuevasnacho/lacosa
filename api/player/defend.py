@@ -155,8 +155,6 @@ async def defend(card_id : int, defensor_id : int,  attacker_id : int,exchange_c
 
         steal_card_not_panic(defensor_id)
 
-        await end_or_exchange(match_id, attacker_id)
-
         return response
     else :
         return is_valid[1]

@@ -6,14 +6,12 @@ from api.utilsfunctions import can_exchange, get_next_player_id
 
 
 async def end_or_exchange(match_id,player_id):
-    try : 
+    try:
         motive = "inicio_intercambio"
         next_player_id = get_next_player_id(player_id, match_id)
-        if can_exchange(next_player_id,match_id):
-            print("can exchange")
+        if can_exchange(player_id,match_id):
             await iniciar_intercambio(match_id,player_id,motive,next_player_id)
         else:
-            print("cant exchange")
             await fin_turno(match_id, player_id)
     except:
         print("Error en end_or_exchange")
