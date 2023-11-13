@@ -48,7 +48,6 @@ def valid_oponent(player_id,oponent_id,role,oponent_at_left,oponent_at_right,car
         infect_card = 0
         for card_infected in player_hand:
             infect_card += 1
-        print(card.card_cardT.cardT_name)
         #no tengo mas de una carta infectado o no se la doy a la cosa
         if card.card_cardT.cardT_name == "infectado":
             if role == player_roles.INFECTED.value:
@@ -59,7 +58,6 @@ def valid_oponent(player_id,oponent_id,role,oponent_at_left,oponent_at_right,car
         if role == player_roles.HUMAN.value:
             if infect_card == 6:
                 valid = valid and False 
-    print(valid)
     #carta no es seducion -> derecha o izq
     if motive != "seduccion" and motive != "seduccion_response" and motive != "fallaste":
         if not (oponent_at_left or oponent_at_right): #el jugador no es adyecente
