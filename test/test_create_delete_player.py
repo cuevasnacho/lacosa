@@ -50,6 +50,7 @@ def test_create_delete_player(mock_create_player):
 
     with db_session:
         assert db_player.get(player_id = 2) == None
+    set_env()
 
 # para correr:
 #1 borrar lacosa.sqlite
