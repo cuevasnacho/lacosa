@@ -18,6 +18,7 @@ aterrador = Aterrador()
 cuarentena = Cuarentena()
 hacha = Hacha()
 seduccion = Seduccion()
+revelaciones = Revelaciones()
 
 Template_Diccionary = {
     "lanzallamas" : lanzallamas,
@@ -31,14 +32,15 @@ Template_Diccionary = {
     "whisky" : whisky,
     "puerta_atrancada" : puerta_atrancada,
     "aterrador" : aterrador,
-    "cuarentena" : cuarentena
+    "cuarentena" : cuarentena,
     "hacha" : hacha,
-    "seduccion" : seduccion
+    "seduccion" : seduccion,
+    "revelaciones" : revelaciones
 }
 
 def already_load(name):
     with db_session:
-        return db_cardT.exists(cardT_name = name) 
+        return db_cardT.exists(cardT_name = name)
 
 
 @db_session
@@ -53,12 +55,11 @@ def load_templates():
                                        cardT_type = baseTemp.type,
                                        cardT_effect = baseTemp.effect,
                                        cardT_name = baseTemp.name)
-        
+
         commit() #genera todas las inserciones juntas
 
         return True #ok
-    
+
     except Exception as e:
         print(f"Error durante la carga de las plantillas: {e}")
         return False  # Fallo
-    

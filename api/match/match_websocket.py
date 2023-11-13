@@ -6,6 +6,7 @@ from pony.orm import db_session
 from db.database import Match
 from api.websocket import ConnectionManager
 from api.player.finalize_action import fullfile_action
+from api.match.next_player_id import get_next_player_id
 
 router = APIRouter()
 
@@ -21,12 +22,12 @@ async def first_player(match_id):
     await manager_activo.send_data_to(content, match_id, player_id)
 
 @router.websocket("/ws/match/pasivo/{match_id}/{player_id}")
-async def match_websocket(websocket : WebSocket,match_id : int, player_id : int):  
+async def match_websocket(websocket : WebSocket,match_id : int, player_id : int):
     await manager.connect(websocket,match_id,player_id)
     try:
         while True:
             ws = await websocket.receive_json()
-            if ws['action'] == 'discard_card': 
+            if ws['action'] == 'discard_card':
                 card_type = ws['data']
                 content = {'action' : 'discard_card','data' : card_type} #forma de return para las cartas
                 await manager.broadcast(content,match_id)
@@ -49,9 +50,9 @@ async def match_websocket(websocket : WebSocket,match_id : int, player_id : int)
             elif ws['action'] == 'notify_defense':
                 #ws['data'] = {defensor_id,  attack_card_name,  atacante_id, atacante_username, card_defense_name}
                 player_id = ws['data']['defensor_id']
-                
+
                 content = {'action': 'notify_defense', 'data': ws['data']}
-                
+
                 await manager.send_data_to(content, match_id, player_id)
             elif ws['action'] == 'play_defense':
                 #data ={username_defensor, nombre_carta, username_atacante}
@@ -61,7 +62,7 @@ async def match_websocket(websocket : WebSocket,match_id : int, player_id : int)
                 #data ={defensor_id, attack_card_name}
                 fullfile_action(ws['data']['defensor_id'], ws['data']['attack_card_name'])
                 # ver si es nescesario enviar un mensaje
-            
+
             elif ws['action'] == 'end_game':
                 content = {'action' : 'end_game', 'data' : ws['data']}
                 await manager.broadcast(content,match_id)
@@ -69,15 +70,20 @@ async def match_websocket(websocket : WebSocket,match_id : int, player_id : int)
             elif ws['action'] == 'message':
                 content = {'action': 'message', 'data': ws['data']}
                 await manager.broadcast(content,match_id)
-        
+
+            elif ws['action'] == 'revelaciones':
+                if ws['data']['mostrar_infectado'] == False: #variable mostrar infectado: muestra si está infectado o no
+                    content = {'action': 'revelaciones', 'data': ws['data']['id_iniciador']}
+                    id_next = get_next_player_id(player_id, match_id)
+
     except WebSocketDisconnect:
         manager.disconnect(websocket,match_id,player_id)
         content = "Websocket desconectado"
-        return JSONResponse(content = content, status_code = 200) 
+        return JSONResponse(content = content, status_code = 200)
 """
 """
 @router.websocket("/ws/match/activo/{match_id}/{player_id}")
-async def match_websocket(websocket : WebSocket,match_id : int, player_id : int):  
+async def match_websocket(websocket : WebSocket,match_id : int, player_id : int):
     await manager_activo.connect(websocket,match_id,player_id)
     try:
         await first_player(match_id)
@@ -87,4 +93,4 @@ async def match_websocket(websocket : WebSocket,match_id : int, player_id : int)
     except WebSocketDisconnect:
         manager_activo.disconnect(websocket,match_id,player_id)
         content = "Websocket desconectado"
-        return JSONResponse(content = content, status_code = 200) 
+        return JSONResponse(content = content, status_code = 200)
