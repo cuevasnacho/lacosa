@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Modal, ModalBody } from 'reactstrap';
 import { useParams } from 'react-router-dom';
 import { httpRequest } from '../../services/HttpService.js';
 import { arrangePlayers, nextTurn, getHand, intercambiarDefensa } from './functions.jsx';
@@ -29,6 +30,42 @@ function Partida () {
   const [matchState, setMatchState] = useState([]); // username: string, id: int, esTurno: bool, posicion: int, eliminado: bool	
   const [mazoDescarteState, setMazoDescarteState] = useState(2);  // Dice que carta se va a mostrar en el mazo de descarte
   const [isOver, setIsOver] = useState(false);
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const [tieneInfectado, setTieneInfectado] = useState(false);
+
+  function toggleModal() {
+    setTieneInfectado(manoJugador.some(card => card.cartaNombre === 'infectado'));
+    setModalOpen(!modalOpen);
+  }
+
+  function mostrarInfectado() {
+    const mensaje = {
+      action: 'show_cards',
+      data: {
+        card: 'whisky',
+        mostrar: 'infectado',
+      }
+    }
+    websocket.send(mensaje);
+    setModalOpen(!modalOpen);
+  }
+
+  function noMostrar() {
+    setModalOpen(!modalOpen);
+  }
+
+  function mostrarMano() {
+    const mensaje = {
+      action: 'show_cards',
+      data: {
+        card: 'whisky',
+        mostrar: manoJugador,
+      }
+    }
+    websocket.send(mensaje);
+    setModalOpen(!modalOpen);
+  }
 
   async function getStatus() {
     const responseStatus = await httpRequest({
@@ -196,6 +233,26 @@ function Partida () {
     <div className={styles.container}>
       {isOver && <Finalizar idpartida = {idPartida} idjugador={idPlayer}/>}
       <ToastContainer />
+      <div className={styles.modalDiv}>
+        <button type='button' onClick={toggleModal}>Abrir Modal</button>
+        <Modal isOpen={modalOpen} toggle={toggleModal} backdrop={false} className={styles.modalWindow}>
+          <ModalBody className={styles.modalBody}>
+            <h4>
+              Se jugo una carta de Revelaciones, ¿Desea mostrar su mano?
+            </h4>
+            <div className={styles.divBotonModal}>
+              <button type='button' onClick={mostrarMano} className={styles.botonModal}>Mostrar mano</button>
+              <button type='button' onClick={noMostrar} className={styles.botonModal}>No mostrar</button>
+              { tieneInfectado && (<button 
+                type='button' 
+                onClick={mostrarInfectado} 
+                className={styles.botonModal}>
+                  Mostrar infectado
+              </button>)}
+            </div>
+          </ModalBody>
+        </Modal>
+      </div>
       {playerState.esTurno && (<div className={styles.tuTurno}/>)}
       <div className={styles.detalleMesa}>
         { isLaCosa && 
