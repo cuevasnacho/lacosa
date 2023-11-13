@@ -1,0 +1,7 @@
+"insert into Match (match_id, match_status, match_direction, match_currentP, match_cardsCount) VALUES (1,1,0,1,0);"
+"insert into Player (player_id, player_name, player_ingame, player_position, player_exchangeR, player_exchangeL, player_role, player_dead, player_isHost, player_lobby, player_current_match_id,player_quarentine_count) VALUES (2,'tomas',True,0,0,0,2,True,True,1,1,0);"
+"insert into Player (player_id, player_name, player_ingame, player_position, player_exchangeR, player_exchangeL, player_role, player_dead, player_isHost, player_lobby, player_current_match_id,player_quarentine_count) VALUES (1,'nacho',True,0,0,0,1,False,False,1,1,0);"
+"insert into Card (card_id,card_location,card_number,card_cardT,card_player,card_match) VALUES (1,0,99,1,1,1);"
+"insert into Card (card_id,card_location,card_number,card_cardT,card_player,card_match) VALUES (2,0,98,1,2,1);"
+"insert into CardTemplate (cardT_id,cardT_subtype,cardT_type,cardT_effect,cardT_name) VALUES (1,0,0,'aa','lanzallamas');"
+  

@@ -15,6 +15,12 @@ mas_vale_que_corras = MasValeQueCorras()
 whisky = Whisky()
 puerta_atrancada = PuertaAtrancada()
 aqui_estoy_bien = AquiEstoyBien()
+infectado = Infectado()
+aterrador = Aterrador()
+cuarentena = Cuarentena()
+hacha = Hacha()
+seduccion = Seduccion()
+no_gracias = NoGracias()
 
 Template_Diccionary = {
     "lanzallamas" : lanzallamas,
@@ -27,8 +33,23 @@ Template_Diccionary = {
     "mas_vale_que_corras" : mas_vale_que_corras,
     "whisky" : whisky,
     "puerta_atrancada" : puerta_atrancada,
-    "aqui_estoy_bien" : aqui_estoy_bien
+    "aqui_estoy_bien" : aqui_estoy_bien,
+    "aterrador" : aterrador,
+    "infectado" : infectado,
+    "cuarentena" : cuarentena,
+    "hacha" : hacha,
+    "seduccion" : seduccion,
+    "no_gracias" : no_gracias
 }
+"""
+Template_Diccionary = {
+    "lanzallamas" : lanzallamas,
+    "lacosa"     : la_cosa,
+    "nada_de_barbacoas" : nada_de_barbacoas,
+    "no_gracias": no_gracias,
+    "aterrador": aterrador
+}
+"""
 
 def already_load(name):
     with db_session:

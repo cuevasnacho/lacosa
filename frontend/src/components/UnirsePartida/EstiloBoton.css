@@ -3,12 +3,15 @@
     background-color: #d40707;
     border-radius: 8px;
     border: 1px solid transparent;
-    padding: 0.6em 1.2em;
-    font-size: 1em;
+    padding: 0;
+    margin: 5px 4px;
+    font-size: 0.8em;
     font-weight: 500;
     font-family: inherit;
     cursor: pointer;
     transition: border-color 0.25s, background-color 0.25s, color 0.25s;
+    width: 70px;
+    height: 30px;
   }
 .boton-unirse:hover {
     border-color: #a2d31c;
@@ -53,4 +56,66 @@
 
 tr {
     width: 100%;
+}
+
+.columna-publica {
+    table-layout: fixed;
+    width: 5%;
+}
+
+.columna-nombre-lobby,
+.columna-nombre-host {
+    table-layout: fixed;
+    width: 20%
+}
+
+.columna-cantidad {
+    table-layout: fixed;
+    width: 15%
+}
+
+.columna-unirse-lobby {
+    table-layout: fixed;
+    width: 40%
+}
+
+.enter-lobby-field {
+    display: flex;
+    align-items: center;
+    justify-content: right;
+}
+
+.password-field {
+    display: flex;
+    align-items: center;
+}
+
+.visibility {
+    position: relative;
+    padding: 0px 5px;
+    filter: invert();
+}
+
+.password-input {
+    width: 180px;
+    height: 30px;
+    font-size: 0.8em;
+    background-color: transparent;
+}
+.password-input:focus {
+    outline: none;
+}
+
+.boton-cerrar-input {
+    color: white;
+    background-color: transparent;
+    padding: 0;
+    width: 10px;
+    position: relative;
+    left: -15px;
+}
+.boton-cerrar-input:hover {
+    background-color: transparent;
+    padding: 0;
+    border-color: transparent;
 }

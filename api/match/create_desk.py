@@ -8,7 +8,7 @@ from definitions import card_position, results
 from enum import Enum
 
 
-AMOUNT_PER_NUMBER = 10
+AMOUNT_PER_NUMBER = 20
 
 @db_session
 def generate_cards(number,id_match,template):

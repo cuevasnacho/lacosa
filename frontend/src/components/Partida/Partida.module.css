@@ -18,9 +18,18 @@
 
 .detalleMesa {
     display: flex;
+    justify-content: right;
+    align-items: end;
     position: absolute;
     border-radius: 20px;
     width: 70%;
     height: 60%;
     outline: 2px solid rgba(50, 50, 50, .2);
+}
+
+.botonDeclarar {
+    z-index: 3;
+    margin: 10px;
+    width: 80px;
+    border-radius: 10px;
 }
