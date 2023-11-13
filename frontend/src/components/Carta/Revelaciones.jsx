@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Modal, ModalBody } from 'reactstrap';
 import styles from './Revelaciones.module.css';
 
@@ -7,7 +7,6 @@ function Revelaciones({manoJugador, ws, show}) {
   const [tieneInfectado, setTieneInfectado] = useState(false);
 
   function toggleModal() {
-    setTieneInfectado(manoJugador.some(card => card.cartaNombre === 'infectado'));
     setModalOpen(show);
   }
 
@@ -16,7 +15,7 @@ function Revelaciones({manoJugador, ws, show}) {
       action: 'show_cards',
       data: {
         card: 'whisky',
-        mostrar: 'infectado',
+        mostrar: ['infectado'],
       }
     }
     const respuesta = {
@@ -38,16 +37,17 @@ function Revelaciones({manoJugador, ws, show}) {
   }
 
   function mostrarMano() {
+    const cartas = manoJugador.map(card => card.cartaNombre);
     const mensaje = {
       action: 'show_cards',
       data: {
         card: 'whisky',
-        mostrar: manoJugador,
+        mostrar: cartas,
       }
     }
     const respuesta = {
       action: 'revelaciones',
-      data: {tieneInfectado},
+      data: tieneInfectado,
     }
     ws.send(JSON.stringify(mensaje));
     ws.send(JSON.stringify(respuesta));
@@ -55,13 +55,13 @@ function Revelaciones({manoJugador, ws, show}) {
   }
 
   useEffect(() => {
+    setTieneInfectado(manoJugador.some(card => card.cartaNombre === 'infectado'));
     toggleModal();
   }, [show]);
 
   return (
     <>
       <div className={styles.modalDiv}>
-        <button type='button' onClick={toggleModal}>Abrir Modal</button>
         <Modal isOpen={modalOpen} toggle={toggleModal} backdrop={false} className={styles.modalWindow}>
           <ModalBody className={styles.modalBody}>
             <h4>

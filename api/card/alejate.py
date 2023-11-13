@@ -448,7 +448,7 @@ class Whisky(card_template):
 
       #se añade pĺayer_id para indicar el jugador que causo la jugada
       @db_session
-      def aplicar_efecto(self, objective_id, player_cause_id):
+      def aplicar_efecto(self, objective_id, player_cause_id, card_id):
           player_cause = Player.get(player_id=player_cause_id)
           player_hand = list(player_cause.player_cards)
 
@@ -479,7 +479,7 @@ class PuertaAtrancada(card_template):
 
       #se añade pĺayer_id para indicar el jugador que causo la jugada
       @db_session
-      def aplicar_efecto(self, objective_id, player_cause_id):
+      def aplicar_efecto(self, objective_id, player_cause_id, card_id):
           player_cause = Player.get(player_id=player_cause_id)
           player_objective = Player.get(player_id = objective_id)
 
@@ -514,7 +514,7 @@ class AquiEstoyBien(card_template):
     def valid_play(self, player_cause_id, target_id):
         return True
     
-    def aplicar_efecto(self, objective_id, player_cause_id):
+    def aplicar_efecto(self, objective_id, player_cause_id, card_id):
         return True
     
     def aplay_defense_effect(self, defensor_id, attacker_id,card_id):
@@ -547,7 +547,7 @@ class Infectado(card_template):
 
         return False
 
-    def aplicar_efecto(self, objective_id, player_cause_id):
+    def aplicar_efecto(self, objective_id, player_cause_id, card_id):
       return []
 
     def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
@@ -570,7 +570,7 @@ class Aterrador (card_template):
         return False
 
     @db_session
-    def aplicar_efecto(self, objective_id, player_cause_id):
+    def aplicar_efecto(self, objective_id, player_cause_id, card_id):
         return []
     
     @db_session
@@ -600,7 +600,7 @@ class Seduccion(card_template):
             return valid
 
       @db_session
-      def aplicar_efecto(self, objective_id, player_cause_id):
+      def aplicar_efecto(self, objective_id, player_cause_id, card_id):
         get_player = Player.get(player_id = player_cause_id)
         match_id = get_player.player_current_match_id.match_id
         motive = "seduccion"
@@ -633,7 +633,7 @@ class Cuarentena(card_template):
         return valid 
     
     @db_session
-    def aplicar_efecto(self, objective_id, player_cause_id):
+    def aplicar_efecto(self, objective_id, player_cause_id, card_id):
         objective_player = Player.get(player_id = objective_id)
         objective_player.player_quarentine_count = 2
         commit()
@@ -661,7 +661,7 @@ class Hacha(card_template):
             return valid or is_self
 
       @db_session
-      def aplicar_efecto(self, objective_id, player_cause_id):
+      def aplicar_efecto(self, objective_id, player_cause_id, card_id):
         if objective_id == player_cause_id:
             player_cause = Player.get(player_id=player_cause_id)
             if (player_cause.player_quarentine_count > 0):
@@ -696,19 +696,15 @@ revelaciones_effect = "Empezando por ti y siguiendo el orden de juego cada jugad
 class Revelaciones(card_template):
 
       def __init__(self):
-          super().__init__(False, cards_subtypes.ACTION.value, revelaciones_effect, "revelaciones")
+          super().__init__(True, cards_subtypes.PANIC.value, revelaciones_effect, "revelaciones")
 
       @db_session
       def valid_play(self,player_cause_id,target_id):
             return player_cause_id == target_id
 
       @db_session
-      def aplicar_efecto(self, objective_id, player_cause_id):
-        player_cause = Player.get(player_id = player_cause_id)
-        match_id = player_cause.player_current_match_id.match_id
-
-        motive = "revelaciones"
-        return [motive]
+      def aplicar_efecto(self, objective_id, player_cause_id, card_id):
+        return ["revelaciones"]
 
       def aplay_defense_effect(self,defensor_id, attacker_id):
           return True
@@ -729,7 +725,7 @@ class NoGracias(card_template):
         return False
 
     @db_session
-    def aplicar_efecto(self, objective_id, player_cause_id):
+    def aplicar_efecto(self, objective_id, player_cause_id, card_id):
         return []
 
     @db_session
@@ -754,7 +750,7 @@ class Fallaste(card_template):
         return False
 
     @db_session
-    def aplicar_efecto(self, objective_id, player_cause_id):
+    def aplicar_efecto(self, objective_id, player_cause_id, card_id):
         return []
 
     @db_session
@@ -768,7 +764,7 @@ class Fallaste(card_template):
 
 cita_a_ciegas = "Roba una carta del mazo que no sea de panico" #solo se juega sobre si mismo
 
-class   CitaACiegas(card_template):
+class CitaACiegas(card_template):
 
     def __init__(self):
         super().__init__(True,cards_subtypes.PANIC.value, cita_a_ciegas, "cita_a_ciegas")

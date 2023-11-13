@@ -25,7 +25,7 @@ cita_a_ciegas = CitaACiegas()
 no_gracias = NoGracias()
 fallaste = Fallaste()
 
-
+"""
 Template_Diccionary = {
     "lanzallamas" : lanzallamas,
     "lacosa"     : la_cosa,
@@ -49,16 +49,15 @@ Template_Diccionary = {
     "fallaste" : fallaste
 }
 """
+
 Template_Diccionary = {
     "lanzallamas" : lanzallamas,
     "lacosa"     : la_cosa,
     "nada_de_barbacoas" : nada_de_barbacoas,
     "cita_a_ciegas" : cita_a_ciegas,
-    "no_gracias": no_gracias,
-    "aterrador": aterrador,
-    "fallaste" : fallaste
+    "infectado" : infectado,
+    "revelaciones" : revelaciones
 }
-"""
 
 
 def already_load(name):
