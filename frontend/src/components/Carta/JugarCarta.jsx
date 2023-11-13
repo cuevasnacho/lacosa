@@ -3,7 +3,7 @@ import { useState } from "react";
 import { httpRequest } from "../../services/HttpService";
 import { ToastContainer, toast } from 'react-toastify';
 import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap';
-import { playCard, getHand } from '../Partida/functions.jsx';
+import { playCard, playPanic, getHand } from '../Partida/functions.jsx';
 import styles from './JugarCarta.module.css';
 
 function JugarCarta({carta, socket, jugadores, actualizar, mano, stage, actstage, data}) {
@@ -20,7 +20,10 @@ function JugarCarta({carta, socket, jugadores, actualizar, mano, stage, actstage
         target_id: target_id,
         target_username: target_username,
       }
-      playCard(carta, target, socket);
+      if (stage == 3) // alejate
+        playCard(carta, target, socket);
+      else            // panico
+        playPanic(carta, target);
       
       setTimeout(() => {
         getHand(actualizar);

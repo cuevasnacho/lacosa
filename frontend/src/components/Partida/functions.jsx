@@ -41,6 +41,17 @@ function mod(i, n) {  // positive modulo
   return ((i % n) + n) % n;
 }
 
+async function playPanic(carta, target) {
+  const player_id = JSON.parse(sessionStorage.getItem('user_id'));
+  
+  let headers = { Accept: '*/*' };
+  await httpRequest({
+    headers : headers,
+    method: 'PUT',
+    service: `carta/panico/${player_id}/${carta.id}/${target.target_id}`,
+  });
+}
+
 async function playCard(carta, target, socket) {
   const player_id = JSON.parse(sessionStorage.getItem('user_id'));
   const username = window.sessionStorage.getItem('username');
@@ -156,4 +167,4 @@ async function intercambiarDefensa(oponent_id, card_id) {
   return JSON.parse(response.data);
 }
 
-export { nextTurn, arrangePlayers, playCard, getHand, intercambiarDefensa };
+export { nextTurn, arrangePlayers, playCard, getHand, intercambiarDefensa, playPanic };
