@@ -21,7 +21,7 @@ hacha = Hacha()
 seduccion = Seduccion()
 cita_a_ciegas = CitaACiegas()
 no_gracias = NoGracias()
-
+"""
 Template_Diccionary = {
     "lanzallamas" : lanzallamas,
     "lacosa"     : la_cosa,
@@ -46,10 +46,9 @@ Template_Diccionary = {
     "lanzallamas" : lanzallamas,
     "lacosa"     : la_cosa,
     "nada_de_barbacoas" : nada_de_barbacoas,
-    "no_gracias": no_gracias,
-    "aterrador": aterrador
+    "cita_a_ciegas" : cita_a_ciegas
 }
-"""
+
 
 def already_load(name):
     with db_session:

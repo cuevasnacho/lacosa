@@ -4,7 +4,48 @@ from db.database import Player,Card,Match
 from definitions import cards_subtypes, card_position
 from fastapi.responses import JSONResponse
 import random
+
+
 from abc import ABC, abstractmethod
+
+@db_session
+def discard_Card_cAc(card_id):
+    card = Card.get(card_id = card_id)
+    card.card_location = card_position.DISCARD.value
+    card.card_player = None 
+    commit()
+
+
+def get_card_not_panic_cAc(match_id):
+        deck_cards = Card.select(lambda c : c.card_match.match_id == match_id and
+                           c.card_location == card_position.DECK.value and not(c.card_cardT.cardT_type))
+
+        if not deck_cards:
+            discard_to_deck_cAc(match_id)
+            deck_cards = Card.select(lambda c : c.card_match.match_id == match_id and
+                           c.card_location == card_position.DECK.value and not(c.card_cardT.cardT_type))
+
+        if deck_cards :
+            card_steal = deck_cards.random(1)[0]
+            return card_steal
+
+
+        return deck_cards
+
+@db_session
+def exchange_card_not_panic(player_id,selected_card_id):
+    player = Player.get(player_id = player_id)
+    match = player.player_current_match_id
+    selected_card = Card.get(card_id = selected_card_id)
+
+    card = get_card_not_panic_cAc(match.match_id)
+
+    card.card_location = card_position.PLAYER.value
+    selected_card.card_location = card_position.DECK.value
+    selected_card.card_player = None
+
+    card.card_player = player
+    commit()
 
 #chequa que el jugador sea alguno del costado
 @db_session
@@ -41,15 +82,14 @@ def swap_doors(player_id_1,player_id_2):
 
     aux_left = p1.player_exchangeL
     aux_rigth = p1.player_exchangeR
-    
+
     p1.player_exchangeL = p2.player_exchangeL
     p1.player_exchangeR = p2.player_exchangeR
-    
+
     p2.player_exchangeL = aux_left
     p2.player_exchangeR = aux_rigth
 
     commit()
-
 
 class card_template(ABC):
     def __init__(self,isPanic,alejate_type,effect,name) -> None:
@@ -62,7 +102,7 @@ class card_template(ABC):
         pass
 
     @abstractmethod
-    def aplicar_efecto(objective_id,player_cause_id,card_id): #se añade pĺayer_id para indicar el jugador que causo la jugada
+    def aplicar_efecto(objective_id,player_cause_id): #se añade pĺayer_id para indicar el jugador que causo la jugada
         pass
 
     @abstractmethod
@@ -137,7 +177,7 @@ class laCosa_T(card_template):
         return False
 
     @db_session
-    def aplicar_efecto(self,objective_id,player_cause_id,card_id):
+    def aplicar_efecto(self,objective_id,player_cause_id):
         return []
 
     def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
@@ -157,7 +197,7 @@ class NadaDeBarbacoa(card_template):
         return True
     
     @db_session
-    def aplicar_efecto(self,objective_id,player_cause_id,card_id):
+    def aplicar_efecto(self,objective_id,player_cause_id):
         
         return []
 
@@ -198,7 +238,7 @@ class Sospecha(card_template):
         return valid
     
     @db_session
-    def aplicar_efecto(self,target_id,player_cause_id,card_id):
+    def aplicar_efecto(self,target_id,player_cause_id):
         player_target = Player.get(player_id = target_id)
         deck_cards = Card.select(lambda c : c.card_player.player_id == target_id).random(1)[0]
         return [deck_cards.card_cardT.cardT_name]
@@ -223,7 +263,7 @@ class Analisis(card_template):
         return valid
 
     @db_session
-    def aplicar_efecto(self,target_id,player_cause_id,card_id):
+    def aplicar_efecto(self,target_id,player_cause_id):
         target_hand = []
         target_player = Player.get(player_id = target_id)
         target_player_cards = list(target_player.player_cards)
@@ -297,7 +337,7 @@ class VigilaTusEspaldas(card_template):
 
     #se añade pĺayer_id para indicar el jugador que causo la jugada
     @db_session
-    def aplicar_efecto(self,objective_id,player_cause_id,card_id): 
+    def aplicar_efecto(self,objective_id,player_cause_id): 
         target = Player.get(player_id = objective_id)        
 
         target_match = target.player_current_match_id
@@ -365,7 +405,7 @@ class Whisky(card_template):
 
       #se añade pĺayer_id para indicar el jugador que causo la jugada
       @db_session
-      def aplicar_efecto(self, objective_id, player_cause_id,card_id):
+      def aplicar_efecto(self, objective_id, player_cause_id):
           player_cause = Player.get(player_id=player_cause_id)
           player_hand = list(player_cause.player_cards)
 
@@ -396,7 +436,7 @@ class PuertaAtrancada(card_template):
 
       #se añade pĺayer_id para indicar el jugador que causo la jugada
       @db_session
-      def aplicar_efecto(self, objective_id, player_cause_id,card_id):
+      def aplicar_efecto(self, objective_id, player_cause_id):
           player_cause = Player.get(player_id=player_cause_id)
           player_objective = Player.get(player_id = objective_id)
 
@@ -417,7 +457,7 @@ class PuertaAtrancada(card_template):
 
           return []
 
-      def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
+      def aplay_defense_effect(self,defensor_id, attacker_id):
           return True
 
       def fullfile_efect(self,target_id):
@@ -458,14 +498,14 @@ class Aterrador (card_template):
         return False
 
     @db_session
-    def aplicar_efecto(self, objective_id, player_cause_id,card_id):
+    def aplicar_efecto(self, objective_id, player_cause_id):
         return []
     
     @db_session
     def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
 
         return ["aterrador"]
-        
+
     def fullfile_efect(self,target_id):
         return True
     
@@ -488,7 +528,7 @@ class Seduccion(card_template):
             return valid
 
       @db_session
-      def aplicar_efecto(self, objective_id, player_cause_id,card_id):
+      def aplicar_efecto(self, objective_id, player_cause_id):
         get_player = Player.get(player_id = player_cause_id)
         match_id = get_player.player_current_match_id.match_id
         motive = "seduccion"
@@ -514,7 +554,7 @@ class Cuarentena(card_template):
         return valid 
     
     @db_session
-    def aplicar_efecto(self, objective_id, player_cause_id,card_id):
+    def aplicar_efecto(self, objective_id, player_cause_id):
         objective_player = Player.get(player_id = objective_id)
         objective_player.player_quarentine_count = 2
         commit()
@@ -542,7 +582,7 @@ class Hacha(card_template):
             return valid
 
       @db_session
-      def aplicar_efecto(self, objective_id, player_cause_id,card_id):
+      def aplicar_efecto(self, objective_id, player_cause_id):
         if objective_id == player_cause_id:
             player_cause = Player.get(player_id=player_cause_id)
             if (player_cause.player_quarentine_count > 0):
@@ -572,8 +612,8 @@ class Hacha(card_template):
       def fullfile_efect(self,target_id):
           return True
 
-
 no_gracias = "niegate a un ofrecimiento de intercambio de cartas"
+
 class NoGracias(card_template):
 
     def __init__(self):
@@ -596,7 +636,29 @@ class NoGracias(card_template):
     def fullfile_efect(self,target_id):
         return True
 
+no_gracias = "niegate a un ofrecimiento de intercambio de cartas"
 
+class NoGracias(card_template):
+
+    def __init__(self):
+        super().__init__(False, cards_subtypes.DEFENSE.value, no_gracias, "no_gracias")
+
+
+    @db_session
+    def valid_play(self,player_cause_id,target_id):
+        return False
+
+    @db_session
+    def aplicar_efecto(self, objective_id, player_cause_id):
+        return []
+
+    @db_session
+    def aplay_defense_effect(self,defensor_id, attacker_id,card_id):
+
+        return ["no_gracias"]
+
+    def fullfile_efect(self,target_id):
+        return True
 
 
 cita_a_ciegas = "Roba una carta del mazo que no sea de panico" #solo se juega sobre si mismo

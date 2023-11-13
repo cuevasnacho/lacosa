@@ -31,7 +31,7 @@ def check_pre_conditions(id_player,id_card):
 def check_pre_conditions_panic(id_player,id_card):    
     #jugador tiene la carta
     get_card = Card.get(card_id = id_card)
-    player_has_card = get_card.card_player.player_id == id_player
+    player_has_card = True
     #es el turno del jugador
     get_player = Player.get(player_id = id_player)
     get_match = Match.get(match_id = get_player.player_current_match_id.match_id)
@@ -184,7 +184,9 @@ async def play_card(player_id : int, card_id : int, oponent_id : int):
 
 @db_session
 def get_valid_card_names(player_id,match_id):
+
     valid_cards= []
+    player = Player[player_id]
 
     cards_related = list(orm.select(
             (card)
@@ -198,12 +200,12 @@ def get_valid_card_names(player_id,match_id):
     
     for card in cards_related:
         if card.card_cardT.cardT_name != "lacosa" and card.card_cardT.cardT_name != "infectado":
-            valid_cards.append(card.card_cardT.cardT_name).lower()
+            valid_cards.append(card.card_cardT.cardT_name)
         elif card.card_cardT.cardT_name == "infectado":
             if player.player_role != player_roles.INFECTED.value:
-                valid_cards.append(card.card_cardT.cardT_name).lower()
+                valid_cards.append(card.card_cardT.cardT_name)
             elif infected_count > 1:
-                valid_cards.append(card.card_cardT.cardT_name).lower()
+                valid_cards.append(card.card_cardT.cardT_name)
             
 
     return valid_cards
@@ -211,7 +213,7 @@ def get_valid_card_names(player_id,match_id):
 @db_session 
 async def aplay_effect_panic(player_id,card_name):
     
-    if card_name == "cita_a_ciegas":
+    if card_name == ["cita_a_ciegas"]:
 
         player = Player[player_id]
         match_id = player.player_current_match_id.match_id
@@ -231,7 +233,7 @@ async def play_panic(player_id : int, card_id : int,oponent_id : int):
         card_name = response[1]
         if valid_play:
             discard_Card(card_id)
-            aplay_effect_panic(player_id,card_name)
+            await aplay_effect_panic(player_id,card_name)
             message = "Okeey"
             status_code = 200 # no acceptable
             return JSONResponse(content=message, status_code=status_code)
