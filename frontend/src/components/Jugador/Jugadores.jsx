@@ -22,7 +22,7 @@ function Jugadores({ jugadores,jugador }) {
     <>
       <div className={styles.jugadoresContainer} data-testid="middle">
         {middle.map((jugador, index) => (
-          <Jugador key={index} username={jugador.username} esTurno={jugador.esTurno} eliminado={jugador.eliminado}/>
+          <Jugador key={index} cuarentena={jugador.cuarentena} username={jugador.username} esTurno={jugador.esTurno} eliminado={jugador.eliminado}/>
         ))}
       </div>
       <div className={styles.jugadorLeft} data-testid="left">
