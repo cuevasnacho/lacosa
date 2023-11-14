@@ -118,7 +118,11 @@ async def match_websocket(websocket : WebSocket,match_id : int, player_id : int)
                 await follow_game(match_id,player_id)
 
             elif ws['action'] == 'follow_game':
-                await follow_game(match_id, player_id)         
+                await follow_game(match_id, player_id)     
+
+            elif ws['action'] == 'defense_msg':
+                content = {'action': 'defense_msg', 'data': ws['data']}
+                await manager.broadcast(content, match_id)
         
     except WebSocketDisconnect:
         manager.disconnect(websocket,match_id,player_id)

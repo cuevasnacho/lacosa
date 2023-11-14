@@ -32,7 +32,7 @@ function mod(i, n) {  // positive modulo
   return ((i % n) + n) % n;
 }
 
-async function playPanic(carta, target) {
+async function playPanic(carta, target, socket) {
   const player_id = JSON.parse(sessionStorage.getItem('user_id'));
   
   let headers = { Accept: '*/*' };
@@ -41,6 +41,17 @@ async function playPanic(carta, target) {
     method: 'PUT',
     service: `carta/panico/${player_id}/${carta.id}/${target.target_id}`,
   });
+
+  const mensaje = JSON.stringify({
+    action: 'play_card',
+    data: {
+      card: carta.cartaNombre,
+      player: username, 
+      target: target.target_username,
+      tipo: carta.tipo,
+    }});
+
+  socket.send(mensaje);
 }
 
 async function playCard(carta, target, socket) {
@@ -72,8 +83,6 @@ async function playCard(carta, target, socket) {
       card: carta.cartaNombre,
       mostrar: cartas_mostrar
     }
-
-  
   });
 
   const isover = response[0].end_game;
@@ -83,7 +92,6 @@ async function playCard(carta, target, socket) {
   });
 
   socket.send(mensaje_isover);
-
   socket.send(mensaje);
   socket.send(mensaje_cartas);
   
