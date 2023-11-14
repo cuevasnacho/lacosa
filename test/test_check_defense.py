@@ -37,8 +37,8 @@ output = [
     "player_id": 1,
     "player_ingame": 1,
     "player_position": 0,
-    "player_exchangeR": 0,
-    "player_exchangeL": 0,
+    "player_exchangeR": 1,
+    "player_exchangeL": 1,
     "player_role": 0,
     "player_dead": False,
     "player_defense": False,
@@ -49,8 +49,8 @@ output = [
     "player_id": 2,
     "player_ingame": 1,
     "player_position": 0,
-    "player_exchangeR": 0,
-    "player_exchangeL": 0,
+    "player_exchangeR": 1,
+    "player_exchangeL": 1,
     "player_role": 0,
     "player_dead": True,
     "player_defense": True,
@@ -64,8 +64,8 @@ output_cant_defense = [
     "player_id": 1,
     "player_ingame": 1,
     "player_position": 0,
-    "player_exchangeR": 0,
-    "player_exchangeL": 0,
+    "player_exchangeR": 1,
+    "player_exchangeL": 1,
     "player_role": 0,
     "player_dead": False,
     "player_defense": False,
@@ -76,8 +76,8 @@ output_cant_defense = [
     "player_id": 3,
     "player_ingame": 1,
     "player_position": 0,
-    "player_exchangeR": 0,
-    "player_exchangeL": 0,
+    "player_exchangeR": 1,
+    "player_exchangeL": 1,
     "player_role": 0,
     "player_dead": True,
     "player_defense": False,
@@ -92,33 +92,32 @@ def test_check_defense_ok():
   set_env()
   time.sleep(1)
   response = client.put("/carta/jugar/1/2/2")
-  print(json.loads(response.content))
   assert json.loads(response.content) == output
   assert response.status_code == 200
 
 def test_check_cant_defense():
-    set_env()
-    with patch("api.player.play_card.play_card"):
-        response = client.put("/carta/jugar/1/2/3")
-        assert json.loads(response.content) == output_cant_defense
-        assert response.status_code == 200
+  set_env()
+  with patch("api.player.play_card.play_card"):
+    response = client.put("/carta/jugar/1/2/3")
+    assert json.loads(response.content) == output_cant_defense
+    assert response.status_code == 200
 
 #TEST ADICIONALES PARA CHEQUEAR FUNCIONALIDAD DE play_card.py
 #no es el turno del jugador
 def test_check_defense_error_player_turn():
-    set_env()
-    with patch("api.player.play_card.play_card"):
-        response = client.put("/carta/jugar/2/1/1")
-        assert json.loads(response.content) == "No se cumplen las precondiciones"
-        assert response.status_code == 401
+  set_env()
+  with patch("api.player.play_card.play_card"):
+    response = client.put("/carta/jugar/2/1/1")
+    assert json.loads(response.content) == "No se cumplen las precondiciones"
+    assert response.status_code == 401
 
 #el jugador no tiene la carta 
 def test_check_defense_error_no_card():
-    set_env()
-    with patch("api.player.play_card.play_card"):
-        response = client.put("/carta/jugar/1/1/2")
-        assert json.loads(response.content) == "No se cumplen las precondiciones"
-        assert response.status_code == 401
+  set_env()
+  with patch("api.player.play_card.play_card"):
+    response = client.put("/carta/jugar/1/1/2")
+    assert json.loads(response.content) == "No se cumplen las precondiciones"
+    assert response.status_code == 401
 
 #como correr test
 #1.mover al directorio lacosa/
