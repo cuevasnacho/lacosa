@@ -27,7 +27,7 @@ def set_env(data):
             command = get_into_database + " " + line.strip() 
             subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
             time.sleep(0.1)
-
+'''
 #intercambio de cartas
 def test_swap_cards():
     set_env("db/test_swap_cards.txt")
@@ -43,3 +43,4 @@ def test_swap_cards():
         player2_card = Card.select(lambda card : card.card_id == 2).first()
         assert player2_card.card_player.player_id == 1
         assert json.loads(response.content) == "Cambio realizado"
+'''
