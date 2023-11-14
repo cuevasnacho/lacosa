@@ -21,12 +21,10 @@ function JugarCarta({carta, socket, jugadores, actualizar, mano, stage, actstage
         target_username: target_username,
       }
       if (stage == 3) { // alejate
-        await playCard(carta, target, socket)
-        getHand(actualizar);
+        await playCard(carta, target, socket).then(getHand(actualizar))
       }
       else {            // panico
-        await playPanic(carta, target);
-        getHand(actualizar);
+        await playPanic(carta, target).then(getHand(actualizar));
       }
 
     }
