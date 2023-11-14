@@ -5,7 +5,7 @@ import { getHand } from '../Partida/functions';
 import styles from './Defensa.module.css';
 import CustomButton from '../Boton/CustomButton';
 
-function Defensa({dataSocket, manoJugador, setManoJugador, socket, setStage, setJugadas})
+function Defensa({dataSocket, manoJugador, setManoJugador, socket, setStage})
 {
     const motive = dataSocket.motive;
     const is_defense = motive === 'defensa';
@@ -55,8 +55,9 @@ function Defensa({dataSocket, manoJugador, setManoJugador, socket, setStage, set
             
             const username = window.sessionStorage.getItem('username');
             const msg = `${username} se defendió con ${defenseCardName}`;
-            setJugadas((prevJugadas) => [...prevJugadas, {msj: msg}])
-            
+            socket.send(JSON.stringify(
+                {'action': 'defense_msg', 'data': msg}
+            ));           
             toggle();
         } 
         catch (error) 
