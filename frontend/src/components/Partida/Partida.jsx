@@ -118,6 +118,12 @@ function Partida () {
           setJugadas((prevJugadas) => [...prevJugadas, {msj: mensaje_cartas}]);
           break;
 
+        case 'defense_msg':
+          setJugadas((prevJugadas) => [...prevJugadas, {msj: info.data}]);
+          break;
+
+        default:
+          break;
       }
     };
 
@@ -127,7 +133,7 @@ function Partida () {
   useEffect (() => {
     const url_activo = `ws://localhost:8000/ws/match/activo/${idPartida}/${idPlayer}`;
     const ws_activo = new WebSocket(url_activo);
-
+    console.log(manoJugador);
     // recieve message every start page
     ws_activo.onmessage = (e) => {
       const info = JSON.parse(e.data);
@@ -140,7 +146,7 @@ function Partida () {
           break;
 
         case 'forzar_jugada':
-          toastStage(info.action);
+          toastStage('Tenés que jugar la carta de pánico');
           setStage(2);
           break;
 
@@ -172,10 +178,7 @@ function Partida () {
 
           intercambiarDefensa(oponent_id, card_id)
             .then(canDefend => {
-              if (canDefend) {
-                // proceso de defensa
-              }
-              else {
+              if (!canDefend) {
                 setStage(7);
               }
             });
@@ -206,6 +209,9 @@ function Partida () {
           websocket.current.send(JSON.stringify(followGame));
           toast(info.data);
           break;
+
+        default:
+          break;
       }
     };
 
@@ -226,8 +232,7 @@ function Partida () {
         manoJugador={manoJugador}
         setStage={setStage}
         setManoJugador={setManoJugador}
-        socket={websocket.current}
-        setJugadas={setJugadas}/>}
+        socket={websocket.current}/>}
       {playerState.esTurno && (<div className={styles.tuTurno}/>)}
       <div className={styles.detalleMesa}>
         { isLaCosa &&
