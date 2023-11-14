@@ -25,6 +25,7 @@ cita_a_ciegas = CitaACiegas()
 no_gracias = NoGracias()
 que_quede_entre_nosotros = QueQuedeEntreNosotros()
 fallaste = Fallaste()
+ups = Ups()
 
 Template_Diccionary = {
     "lanzallamas" : lanzallamas,
@@ -46,21 +47,10 @@ Template_Diccionary = {
     "revelaciones" : revelaciones,
     "no_gracias" : no_gracias,
     "cita_a_ciegas" : cita_a_ciegas,
-    "fallaste" : fallaste
+    "fallaste" : fallaste,
+    "ups" : ups
 }
 
-"""
-Template_Diccionary = {
-    "lanzallamas" : lanzallamas,
-    "lacosa"     : la_cosa,
-    "nada_de_barbacoas" : nada_de_barbacoas,
-    "que_quede_entre_nosotros" : que_quede_entre_nosotros,
-    "cita_a_ciegas" : cita_a_ciegas,
-    "infectado" : infectado,
-    "revelaciones" : revelaciones
-}
-
-"""
 
 def already_load(name):
     with db_session:

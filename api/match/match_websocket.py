@@ -7,6 +7,7 @@ from db.database import Match,Player
 from api.websocket import ConnectionManager
 from api.player.finalize_action import fullfile_action, cita_a_ciegas_fullfile
 from api.utilsfunctions import can_exchange, get_next_player_id
+from definitions import player_roles
 
 router = APIRouter()
 
@@ -16,18 +17,25 @@ manager_activo = ConnectionManager()
 show_cards_to_all = ['whisky']
 
 @db_session
-async def follow_game(match_id):
+async def follow_game(match_id,player_call_id):
 
     match = Match[match_id]
+    caller = Player[player_call_id]
     player_id = match.match_currentP
+    player = Player[player_id]    
     motive = "inicio_intercambio"
     next_player_id = get_next_player_id(player_id, match_id)
-    if can_exchange(player_id,match_id):
-        content = { 'action' : 'iniciar_intercambio', 'data':{'motive' : motive, 'oponent_id': next_player_id}}
-        await manager_activo.send_data_to(content,match_id,player_id)
+    if caller.player_role != player_roles.THE_THING.value or (not caller.player_dead):
+        if can_exchange(player_id,match_id):
+            content = { 'action' : 'iniciar_intercambio', 'data':{'motive' : motive, 'oponent_id': next_player_id}}
+            await manager_activo.send_data_to(content,match_id,player_id)
+        else:
+            content = { 'action' : 'fin_turno', 'data':{}}
+            await manager_activo.send_data_to(content,match_id,player_id)
     else:
-        content = { 'action' : 'fin_turno', 'data':{}}
-        await manager_activo.send_data_to(content,match_id,player_id)
+        content = {'action' : 'end_game', 'data' : True}
+        await manager.broadcast(content,match_id)
+
 
 @db_session
 async def first_player(match_id,connection_id):
@@ -46,9 +54,9 @@ async def next_stage_revelaciones(player_id, match_id, data):
         if id_next != id_iniciador:
             await manager.send_data_to(content, match_id, id_next)
         else:
-            await follow_game(match_id)
+            await follow_game(match_id, player_id)
     else:
-        await follow_game(match_id)
+        await follow_game(match_id, player_id)
 
 
 @router.websocket("/ws/match/pasivo/{match_id}/{player_id}")
@@ -91,7 +99,7 @@ async def match_websocket(websocket : WebSocket,match_id : int, player_id : int)
             elif ws['action'] == 'no_defense':
                 #data ={defensor_id, attack_card_name, defense_from_exchange}
                 fullfile_action(ws['data']['defensor_id'], ws['data']['attack_card_name'])
-                await follow_game(match_id)
+                await follow_game(match_id,player_id)
                 # ver si es nescesario enviar un mensaje
 
             elif ws['action'] == 'end_game':
@@ -107,11 +115,10 @@ async def match_websocket(websocket : WebSocket,match_id : int, player_id : int)
 
             elif ws['action'] == 'pick_a_card':
                 cita_a_ciegas_fullfile(ws['data']['player_id'],ws['data']['selected_card_id'])
-                await follow_game(match_id)
-            
+                await follow_game(match_id,player_id)
+
             elif ws['action'] == 'follow_game':
-                await follow_game(match_id)
-                
+                await follow_game(match_id, player_id)         
         
     except WebSocketDisconnect:
         manager.disconnect(websocket,match_id,player_id)

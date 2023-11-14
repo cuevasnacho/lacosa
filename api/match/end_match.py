@@ -26,6 +26,9 @@ async def discard_cards_from_players(match_id : int, player_id : int):
     player.player_dead = False
     player.player_role = 0
     player.player_ingame = False
+    player.player_exchangeR = True
+    player.player_exchangeL = True
+    player.player_quarentine_count = 0
     commit()
     
     return JSONResponse(content = "Base de datos limpia", status_code = 200)

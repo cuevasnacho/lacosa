@@ -11,8 +11,9 @@ import json
 from typing import List
 from definitions import player_roles
 from api.match.match_websocket import manager
-from api.messages import iniciar_defensa, start_exchange_seduction,fin_turno, end_or_exchange, pick_a_card, entre_nosotros, revelaciones
+from api.messages import iniciar_defensa, start_exchange_seduction,fin_turno, end_or_exchange, pick_a_card, entre_nosotros, revelaciones, show_cards_all
 from api.player.defend import discard_Card
+from api.utilsfunctions import is_end_game
 router = APIRouter()
 
 
@@ -130,24 +131,6 @@ def players_status_after_play_card(id_player,oponent_id,defense,cards_names,is_e
 
     return json.loads(json.dumps([obj.dict() for obj in response]))
 
-@db_session
-def is_end_game(id_card):
-    response = True
-    humans_alive = True
-    match_id = (Card.get(card_id = id_card)).card_match.match_id
-    players = Player.select(lambda player : player.player_current_match_id.match_id == match_id
-                            and player.player_role != player_roles.THE_THING.value)
-
-    lacosa = Player.select(lambda player : player.player_current_match_id.match_id == match_id
-                           and player.player_role == player_roles.THE_THING.value).first()
-
-    if not lacosa.player_dead:
-        for player in players:
-            infected = player.player_role == player_roles.INFECTED.value
-            dead = player.player_dead
-            humans_alive = humans_alive and (infected or dead) #todos los humanos estan infectados o elimindados
-        response = humans_alive
-    return response
 
 @router.put("/carta/jugar/{player_id}/{card_id}/{oponent_id}")
 async def play_card(player_id : int, card_id : int, oponent_id : int):
@@ -160,7 +143,7 @@ async def play_card(player_id : int, card_id : int, oponent_id : int):
         if valid_play:
             if can_player_defend_himself(oponent_id,card_id) and oponent_id != player_id:
                 defend_with = posible_response(card_id)
-                content = players_status_after_play_card(player_id,oponent_id,True,card_name,end_game,defend_with)
+                content = players_status_after_play_card(player_id,oponent_id,True,card_name,False,defend_with)
                 discard_Card(card_id)
                 await iniciar_defensa(match_id,oponent_id,defend_with,player_id,get_card_name(card_id), card_id, "defensa")
             elif card_name == ["seduccion"]:
@@ -207,6 +190,22 @@ def get_valid_card_names(player_id,match_id):
             
     return valid_cards
 
+@db_session
+def get_hand_card_names(player_id,match_id):
+        
+    hand = []
+    player = Player[player_id]
+
+    cards_related = list(orm.select(
+            (card)
+            for card in Card
+            if card.card_player.player_id == player.player_id and card.card_match == player.player_current_match_id))
+      
+    for card in cards_related:
+        hand.append(card.card_cardT.cardT_name)
+
+    return hand
+
 @db_session 
 async def aplay_effect_panic(player_id,card_name, oponent_id):
     player = Player[player_id]
@@ -218,6 +217,11 @@ async def aplay_effect_panic(player_id,card_name, oponent_id):
 
         await pick_a_card(match_id,player_id,valid_cards)
 
+    elif card_name == ["ups"]:
+        hand = get_hand_card_names(player_id,match_id)
+        
+        await show_cards_all(match_id,player_id,hand)
+ 
     elif card_name == ["revelaciones"]:
         await revelaciones(match_id,player_id)
     

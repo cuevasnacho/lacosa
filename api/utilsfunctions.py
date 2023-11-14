@@ -1,5 +1,6 @@
-from db.database import Player, Match,Lobby
+from db.database import Player, Match,Lobby,Card
 from pony.orm import db_session, commit
+from definitions import player_roles
 
 @db_session
 def get_next_player_id(player_id, match_id):
@@ -45,3 +46,12 @@ def can_exchange(player_id, match_id):
     in_quarentine = next_player.player_quarentine_count > 0
 
     return not locked_door and not in_quarentine
+
+@db_session
+def is_end_game(id_card):
+    match_id = (Card.get(card_id = id_card)).card_match.match_id
+                            
+    lacosa = Player.select(lambda player : player.player_current_match_id.match_id == match_id 
+                           and player.player_role == player_roles.THE_THING.value).first()
+    
+    return lacosa.player_dead
