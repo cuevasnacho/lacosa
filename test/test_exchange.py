@@ -11,12 +11,12 @@ import json
 
 client = TestClient(app)
 
-def set_env(data,delete):
+def set_env(data):
     database = "db/lacosa.sqlite"
     create_database_command = "python3 db/database.py"
     get_into_database = "sqlite3 db/lacosa.sqlite"
     file_entrys = data
-    if os.path.exists(database) and delete:
+    if os.path.exists(database):
         os.remove(database)
         time.sleep(0.1)
     
@@ -30,11 +30,11 @@ def set_env(data,delete):
 
 #intercambio de cartas
 def test_swap_cards():
-    set_env("db/test_swap_cards.txt",True)
+    set_env("db/test_swap_cards.txt")
     #intercambio
     time.sleep(1)
     response = client.put("/intercambio/cartas/1/1/2/2/''") #jugador 1 tiene carta 1 y jugador 2 tiene carta 2
-    time.sleep(1)
+    time.sleep(2)
     with db_session:
         #jugador 1 tiene carta 2
         player1_card = Card.select(lambda card : card.card_id == 1).first()

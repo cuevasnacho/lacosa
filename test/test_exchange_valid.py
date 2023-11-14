@@ -54,6 +54,7 @@ def test_exchange_valid():
 
 def test_exchange_card_invalid():
     load_templates()
+    time.sleep(1)
     set_env("db/test_exchange_valid_not_adjacent.txt",False)
     time.sleep(1)
     #caso de intercambio a un jugador adyacente y carta invalida

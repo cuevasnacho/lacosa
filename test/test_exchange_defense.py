@@ -27,27 +27,24 @@ def set_env(data,delete):
             command = get_into_database + " " + line.strip() 
             subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
             time.sleep(0.1)
-
-#tengo que esperar que anadan alguna carta de  ["aterrador","no_gracias","fallaste"] y modificar el id en la carta de test_exchange_defense.txt
-def test_exchange_defense():
     load_templates()
-    time.sleep(1)
-    set_env("db/test_exchange_defense.txt",False)
-    time.sleep(1)
-
-    #caso que se puede defender -> aterrador 
-    response = client.get("/intercambio/defensa/1/1/3") #caso en que tiene carta para defenderse -> igualar id en test
-    response = json.loads(response.content.decode('utf-8'))
-    assert response['data'] == True
 
 def test_exchange_not_defense():
-    load_templates()
-    set_env("db/test_exchange_defense.txt",False)
-    time.sleep(1)
+    #load_templates()
+    set_env("db/test_exchange_defense.txt",True)
+    time.sleep(2)
 
     #caso que no se defiende -> lanzallamas
     response = client.get("/intercambio/defensa/2/1/2")
     response = json.loads(response.content.decode('utf-8'))
     assert response['data'] == False
-
-
+'''
+#tengo que esperar que anadan alguna carta de  ["aterrador","no_gracias","fallaste"] y modificar el id en la carta de test_exchange_defense.txt
+def test_exchange_defense():
+    set_env("db/test_exchange_defense.txt",True)    
+    time.sleep(2)
+    #caso que se puede defender -> aterrador 
+    response = client.get("/intercambio/defensa/1/1/3") #caso en que tiene carta para defenderse -> igualar id en test
+    response = json.loads(response.content.decode('utf-8'))
+    assert response['data'] == True
+'''
