@@ -1,13 +1,13 @@
 import styles from './Mazo.module.css';
 import {robarCarta} from './RobarCarta'
 
-function Mazo ({esTurno, mano, actualizarMano}) {
+function Mazo ({stage, mano, actualizarMano}) {
   
-  const mazoState = esTurno ? `${styles.mazo} ${styles.mazoTurno}` : styles.mazo;
+  const mazoState = (stage == 1) ? `${styles.mazo} ${styles.mazoTurno}` : styles.mazo;
 
   // No sacar del componente, deja de funcionar
   function handleRobarCarta () {
-    if (mano.length <= 4 && esTurno) {
+    if (mano.length <= 4 && stage == 1) {
       robarCarta(mano, actualizarMano);
     }
     else {

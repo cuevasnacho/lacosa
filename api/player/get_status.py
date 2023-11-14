@@ -7,6 +7,7 @@ from typing import List
 from db.database import Player, Match
 from pony.orm import db_session, commit
 import json 
+from definitions import player_roles
 
 router = APIRouter()
 
@@ -16,9 +17,24 @@ class player_response(BaseModel):
     esTurno   : bool 
     posicion  : int
     eliminado : bool
+    puerta_izq : bool
+    puerta_der : bool
+    cuarentena : bool
+
+class player_response_sol(BaseModel):
+    username  : str
+    id : int  
+    esTurno   : bool 
+    posicion  : int
+    eliminado : bool
+    puerta_izq : bool
+    puerta_der : bool
+    cuarentena : bool
+    infected : bool
+
 
 class status_response(BaseModel):
-    jugador : player_response
+    jugador : player_response_sol
     jugadores :  List[player_response]
 
 @db_session
@@ -31,14 +47,28 @@ def generate_status_response(match_id,id_player):
 
     for player in players:
 
+        if player.player_id == id_player:
+            response = player_response_sol(username= player.player_name,
+                                   id = player.player_id,
+                                   esTurno = (player_turn == player.player_id),
+                                   posicion= player.player_position,
+                                   eliminado = player.player_dead,
+                                   puerta_izq = player.player_exchangeL,
+                                   puerta_der = player.player_exchangeR,
+                                   cuarentena = player.player_quarentine_count > 0,
+                                   infected = player.player_role == player_roles.INFECTED.value)
+            player_view = response.dict()
+
         response = player_response(username= player.player_name,
                                    id = player.player_id,
                                    esTurno = (player_turn == player.player_id),
                                    posicion= player.player_position,
-                                   eliminado = player.player_dead)
-        if player.player_id == id_player:
-            player_view = response.dict()
-        
+                                   eliminado = player.player_dead,
+                                   puerta_izq = player.player_exchangeL,
+                                   puerta_der = player.player_exchangeR,
+                                   cuarentena = player.player_quarentine_count > 0,
+                                   infected = player.player_role == player_roles.INFECTED.value)
+            
         players_data.append(response)
     
     full_response = {'jugador' : player_view, 'jugadores' : [obj.dict() for obj in players_data]}

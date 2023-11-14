@@ -26,6 +26,9 @@ async def discard_cards_from_players(match_id : int, player_id : int):
     player.player_dead = False
     player.player_role = 0
     player.player_ingame = False
+    player.player_exchangeR = True
+    player.player_exchangeL = True
+    player.player_quarentine_count = 0
     commit()
     
     return JSONResponse(content = "Base de datos limpia", status_code = 200)
@@ -48,15 +51,26 @@ def get_number_players(match_id):
         count += 1
     return count 
 
+@db_session
+def get_number_humans_alive(match_id):
+    players =  Player.select(lambda player : player.player_current_match_id.match_id == match_id
+                              and player.player_role == player_roles.HUMAN.value
+                              and not player.player_dead)
+    count = 0 
+    for i in players:
+        count += 1
+    return count
+
 @router.get("/partida/resultado/{match_id}")
 @db_session
 def match_result(match_id : int):
     players = get_players(match_id)
     lacosa = get_lacosa(match_id)
     number_players = get_number_players(match_id)
+    humans_alive = get_number_humans_alive(match_id)
     winners = []
     
-    if not lacosa.player_dead: 
+    if not lacosa.player_dead and humans_alive == 0:
         winners.append(lacosa.player_name)
             
     for player in players:
@@ -65,16 +79,22 @@ def match_result(match_id : int):
             if player.player_role == player_roles.HUMAN.value and not player.player_dead:
                 winners.append(player.player_name)
         else:
-            #si la cosa esta viva -> gana la cosa y los infectados
-            if player.player_role == player_roles.INFECTED.value and not player.player_dead:
-                winners.append(player.player_name)
+            #si la cosa esta viva -> 
+            if humans_alive == 0:
+                # si no hay humanos vivos, gana la cosa y los infectados
+                if player.player_role == player_roles.INFECTED.value and not player.player_dead:
+                    winners.append(player.player_name)
+            else:
+                # sino, ganan los humanos vivos
+                if player.player_role == player_roles.HUMAN.value and not player.player_dead:
+                    winners.append(player.player_name)
     
     #caso en el que la cosa contagia a todos y gana sola
     if len(winners) == number_players:
         winners = [lacosa.player_name]
         winner_team = "La cosa"
         
-    if lacosa.player_dead:
+    if lacosa.player_dead or (not lacosa.player_dead and humans_alive > 0):
         winner_team = "Los humanos"
     elif(len(winners) != number_players):
         if len(winners) == 1: 

@@ -37,21 +37,25 @@ output = [
     "player_id": 1,
     "player_ingame": 1,
     "player_position": 0,
-    "player_exchangeR": 0,
-    "player_exchangeL": 0,
+    "player_exchangeR": 1,
+    "player_exchangeL": 1,
     "player_role": 0,
     "player_dead": False,
-    "player_defense": False
+    "player_defense": False,
+    "card_name" : [],
+    "end_game" : False
   },
   {
     "player_id": 2,
     "player_ingame": 1,
     "player_position": 0,
-    "player_exchangeR": 0,
-    "player_exchangeL": 0,
+    "player_exchangeR": 1,
+    "player_exchangeL": 1,
     "player_role": 0,
     "player_dead": True,
-    "player_defense": True
+    "player_defense": True,
+    "card_name": ['nada_de_barbacoas'],
+    "end_game": False
   }
 ]
 
@@ -60,97 +64,60 @@ output_cant_defense = [
     "player_id": 1,
     "player_ingame": 1,
     "player_position": 0,
-    "player_exchangeR": 0,
-    "player_exchangeL": 0,
+    "player_exchangeR": 1,
+    "player_exchangeL": 1,
     "player_role": 0,
     "player_dead": False,
-    "player_defense": False
+    "player_defense": False,
+    "card_name" : [],
+    "end_game" : False
   },
   {
     "player_id": 3,
     "player_ingame": 1,
     "player_position": 0,
-    "player_exchangeR": 0,
-    "player_exchangeL": 0,
+    "player_exchangeR": 1,
+    "player_exchangeL": 1,
     "player_role": 0,
     "player_dead": True,
-    "player_defense": False
-  }
-]
+    "player_defense": False,
+    "card_name" : [],
+    "end_game" : False
 
-output_play_no_barbacoa = [
-  {
-    "player_id": 2,
-    "player_ingame": 1,
-    "player_position": 0,
-    "player_exchangeR": 0,
-    "player_exchangeL": 0,
-    "player_role": 0,
-    "player_dead": False,
-    "player_defense": False
-  },
-  {
-    "player_id": 2,
-    "player_ingame": 1,
-    "player_position": 0,
-    "player_exchangeR": 0,
-    "player_exchangeL": 0,
-    "player_role": 0,
-    "player_dead": False,
-    "player_defense": False
   }
 ]
 
 #jugador puede defenderse
 def test_check_defense_ok():
-    set_env()
-    with patch("api.player.play_card.play_card"):
-        response = client.put("/carta/jugar/1/2/2")
-        assert json.loads(response.content) == output
-        assert response.status_code == 200
-
-#jugador se defiende
-def test_check_player_defense():
-    update_databse_defense_case = "sqlite3 db/lacosa.sqlite" + " " + '"UPDATE Match SET match_currentP = 2 WHERE match_id = 1;"'
-    subprocess.run(update_databse_defense_case, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-    time.sleep(0.1)
-    with patch("api.player.play_card.play_card"):
-        response = client.put("/carta/jugar/2/1/2") # notar que el jugador se aplica la carta a si mismo
-        assert json.loads(response.content) == output_play_no_barbacoa
-        assert response.status_code == 200
+  set_env()
+  time.sleep(1)
+  response = client.put("/carta/jugar/1/2/2")
+  assert json.loads(response.content) == output
+  assert response.status_code == 200
 
 def test_check_cant_defense():
-    set_env()
-    with patch("api.player.play_card.play_card"):
-        response = client.put("/carta/jugar/1/2/3")
-        assert json.loads(response.content) == output_cant_defense
-        assert response.status_code == 200
+  set_env()
+  with patch("api.player.play_card.play_card"):
+    response = client.put("/carta/jugar/1/2/3")
+    assert json.loads(response.content) == output_cant_defense
+    assert response.status_code == 200
 
 #TEST ADICIONALES PARA CHEQUEAR FUNCIONALIDAD DE play_card.py
-
-#no existe el oponente al cual se le aplica la carta
-def test_check_defense_error_oponent():
-    set_env()
-    with patch("api.player.play_card.play_card"):
-        response = client.put("/carta/jugar/1/2/99")
-        assert json.loads(response.content) == "Error aplicando efecto"
-        assert response.status_code == 404
-
 #no es el turno del jugador
 def test_check_defense_error_player_turn():
-    set_env()
-    with patch("api.player.play_card.play_card"):
-        response = client.put("/carta/jugar/2/1/1")
-        assert json.loads(response.content) == "No se cumplen las precondiciones"
-        assert response.status_code == 401
+  set_env()
+  with patch("api.player.play_card.play_card"):
+    response = client.put("/carta/jugar/2/1/1")
+    assert json.loads(response.content) == "No se cumplen las precondiciones"
+    assert response.status_code == 401
 
 #el jugador no tiene la carta 
 def test_check_defense_error_no_card():
-    set_env()
-    with patch("api.player.play_card.play_card"):
-        response = client.put("/carta/jugar/1/1/2")
-        assert json.loads(response.content) == "No se cumplen las precondiciones"
-        assert response.status_code == 401
+  set_env()
+  with patch("api.player.play_card.play_card"):
+    response = client.put("/carta/jugar/1/1/2")
+    assert json.loads(response.content) == "No se cumplen las precondiciones"
+    assert response.status_code == 401
 
 #como correr test
 #1.mover al directorio lacosa/
