@@ -11,16 +11,9 @@ import json
 
 client = TestClient(app)
 
-def set_env(data,delete):
-    database = "db/lacosa.sqlite"
-    create_database_command = "python3 db/database.py"
+def set_env(data):
     get_into_database = "sqlite3 db/lacosa.sqlite"
     file_entrys = data
-    if os.path.exists(database) and delete:
-        os.remove(database)
-        time.sleep(0.1)
-    
-    subprocess.run(create_database_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     time.sleep(0.1)
     with open(file_entrys, 'r') as file:
         for line in file:
@@ -28,35 +21,54 @@ def set_env(data,delete):
             subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
             time.sleep(0.1)
 
-def test_exchange_valid_not_adjacent():
-    load_templates()
-    set_env("db/test_exchange_valid_not_adjacent.txt",False)
-    time.sleep(1)
-    #caso de intercambio a un jugador no adyacente
-    response = client.get("/intercambio/valido/1/3/1/''") #lanzallamas
-    assert json.loads(response.content) == False
+def reset_db():
+    database = "db/lacosa.sqlite"
+    create_database_command = "python3 db/database.py"
+    if os.path.exists(database):
+        os.remove(database)
+        time.sleep(0.1)
     
+    subprocess.run(create_database_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    time.sleep(0.1)
+
+
 def test_exchange_valid_puerta_atrancada():
     load_templates()
-    set_env("db/test_exchange_valid_not_adjacent.txt",False)
+    time.sleep(1)
+    set_env("db/test_exchange_valid_not_adjacent.txt")
+    time.sleep(1)
     #caso de intercambio a un jugador adyacente y carta valida
     response = client.get("/intercambio/valido/1/4/1/''") #lanzallamas
     assert json.loads(response.content) == False
 
 def test_exchange_valid():
     load_templates()
-    set_env("db/test_exchange_valid_not_adjacent.txt",False)
+    set_env("db/test_exchange_valid_not_adjacent.txt")
     #caso de intercambio a un jugador adyacente y carta valida
     time.sleep(1)
     response = client.get("/intercambio/valido/1/2/1/''") #lanzallamas
     assert json.loads(response.content) == False
 
-
 def test_exchange_card_invalid():
     load_templates()
     time.sleep(1)
-    set_env("db/test_exchange_valid_not_adjacent.txt",False)
+    set_env("db/test_exchange_valid_not_adjacent.txt")
     time.sleep(1)
     #caso de intercambio a un jugador adyacente y carta invalida
     response = client.get("/intercambio/valido/1/2/5/''") #lanzallamas
     assert json.loads(response.content) == False
+
+def test_exchange_valid_not_adjacent():
+    load_templates()
+    time.sleep(1)
+    set_env("db/test_exchange_valid_not_adjacent.txt")
+    time.sleep(1)
+    #caso de intercambio a un jugador no adyacente
+    response = client.get("/intercambio/valido/1/3/1/''") #lanzallamas
+    assert json.loads(response.content) == False
+
+
+
+
+
+

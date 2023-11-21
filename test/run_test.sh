@@ -3,6 +3,10 @@
 # Guarda el directorio actual
 current_dir=$(pwd)
 
+#Limpia la base de datos
+rm ../db/lacosa.sqlite
+python3 ../db/database.py
+
 # Mueve los archivos .py a la carpeta superior
 mv *.py ..
 
@@ -21,5 +25,6 @@ cd "$current_dir"
 #Devuelve main y defintitions al directorio original
 mv main.py ..
 mv definitions.py ..
+
 
 
